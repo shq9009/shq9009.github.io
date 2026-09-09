@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="邵汉青 · 个人网站合集 12 · 设备融资租赁求职定制版 · 金融白皮书/对公授信材料风 · 懂设备、懂客户、懂账期">
+<title>12 融资租赁 · 邵汉青 · 求职白皮书 — 懂设备、懂客户、懂账期</title>
+<style>
+/* ============================================================
+   12 · 融资租赁 FINANCE LEASING — 金融白皮书 / 对公授信材料风
+   ------------------------------------------------------------
+   设计语言：
+   · 深藏蓝 #0b1f3a 底 + 金色 #c9a227 点缀 + 米白纸卡 #f5f2ea
+   · 衬线标题（Georgia/宋体）+ 等宽数字（tabular-nums）
+   · 表格密集严谨，章节编号 SECTION 01…10
+   · 封面色块 + 刊印（白皮书编号/版本/密级/编制人）
+   · 页脚"风险提示"小字（合规感）+ 红色印章式徽章
+   · 视觉语言：授信审批材料 / 投资备忘录
+   ============================================================ */
+
+/* ===== 01 设计令牌 ======================================== */
+:root{
+  --navy:#0b1f3a;            /* 深藏蓝 主底 */
+  --navy-2:#12294d;          /* 深藏蓝 抬升层 */
+  --navy-3:#0a1a30;          /* 深藏蓝 压暗层 */
+  --gold:#c9a227;            /* 金色 点缀（仅用于：蓝底文字/边框/块底） */
+  --gold-ink:#7a5c0e;        /* 深金 用于米白纸卡上的小号金色点缀文字（≥4.5:1） */
+  --cream:#f5f2ea;           /* 米白纸卡 */
+  --cream-2:#ece7da;         /* 米白 次级卡 */
+  --ink:#0b1f3a;             /* 纸卡上的主文字（深藏蓝） */
+  --ink-soft:#3c4a63;        /* 纸卡上的次级文字（深蓝灰，≥4.5:1） */
+  --line-gold:rgba(201,162,39,.55);
+  --line-soft:rgba(201,162,39,.22);
+  --seal:#b0303a;            /* 印章红 */
+  --ok:#1d6b3c;              /* 回本提示·健康 */
+  --warn:#9a6a10;            /* 回本提示·临界 */
+  --bad:#a3322e;             /* 回本提示·缺口 */
+  --serif:Georgia,"Times New Roman","Songti SC","STSong","SimSun",serif;
+  --sans:"Helvetica Neue",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  --wrap:1120px;
+  --head-h:58px;
+}
+
+/* ===== 02 基础重置与排版 =================================== */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+html,body{background:var(--navy);}
+body{
+  font-family:var(--serif);
+  font-size:16px;                 /* 正文基准字号 ≥14px */
+  line-height:1.7;                /* 行高 ≥1.6 */
+  color:var(--cream);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  font-variant-numeric:tabular-nums;   /* 等宽数字 */
+}
+a{color:inherit;text-decoration:none;}
+a:hover{color:var(--gold);}
+ul,ol{list-style:none;}
+img{max-width:100%;display:block;}
+button{font-family:var(--sans);cursor:pointer;}
+input,select{font-family:var(--sans);}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;}
+::selection{background:var(--gold);color:var(--navy);}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 22px;}
+.section-anchor{scroll-margin-top:calc(var(--head-h) + 14px);}  /* 锚点跳转预留固定头偏移 */
+
+/* 章节通用 */
+.sec{padding:52px 0 8px;}
+.sec-head{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
+.sec-no{
+  font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:3px;
+  color:var(--gold);border:1px solid var(--line-gold);padding:3px 10px;
+}
+.sec-en{font-family:var(--sans);font-size:11px;letter-spacing:2px;color:rgba(245,242,234,.55);text-transform:uppercase;}
+.sec-title{font-size:clamp(24px,3.2vw,32px);font-weight:700;letter-spacing:1px;margin:10px 0 6px;}
+.sec-title em{color:var(--gold);font-style:normal;}
+.sec-sub{color:rgba(245,242,234,.72);max-width:780px;font-size:14.5px;margin-bottom:22px;}
+.sec-rule{height:2px;background:linear-gradient(90deg,var(--gold),rgba(201,162,39,.15));margin:2px 0 26px;}
+
+/* 纸卡 */
+.paper{
+  background:var(--cream);color:var(--ink);border-radius:4px;
+  box-shadow:0 1px 2px rgba(0,0,0,.4),0 18px 44px rgba(4,12,26,.5);
+  padding:26px 28px;margin-bottom:24px;position:relative;
+}
+.paper::before{                    /* 金色角线，授信文件感 */
+  content:"";position:absolute;top:0;left:0;width:44px;height:3px;background:var(--gold);
+}
+.paper h4{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px;}
+.paper h4 .tag{
+  display:inline-block;font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:1px;
+  background:var(--gold);color:var(--navy);padding:2px 8px;border-radius:2px;margin-right:8px;vertical-align:2px;
+}
+.paper p,.paper li{font-size:15px;color:var(--ink);}
+.muted{color:var(--ink-soft);}
+.small{font-size:13px;}
+
+/* ===== 03 顶部导航栏 ======================================= */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--head-h);background:rgba(11,31,58,.96);
+  border-bottom:1px solid var(--line-gold);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.topbar-in{max-width:var(--wrap);margin:0 auto;height:100%;padding:0 22px;display:flex;align-items:center;gap:14px;}
+.brand{display:flex;align-items:center;gap:10px;flex:none;}
+.brand .seal-mini{
+  width:30px;height:30px;border-radius:4px;background:var(--seal);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;letter-spacing:0;transform:rotate(-4deg);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.35),inset 0 0 0 3px rgba(0,0,0,.12);
+}
+.brand b{font-size:15px;letter-spacing:1px;}
+.brand small{display:block;font-family:var(--sans);font-size:10px;letter-spacing:2px;color:rgba(245,242,234,.6);}
+.top-nav{margin-left:auto;display:flex;align-items:center;gap:2px;}
+.top-nav a{
+  font-family:var(--sans);font-size:12px;color:rgba(245,242,234,.85);
+  padding:6px 9px;border-radius:3px;letter-spacing:.5px;white-space:nowrap;
+}
+.top-nav a i{font-style:normal;color:var(--gold);margin-right:3px;font-size:10.5px;}
+.top-nav a:hover{color:var(--gold);background:rgba(201,162,39,.08);}
+.top-nav a.active{color:var(--navy);background:var(--gold);font-weight:700;}
+.top-actions{margin-left:8px;display:flex;gap:8px;flex:none;}
+.btn-print{
+  font-family:var(--sans);font-size:12px;font-weight:700;color:var(--gold);
+  border:1px solid var(--line-gold);background:transparent;border-radius:3px;padding:7px 12px;
+}
+.btn-print:hover{background:var(--gold);color:var(--navy);}
+.burger{
+  display:none;width:40px;height:38px;border:1px solid var(--line-gold);border-radius:4px;
+  background:transparent;position:relative;flex:none;
+}
+.burger span{position:absolute;left:9px;right:9px;height:2px;background:var(--gold);}
+.burger span:nth-child(1){top:10px;}
+.burger span:nth-child(2){top:18px;}
+.burger span:nth-child(3){top:26px;}
+
+/* ===== 04 封面（封面色块 + 刊印 + 印章） =================== */
+.cover{position:relative;padding:calc(var(--head-h) + 64px) 0 56px;overflow:hidden;}
+.cover::before{                      /* 背景光晕 */
+  content:"";position:absolute;top:-220px;right:-180px;width:560px;height:560px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,162,39,.14),rgba(201,162,39,0) 70%);pointer-events:none;
+}
+.cover::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.cover-frame{                          /* 金框证件感 */
+  border:1px solid var(--line-gold);outline:1px solid rgba(201,162,39,.35);outline-offset:6px;
+  padding:44px 40px 40px;position:relative;
+}
+.doc-line{                             /* 文件头行 */
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-family:var(--sans);font-size:11.5px;letter-spacing:1.5px;color:rgba(245,242,234,.62);
+  border-bottom:1px dashed var(--line-soft);padding-bottom:12px;margin-bottom:30px;
+}
+.doc-line b{color:var(--gold);font-weight:700;letter-spacing:2px;}
+.cover-main{display:flex;gap:36px;align-items:flex-start;flex-wrap:wrap;}
+.cover-left{flex:1 1 420px;min-width:300px;}
+.cover-kicker{
+  font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:4px;color:var(--gold);
+  margin-bottom:18px;display:flex;align-items:center;gap:12px;
+}
+.cover-kicker::before{content:"";width:34px;height:1px;background:var(--gold);}
+.cover h1{
+  font-size:clamp(34px,5.4vw,58px);line-height:1.18;letter-spacing:2px;font-weight:700;
+  color:var(--cream);margin-bottom:18px;
+}
+.cover h1 .gold{color:var(--gold);}
+.cover .slogan{
+  font-size:17px;color:rgba(245,242,234,.9);letter-spacing:1px;margin-bottom:8px;
+}
+.cover .slogan b{color:var(--gold);}
+.cover .lead-note{font-size:14px;color:rgba(245,242,234,.66);max-width:600px;}
+.cover-right{flex:0 0 300px;width:300px;}
+.imprint{
+  border:1px solid var(--line-soft);background:rgba(11,31,58,.5);
+  padding:18px 18px 14px;
+}
+.imprint .im-title{
+  font-family:var(--sans);font-size:11px;letter-spacing:3px;color:var(--gold);
+  border-bottom:1px solid var(--line-soft);padding-bottom:9px;margin-bottom:10px;
+}
+.imprint table{width:100%;}
+.imprint td{font-family:var(--sans);font-size:12px;padding:5px 0;vertical-align:top;line-height:1.6;}
+.imprint td:first-child{color:rgba(245,242,234,.55);width:72px;letter-spacing:1px;}
+.imprint td:last-child{color:var(--cream);}
+.cover-foot{
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+  border-top:1px solid var(--line-soft);margin-top:34px;padding-top:20px;
+}
+.cover-foot .meta{font-family:var(--sans);font-size:12px;color:rgba(245,242,234,.6);letter-spacing:1px;}
+.cover-foot .meta b{color:var(--gold);}
+.seal{                                    /* 红色印章式徽章 */
+  margin-left:auto;width:92px;height:92px;flex:none;position:relative;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  background:var(--seal);color:#fff;border-radius:8px;transform:rotate(-5deg);
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.5),inset 0 0 0 6px var(--seal),inset 0 0 0 7px rgba(255,255,255,.35);
+  cursor:pointer;transition:transform .2s ease;
+  font-size:15px;font-weight:700;letter-spacing:4px;writing-mode:vertical-rl;line-height:1.35;
+}
+.seal:hover{transform:rotate(0deg) scale(1.04);}
+.seal small{display:block;font-size:9px;letter-spacing:2px;font-weight:400;opacity:.85;}
+.cover-hint{font-family:var(--sans);font-size:11.5px;color:rgba(245,242,234,.6);margin-top:10px;letter-spacing:1px;}
+
+/* ===== 05 封面下目录 ======================================= */
+.toc{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
+  margin:26px 0 6px;
+}
+.toc a{
+  background:rgba(11,31,58,.72);border:1px solid var(--line-soft);
+  padding:12px 12px;border-radius:3px;font-family:var(--sans);font-size:12.5px;
+  color:rgba(245,242,234,.88);letter-spacing:.5px;transition:border-color .15s ease,background .15s ease;
+}
+.toc a i{display:block;font-style:normal;color:var(--gold);font-size:10.5px;letter-spacing:2px;margin-bottom:4px;}
+.toc a:hover{border-color:var(--gold);background:rgba(201,162,39,.1);color:#fff;}
+
+/* ===== 06 求职意向 ========================================= */
+.intent-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.intent-card{
+  background:var(--cream);color:var(--ink);border-radius:4px;padding:22px 24px;
+  box-shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px rgba(4,12,26,.45);position:relative;
+}
+.intent-card .ic-no{position:absolute;top:14px;right:16px;font-family:var(--sans);font-size:11px;letter-spacing:2px;color:var(--gold-ink);}
+.intent-card .ic-title{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:2px;color:var(--gold-ink);margin-bottom:10px;}
+.intent-card .ic-big{font-size:22px;font-weight:700;line-height:1.4;margin-bottom:10px;}
+.intent-card .ic-big small{display:block;font-size:13px;font-weight:400;color:var(--ink-soft);margin-top:6px;letter-spacing:1px;}
+.intent-card p{font-size:14.5px;color:var(--ink-soft);}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.chip-co{
+  font-family:var(--sans);font-size:12.5px;font-weight:700;color:var(--ink);
+  border:1px solid rgba(11,31,58,.25);border-radius:2px;padding:5px 12px;background:var(--cream-2);
+}
+.chip-co b{color:var(--gold-ink);}
+.fit-table{margin-top:4px;}
+.fit-table th{
+  background:var(--navy);color:var(--cream);text-align:left;
+  font-family:var(--sans);font-size:12px;letter-spacing:1px;font-weight:700;
+  padding:10px 12px;border:1px solid var(--navy-2);
+}
+.fit-table td{
+  font-size:14.5px;color:var(--ink);border:1px solid rgba(11,31,58,.16);
+  padding:11px 12px;vertical-align:top;line-height:1.65;
+}
+.fit-table tr:nth-child(even) td{background:var(--cream-2);}
+.fit-table td:first-child{width:38%;font-weight:700;}
+.fit-table td b{color:var(--gold-ink);}
+
+/* ===== 07 关于我 =========================================== */
+.about-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;}
+.about-persona{
+  background:var(--cream);color:var(--ink);border-radius:4px;padding:26px 28px;
+  box-shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px rgba(4,12,26,.45);position:relative;
+}
+.quote{
+  font-size:26px;line-height:1.45;font-weight:700;letter-spacing:2px;margin:6px 0 14px;
+  border-left:4px solid var(--gold);padding-left:16px;
+}
+.quote .hl{color:var(--gold-ink);}
+.about-persona p{font-size:15px;color:var(--ink-soft);}
+.about-table{width:100%;margin-top:16px;border-top:1px solid rgba(11,31,58,.18);}
+.about-table td{font-size:14.5px;padding:9px 4px;border-bottom:1px solid rgba(11,31,58,.12);vertical-align:top;line-height:1.6;}
+.about-table td:first-child{width:96px;color:var(--ink-soft);font-family:var(--sans);font-size:12px;letter-spacing:1px;font-weight:700;}
+.about-note{
+  background:rgba(201,162,39,.1);border:1px solid rgba(11,31,58,.18);border-left:4px solid var(--gold);
+  padding:12px 14px;font-size:13.5px;color:var(--ink-soft);margin-top:16px;line-height:1.7;
+}
+.about-note b{color:var(--ink);}
+.about-side{display:flex;flex-direction:column;gap:16px;}
+.side-card{background:var(--cream);color:var(--ink);border-radius:4px;padding:20px 22px;flex:1;box-shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px rgba(4,12,26,.45);}
+.side-card h4{font-size:16px;margin-bottom:10px;}
+.side-card h4 .tag{background:var(--gold);color:var(--navy);font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:2px;margin-right:8px;vertical-align:2px;}
+.side-card ul li{
+  font-size:14.5px;color:var(--ink);padding:7px 0 7px 20px;position:relative;border-bottom:1px dashed rgba(11,31,58,.14);line-height:1.65;
+}
+.side-card ul li:last-child{border-bottom:none;}
+.side-card ul li::before{content:"◆";position:absolute;left:0;top:8px;font-size:10px;color:var(--gold-ink);}
+.side-card .endorse{
+  font-family:var(--sans);font-size:12px;color:var(--ink-soft);background:var(--cream-2);
+  border:1px solid rgba(11,31,58,.14);padding:9px 11px;border-radius:3px;margin-top:10px;line-height:1.6;
+}
+.side-card .endorse b{color:var(--gold-ink);}
+
+/* ===== 08 核心卖点 ========================================= */
+.edge-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.edge-card{
+  background:var(--cream);color:var(--ink);border-radius:4px;padding:22px 24px;position:relative;
+  box-shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px rgba(4,12,26,.45);border-top:3px solid var(--gold);
+}
+.edge-card .e-no{
+  position:absolute;top:-14px;right:14px;width:42px;height:42px;border-radius:50%;
+  background:var(--navy);color:var(--gold);font-family:var(--sans);font-weight:700;font-size:16px;
+  display:flex;align-items:center;justify-content:center;border:2px solid var(--gold);
+}
+.edge-card h4{font-size:17.5px;margin-bottom:9px;}
+.edge-card h4 .en{display:block;font-family:var(--sans);font-size:10.5px;letter-spacing:2px;color:var(--gold-ink);font-weight:700;margin-top:3px;}
+.edge-card p{font-size:14.5px;color:var(--ink-soft);line-height:1.7;}
+.edge-card .proof{margin-top:12px;font-size:13px;color:var(--ink);background:var(--cream-2);border-left:3px solid var(--gold);padding:8px 11px;}
+.edge-card .proof b{color:var(--gold-ink);}
+
+/* ===== 09 关键数字 ========================================= */
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.num-tile{
+  background:var(--cream);color:var(--ink);border-radius:4px;padding:18px 16px;text-align:center;
+  box-shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px rgba(4,12,26,.45);position:relative;overflow:hidden;
+}
+.num-tile::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--gold);}
+.num-tile .n{
+  font-size:clamp(26px,3vw,34px);font-weight:700;color:var(--navy);line-height:1.15;
+  font-variant-numeric:tabular-nums;
+}
+.num-tile .n i{font-style:normal;color:var(--gold-ink);font-size:.72em;margin-left:1px;}
+.num-tile .l{font-family:var(--sans);font-size:11.5px;letter-spacing:1px;color:var(--ink-soft);margin-top:6px;line-height:1.5;}
+.num-tile .s{font-size:12px;color:var(--ink-soft);margin-top:3px;}
+
+/* ===== 10 职业履历（资产/账期/风控视角） =================== */
+.career-table{margin-top:4px;}
+.career-table thead th{
+  background:var(--navy);color:var(--cream);text-align:left;font-family:var(--sans);
+  font-size:11.5px;letter-spacing:1px;font-weight:700;padding:10px 12px;border:1px solid var(--navy-2);white-space:nowrap;
+}
+.career-table tbody td{
+  font-size:14.5px;color:var(--ink);border:1px solid rgba(11,31,58,.16);padding:12px;vertical-align:top;line-height:1.66;
+}
+.career-table tbody tr:nth-child(even) td{background:var(--cream-2);}
+.career-table tbody tr:hover td{background:#efe9d9;}
+.career-table td.per{
+  white-space:nowrap;font-weight:700;font-family:var(--sans);font-size:13.5px;color:var(--gold-ink);
+}
+.career-table td.co{width:24%;}
+.career-table td.co b{font-size:15px;}
+.career-table td.co span{display:block;font-family:var(--sans);font-size:12px;color:var(--ink-soft);margin-top:3px;}
+.career-table td.fact{width:33%;}
+.career-table td.fact li{font-size:14px;color:var(--ink);padding:3px 0 3px 16px;position:relative;}
+.career-table td.fact li::before{content:"·";position:absolute;left:2px;font-weight:700;color:var(--gold-ink);}
+.career-table td.lease{width:33%;background:rgba(201,162,39,.07);}
+.career-table td.lease b{color:var(--gold-ink);}
+.career-foot{margin-top:14px;font-size:13.5px;color:var(--ink-soft);line-height:1.7;}
+
+/* ===== 11 能力标签 ========================================= */
+.skill-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.skill-card{
+  background:var(--cream);color:var(--ink);border-radius:4px;padding:18px 16px;
+  box-shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px rgba(4,12,26,.45);
+  border:1px solid rgba(11,31,58,.12);border-top:3px solid var(--gold);
+}
+.skill-card .s-no{font-family:var(--sans);font-size:11px;letter-spacing:2px;color:var(--gold-ink);font-weight:700;}
+.skill-card h4{font-size:16px;margin:6px 0 8px;}
+.skill-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.7;}
+.skill-card .s-proof{font-size:12.5px;color:var(--ink);background:var(--cream-2);padding:6px 9px;margin-top:9px;border-left:3px solid var(--gold);}
+.skill-card .s-proof b{color:var(--gold-ink);}
+
+/* ===== 12 测算器（特色板块） =============================== */
+.calc-wrap{background:var(--cream);color:var(--ink);border-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.4),0 18px 44px rgba(4,12,26,.5);overflow:hidden;}
+.calc-head{
+  background:var(--navy);color:var(--cream);padding:18px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  border-bottom:2px solid var(--gold);
+}
+.calc-head h4{color:var(--cream);font-size:19px;margin:0;}
+.calc-head .en{font-family:var(--sans);font-size:11px;letter-spacing:2px;color:rgba(245,242,234,.6);}
+.calc-head .mark{margin-left:auto;font-family:var(--sans);font-size:11px;color:var(--gold);border:1px solid var(--line-gold);padding:4px 10px;border-radius:2px;letter-spacing:1px;}
+.calc-body{display:grid;grid-template-columns:340px 1fr;gap:0;}
+.calc-form{padding:22px;border-right:1px solid rgba(11,31,58,.14);background:var(--cream-2);}
+.calc-form h5{
+  font-family:var(--sans);font-size:11.5px;font-weight:700;letter-spacing:2px;color:var(--gold-ink);
+  margin:16px 0 8px;border-bottom:1px dashed rgba(11,31,58,.22);padding-bottom:5px;
+}
+.calc-form h5:first-child{margin-top:0;}
+.f-label{font-size:13.5px;color:var(--ink);margin-bottom:5px;font-weight:700;}
+.f-label small{font-weight:400;color:var(--ink-soft);font-size:12px;}
+.f-input{
+  width:100%;border:1px solid rgba(11,31,58,.28);border-radius:3px;padding:9px 11px;
+  font-size:15px;color:var(--ink);background:#fff;
+}
+.f-input:focus{outline:none;border-color:var(--gold-ink);box-shadow:0 0 0 2px rgba(201,162,39,.25);}
+.range-row{display:flex;align-items:center;gap:12px;}
+.range-row input[type=range]{flex:1;accent-color:var(--gold-ink);}
+.range-row output{font-family:var(--sans);font-weight:700;font-size:14px;color:var(--gold-ink);min-width:44px;text-align:right;}
+.term-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.term-chip{
+  flex:1;min-width:52px;text-align:center;font-family:var(--sans);font-size:13px;font-weight:700;
+  border:1px solid rgba(11,31,58,.25);background:#fff;color:var(--ink);border-radius:3px;padding:8px 4px;
+}
+.term-chip.active{background:var(--navy);color:var(--gold);border-color:var(--navy);}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.preset{
+  font-family:var(--sans);font-size:12px;border:1px solid rgba(11,31,58,.2);background:#fff;
+  color:var(--ink);border-radius:2px;padding:5px 9px;
+}
+.preset:hover{background:var(--navy);color:var(--gold);}
+.calc-err{display:none;font-size:13px;color:#a3322e;background:#f7e3e0;border:1px solid rgba(163,50,46,.35);padding:8px 10px;margin-top:12px;line-height:1.6;}
+.calc-ability{
+  margin-top:18px;border:1px solid rgba(201,162,39,.45);background:rgba(201,162,39,.08);
+  padding:12px 13px;font-size:13px;color:var(--ink);line-height:1.7;
+}
+.calc-ability b{color:var(--gold-ink);}
+.calc-result{padding:22px;}
+.result-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.r-tile{background:var(--cream-2);border:1px solid rgba(11,31,58,.14);border-left:3px solid var(--gold);padding:12px 13px;}
+.r-tile .rt-l{font-family:var(--sans);font-size:10.5px;letter-spacing:1.5px;color:var(--ink-soft);font-weight:700;}
+.r-tile .rt-v{font-size:21px;font-weight:700;color:var(--navy);margin-top:4px;font-variant-numeric:tabular-nums;}
+.r-tile .rt-v i{font-style:normal;font-size:12px;color:var(--gold-ink);margin-left:3px;}
+.r-tile.hl{background:var(--navy);border-left-color:var(--gold);}
+.r-tile.hl .rt-l{color:rgba(245,242,234,.65);}
+.r-tile.hl .rt-v{color:var(--gold);}
+.payback{background:var(--cream-2);border:1px solid rgba(11,31,58,.16);padding:13px 15px;margin-bottom:16px;font-size:14px;line-height:1.75;color:var(--ink);}
+.payback b{color:var(--gold-ink);}
+.payback .level{font-weight:700;}
+.payback .lv-ok{color:var(--ok);}
+.payback .lv-warn{color:var(--warn);}
+.payback .lv-bad{color:var(--bad);}
+.sched-table{width:100%;margin-top:6px;}
+.sched-table th{background:var(--navy);color:var(--cream);text-align:right;font-family:var(--sans);font-size:11.5px;padding:8px 10px;border:1px solid var(--navy-2);letter-spacing:1px;}
+.sched-table th:first-child,.sched-table td:first-child{text-align:left;}
+.sched-table td{font-size:13.5px;padding:8px 10px;border:1px solid rgba(11,31,58,.16);text-align:right;font-variant-numeric:tabular-nums;}
+.sched-table tr:nth-child(even) td{background:var(--cream-2);}
+.sched-table tr.total td{background:rgba(201,162,39,.16);font-weight:700;}
+.calc-note{margin-top:14px;font-family:var(--sans);font-size:11.5px;color:var(--ink-soft);line-height:1.7;}
+
+/* ===== 13 作品 ============================================= */
+.work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.work-card{
+  background:var(--cream);color:var(--ink);border-radius:4px;padding:22px 24px;position:relative;
+  box-shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px rgba(4,12,26,.45);overflow:hidden;
+}
+.work-card::before{content:"";position:absolute;top:0;right:0;width:86px;height:86px;background:linear-gradient(135deg,rgba(201,162,39,0) 49%,rgba(201,162,39,.16) 50%,rgba(201,162,39,.16) 100%);}
+.work-card .w-no{font-family:var(--sans);font-size:11px;letter-spacing:2px;color:var(--gold-ink);font-weight:700;}
+.work-card h4{font-size:17.5px;margin:6px 0 4px;}
+.work-card .w-tag{
+  display:inline-block;font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:1px;
+  background:var(--navy);color:var(--gold);padding:2px 8px;border-radius:2px;margin-bottom:10px;
+}
+.work-card p{font-size:14.5px;color:var(--ink-soft);line-height:1.7;}
+.work-card .w-list{margin-top:10px;}
+.work-card .w-list li{font-size:13.5px;padding:4px 0 4px 18px;position:relative;color:var(--ink);line-height:1.65;}
+.work-card .w-list li::before{content:"▸";position:absolute;left:0;color:var(--gold-ink);}
+.skill-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.skill-chip{
+  font-family:var(--sans);font-size:11.5px;color:var(--ink);background:var(--cream-2);
+  border:1px solid rgba(11,31,58,.18);border-radius:2px;padding:4px 8px;
+}
+.skill-chip b{color:var(--gold-ink);}
+
+/* ===== 14 三年纲领 ========================================= */
+.plan-timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.plan-card{
+  background:var(--cream);color:var(--ink);border-radius:4px;padding:22px 22px;position:relative;
+  box-shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px rgba(4,12,26,.45);
+}
+.plan-card .p-y{
+  font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:1px;color:var(--navy);
+  background:var(--gold);display:inline-block;padding:3px 10px;border-radius:2px;
+}
+.plan-card .p-theme{font-size:19px;font-weight:700;margin:12px 0 10px;line-height:1.4;}
+.plan-card .p-desc{font-size:14px;color:var(--ink-soft);line-height:1.75;}
+.plan-card .p-desc b{color:var(--gold-ink);}
+.plan-card .p-step{margin-top:12px;border-top:1px dashed rgba(11,31,58,.2);padding-top:10px;font-size:13px;color:var(--ink);}
+.plan-card .p-step b{color:var(--gold-ink);}
+.plan-heart{
+  margin-top:14px;background:var(--cream);border-radius:4px;padding:18px 24px;
+  box-shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px rgba(4,12,26,.45);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+}
+.heart-item{font-size:14px;color:var(--ink);text-align:center;padding:8px 6px;background:var(--cream-2);border-left:3px solid var(--gold);line-height:1.6;}
+.heart-item b{color:var(--gold-ink);}
+.plan-foot{font-family:var(--sans);font-size:11.5px;color:rgba(245,242,234,.55);margin-top:12px;letter-spacing:1px;}
+
+/* ===== 15 联系方式 ========================================= */
+.contact-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;}
+.contact-card{background:var(--cream);color:var(--ink);border-radius:4px;padding:24px 26px;box-shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px rgba(4,12,26,.45);}
+.contact-card h4{font-size:18px;margin-bottom:14px;}
+.contact-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px dashed rgba(11,31,58,.16);}
+.contact-row:last-child{border-bottom:none;}
+.contact-row .c-ico{
+  width:40px;height:40px;flex:none;border-radius:4px;background:var(--navy);color:var(--gold);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.contact-row .c-l{font-family:var(--sans);font-size:11px;letter-spacing:2px;color:var(--ink-soft);font-weight:700;}
+.contact-row .c-v{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;}
+.contact-row .c-s{font-size:13px;color:var(--ink-soft);}
+.contact-note{background:rgba(201,162,39,.09);border:1px solid rgba(11,31,58,.16);border-left:4px solid var(--gold);padding:13px 15px;font-size:13.5px;color:var(--ink-soft);line-height:1.75;margin-top:16px;}
+.contact-note b{color:var(--gold-ink);}
+
+/* ===== 16 页脚与风险提示 =================================== */
+.footer{
+  border-top:1px solid var(--line-gold);margin-top:56px;padding:30px 0 34px;
+  background:linear-gradient(180deg,rgba(10,26,48,.6),rgba(8,20,38,1));
+}
+.foot-main{font-size:14px;color:rgba(245,242,234,.85);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.foot-main a{color:var(--gold);border-bottom:1px dashed var(--line-gold);}
+.foot-main a:hover{color:#fff;}
+.foot-main .sep{opacity:.4;}
+.foot-risk{
+  margin-top:14px;font-family:var(--sans);font-size:11.5px;line-height:1.8;color:rgba(245,242,234,.5);
+  border-top:1px dashed var(--line-soft);padding-top:12px;max-width:860px;
+}
+.foot-risk b{color:var(--gold);}
+.foot-imprint{font-family:var(--sans);font-size:11px;letter-spacing:1px;color:rgba(245,242,234,.6);margin-top:10px;}
+
+/* ===== 17 验章面板（印章点击） ============================= */
+.modal-mask{
+  position:fixed;inset:0;background:rgba(5,12,24,.66);z-index:200;display:none;
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-mask.open{display:flex;}
+.modal{
+  background:var(--cream);color:var(--ink);border-radius:6px;max-width:520px;width:100%;
+  max-height:84vh;overflow:auto;box-shadow:0 24px 70px rgba(0,0,0,.55);position:relative;
+  border-top:4px solid var(--gold);
+}
+.modal-head{display:flex;align-items:center;gap:12px;padding:18px 22px 0;}
+.modal-head .m-seal{
+  width:40px;height:40px;flex:none;background:var(--seal);color:#fff;border-radius:5px;transform:rotate(-5deg);
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.4),inset 0 0 0 3px rgba(0,0,0,.1);
+}
+.modal-head h4{font-size:18px;}
+.modal-head small{display:block;font-family:var(--sans);font-size:11px;letter-spacing:1px;color:var(--ink-soft);margin-top:2px;}
+.modal-close{
+  margin-left:auto;width:34px;height:34px;border:1px solid rgba(11,31,58,.25);border-radius:4px;
+  background:#fff;color:var(--ink);font-size:18px;line-height:1;
+}
+.modal-close:hover{background:var(--navy);color:var(--gold);}
+.modal-body{padding:14px 22px 22px;}
+.modal-body table{width:100%;}
+.modal-body td{font-size:14px;padding:8px 4px;border-bottom:1px solid rgba(11,31,58,.12);vertical-align:top;line-height:1.6;}
+.modal-body td:first-child{width:88px;color:var(--ink-soft);font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:1px;}
+.modal-body .m-note{font-size:12.5px;color:var(--ink-soft);background:var(--cream-2);padding:9px 11px;margin-top:12px;line-height:1.7;}
+
+/* ===== 18 返回顶部 ========================================= */
+.to-top{
+  position:fixed;right:22px;bottom:22px;width:46px;height:46px;border-radius:50%;z-index:90;
+  background:var(--gold);color:var(--navy);border:none;font-size:20px;font-weight:700;
+  box-shadow:0 8px 22px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .2s ease;
+}
+.to-top.show{opacity:1;pointer-events:auto;}
+.to-top:hover{transform:translateY(-3px);}
+
+/* ===== 19 滚动渐入（默认可见；仅 JS 启用后才隐藏） ========= */
+.reveal{opacity:1;transform:none;}
+html.js .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;}
+html.js .reveal.in{opacity:1;transform:none;}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  html.js .reveal{opacity:1;transform:none;transition:none;}
+}
+
+/* ===== 20 响应式（≤768px 及小屏） ========================== */
+@media (max-width:980px){
+  .nums{grid-template-columns:repeat(4,1fr);}
+  .skill-grid{grid-template-columns:repeat(2,1fr);}
+  .calc-body{grid-template-columns:1fr;}
+  .calc-form{border-right:none;border-bottom:1px solid rgba(11,31,58,.14);}
+}
+@media (max-width:768px){
+  body{font-size:15px;}
+  .sec{padding:38px 0 4px;}
+  .wrap{padding:0 16px;}
+  .cover{padding:calc(var(--head-h) + 40px) 0 40px;}
+  .cover-frame{padding:28px 20px 24px;outline-offset:4px;}
+  .cover h1{font-size:32px;}
+  .cover-right{flex:1 1 100%;width:100%;}
+  .cover-foot .seal{margin-left:0;}
+  .toc{grid-template-columns:repeat(2,1fr);}
+  .intent-grid,.about-grid,.contact-grid{grid-template-columns:1fr;}
+  .edge-grid,.work-grid{grid-template-columns:1fr;}
+  .nums{grid-template-columns:repeat(2,1fr);}
+  .plan-timeline{grid-template-columns:1fr;}
+  .plan-heart{grid-template-columns:repeat(2,1fr);}
+  .result-tiles{grid-template-columns:repeat(2,1fr);}
+  .top-nav{
+    position:fixed;top:var(--head-h);left:0;right:0;z-index:99;
+    background:rgba(10,26,48,.98);border-bottom:1px solid var(--line-gold);
+    flex-direction:column;align-items:stretch;padding:10px 16px 16px;gap:4px;
+    transform:translateY(-8px);opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;
+  }
+  .top-nav.open{transform:none;opacity:1;pointer-events:auto;}
+  .top-nav a{padding:11px 12px;border-bottom:1px dashed rgba(201,162,39,.2);font-size:13px;}
+  .top-nav a:last-child{border-bottom:none;}
+  .burger{display:block;}
+  .top-actions .btn-print{display:none;}
+  .fit-table td:first-child{width:auto;}
+  .career-table{display:block;overflow-x:auto;}
+  .career-table thead th,.career-table tbody td{white-space:normal;}
+  .career-table td.co{width:auto;}
+  .career-table td.fact,.career-table td.lease{width:auto;}
+}
+@media (max-width:440px){
+  .nums{grid-template-columns:1fr 1fr;gap:10px;}
+  .skill-grid{grid-template-columns:1fr;}
+  .result-tiles{grid-template-columns:1fr 1fr;}
+  .plan-heart{grid-template-columns:1fr;}
+  .doc-line{flex-direction:column;gap:6px;}
+}
+
+/* ===== 21 打印样式（白皮书归档） =========================== */
+@media print{
+  html,body{background:#fff;color:#111;}
+  .topbar,.to-top,.burger,.top-actions,.seal,.cover-hint,.toc{display:none !important;}
+  body{font-size:12px;}
+  .wrap{max-width:100%;padding:0;}
+  .cover{padding:0 0 20px;}
+  .cover-frame{border:none;outline:none;padding:0;}
+  .cover h1{font-size:28px;color:#111;}
+  .cover .slogan{color:#111;}
+  .sec{padding:18px 0 0;page-break-inside:avoid;}
+  .paper,.intent-card,.edge-card,.num-tile,.skill-card,.work-card,.plan-card,.about-persona,.side-card,.contact-card,.calc-wrap{box-shadow:none;background:#fff;color:#111;page-break-inside:avoid;}
+  .sec-no{color:#7a5c0e;border-color:#7a5c0e;}
+  .sec-title{color:#111;}
+  .sec-title em,.sec-sub{color:#111;}
+  .sec-rule{background:#7a5c0e;}
+  .fit-table th,.career-table thead th,.sched-table th{background:#e8e2d2;color:#111;}
+  .fit-table td,.career-table tbody td,.sched-table td{border-color:#bbb;color:#111;}
+  .career-table tbody tr:nth-child(even) td,.fit-table tr:nth-child(even) td{background:#f4f1e8;}
+  .career-table td.lease{background:#faf6e8;}
+  .footer{border-top:1px solid #7a5c0e;background:#fff;}
+  .foot-main,.foot-risk,.foot-imprint{color:#333;}
+  .foot-main a{color:#7a5c0e;}
+  a{color:#111;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     顶部固定导航（锚点 + 移动端汉堡）
+     ============================================================ -->
+<header class="topbar" id="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <span class="seal-mini">汉青</span>
+      <b>邵汉青 · 求职白皮书<small>FINANCE LEASING · 设备融资租赁方向</small></b>
+    </div>
+    <nav class="top-nav" id="topNav" aria-label="章节导航">
+      <a href="#intent"><i>01</i>求职意向</a>
+      <a href="#about"><i>02</i>关于我</a>
+      <a href="#edge"><i>03</i>核心卖点</a>
+      <a href="#nums"><i>04</i>关键数字</a>
+      <a href="#career"><i>05</i>职业履历</a>
+      <a href="#skills"><i>06</i>能力标签</a>
+      <a href="#calc"><i>07</i>测算器</a>
+      <a href="#works"><i>08</i>作品</a>
+      <a href="#plan"><i>09</i>三年纲领</a>
+      <a href="#contact"><i>10</i>联系方式</a>
+    </nav>
+    <div class="top-actions">
+      <button class="btn-print" id="btnPrint" type="button">🖨 打印 / 归档</button>
+    </div>
+    <button class="burger" id="burger" type="button" aria-label="展开导航"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ============================================================
+     封面：封面色块 + 刊印 + 红色印章
+     ============================================================ -->
+<section class="cover" id="top">
+  <div class="wrap">
+    <div class="cover-frame">
+      <div class="doc-line">
+        <span>文件编号 <b>HQ-CREDIT-2026-012</b> · 求职自荐白皮书</span>
+        <span>密级：公开 · 可转发 · 编制：邵汉青</span>
+      </div>
+      <div class="cover-main">
+        <div class="cover-left">
+          <div class="cover-kicker">EQUIPMENT FINANCE · LEASING CANDIDATE</div>
+          <h1>懂设备、懂客户、懂账期<br><span class="gold">10 年厂商系销售 × 融资租赁实战</span></h1>
+          <p class="slogan">投递方向：<b>设备融资租赁客户经理 / 团队长</b>（工程机械方向）</p>
+          <p class="lead-note">十年重工大客户销售，主推融资租赁成交；帮客户算 IRR、回本周期与租金结构；
+          在中联重科主导应收账款催收与风险评估；高机客户多为设备租赁公司——天然理解租赁生意。
+          <b style="color:var(--gold)">既懂销售，又懂 AI。</b></p>
+        </div>
+        <div class="cover-right">
+          <div class="imprint">
+            <div class="im-title">刊 印 IMPRINT</div>
+            <table>
+              <tr><td>姓名</td><td>邵汉青（汉青）</td></tr>
+              <tr><td>年龄</td><td>32 岁 · 已婚</td></tr>
+              <tr><td>base</td><td>河南郑州（可出差）</td></tr>
+              <tr><td>现职</td><td>太原重工·工程起重机分公司<br>业务经理 / 大客户销售</td></tr>
+              <tr><td>版本</td><td>V1.0 · 2026 年</td></tr>
+              <tr><td>用途</td><td>求职自荐 · 对公授信视角材料</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="cover-foot">
+        <span class="meta">总页数：<b>01–10 章</b> · 编制时间：<b>2026</b> · 配套工具：<b>融资租赁方案测算器（本页内嵌）</b></span>
+        <div class="seal" id="sealBtn" title="点击验章" role="button" tabindex="0">邵汉青印<small>VERIFIED</small></div>
+      </div>
+      <p class="cover-hint">◆ 点击右上红色印章可验章（核对学历 / 现职 / 公司背书 / 联系方式）</p>
+    </div>
+  </div>
+
+  <!-- 封面下目录 -->
+  <div class="wrap">
+    <nav class="toc" aria-label="文档目录">
+      <a href="#intent"><i>SECTION 01</i>求职意向</a>
+      <a href="#about"><i>SECTION 02</i>关于我</a>
+      <a href="#edge"><i>SECTION 03</i>核心卖点</a>
+      <a href="#nums"><i>SECTION 04</i>关键数字</a>
+      <a href="#career"><i>SECTION 05</i>职业履历</a>
+      <a href="#skills"><i>SECTION 06</i>能力标签</a>
+      <a href="#calc"><i>SECTION 07</i>方案测算器</a>
+      <a href="#works"><i>SECTION 08</i>作品</a>
+      <a href="#plan"><i>SECTION 09</i>三年纲领</a>
+      <a href="#contact"><i>SECTION 10</i>联系方式</a>
+    </nav>
+  </div>
+</section>
+
+<main>
+
+<!-- ============================================================
+     SECTION 01 · 求职意向
+     ============================================================ -->
+<section class="sec section-anchor" id="intent">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">SECTION 01</span>
+      <h2 class="sec-title">求职意向 <em>— 投递方向与目标企业</em></h2>
+      <span class="sec-en">JOB INTENT</span>
+    </div>
+    <div class="sec-rule"></div>
+
+    <div class="intent-grid">
+      <div class="intent-card reveal">
+        <span class="ic-no">INTENT</span>
+        <div class="ic-title">投递方向</div>
+        <div class="ic-big">设备融资租赁客户经理 / 团队长<small>（工程机械方向）</small></div>
+        <p>以厂商系十年销售积累的设备认知、客户网络与账期风控经验，
+        转向融资租赁公司一线业务岗：负责工程机械 / 高空作业平台的租赁方案设计、
+        客户开发、资信尽调与应收账款管理。</p>
+      </div>
+      <div class="intent-card reveal">
+        <span class="ic-no">TARGETS</span>
+        <div class="ic-title">目标企业</div>
+        <div class="ic-big">远东宏信 · 平安租赁 · 厂商金融</div>
+        <p>优先融资租赁头部机构与厂商系金融平台；可接受外勤出差、区域市场从零组建，
+        2028 年目标带团队、带区域。</p>
+        <div class="chips">
+          <span class="chip-co"><b>行业</b> 设备融资租赁</span>
+          <span class="chip-co"><b>品类</b> 工程机械 / 高机</span>
+          <span class="chip-co"><b>区域</b> 河南 · 湖北 · 粤东</span>
+          <span class="chip-co"><b>意愿</b> 可出差 · 可驻外</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="paper reveal" style="margin-top:16px;">
+      <h4><span class="tag">适配矩阵</span>岗位要求 × 我的对应经验</h4>
+      <table class="fit-table">
+        <thead>
+          <tr><th>融资租赁客户经理 · 典型职责</th><th>我的对应经验（均来自真实从业记录）</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>租赁方案设计与报价测算（首付 / 租金 / 期限结构）</td>
+            <td>十年厂商系销售主推融资租赁成交，帮客户算 <b>IRR、回本周期、租金结构</b>；
+            有 <b>finance-payback-audit</b> 财务审计技能；本页内嵌可交互测算器。</td>
+          </tr>
+          <tr>
+            <td>客户开发与渠道拓展（工程机械租赁公司 / 施工企业）</td>
+            <td>三一重工河南独立开发市场 <b>客户 0→180 家</b>；宇通重工粤东目标客户 40→132 家；
+            太原重工湖北市场拓展客户 113 条、新增 74 条。</td>
+          </tr>
+          <tr>
+            <td>应收账款催收、逾期与风险评估</td>
+            <td>中联重科期间完善客户信息 112 条，<b>主导应收账款催收与风险评估</b>，
+            建立应收管理底账与账期标签。</td>
+          </tr>
+          <tr>
+            <td>尽调资料、合同文本与招标文件</td>
+            <td>复盛实业独立完成标书 35 份、协助投标 19 项；空压机报备意向 92 条；
+            文本与合规流程经验可直接迁移至租赁合同与评审材料。</td>
+          </tr>
+          <tr>
+            <td>业绩指标与团队协作</td>
+            <td>年业绩 600–1000 万 → 年均 1500 万；太原重工已完成订单 <b>1500 万</b>、意向价值 <b>1.2 亿</b>、
+            协助意向订单 <b>1 亿</b>、协助完成订单 <b>1400 万</b>；
+            2028 年纲领明确争取带团队。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 02 · 关于我
+     ============================================================ -->
+<section class="sec section-anchor" id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">SECTION 02</span>
+      <h2 class="sec-title">关于我 <em>— 既懂销售，又懂 AI</em></h2>
+      <span class="sec-en">ABOUT</span>
+    </div>
+    <div class="sec-rule"></div>
+
+    <div class="about-grid">
+      <div class="about-persona reveal">
+        <div class="ic-title" style="font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:2px;color:var(--gold-ink);">一句话人设</div>
+        <div class="quote">「既懂<b class="hl">销售</b>，又懂 <b class="hl">AI</b>」</div>
+        <p>32 岁，已婚，base 河南郑州（可出差）。本科·黄淮学院·汽车服务工程，大专·鹤壁职业技术学院·汽车检测——
+        科班出身即与设备打交道，十年重工大客户销售从粤东打到河南、湖北。</p>
+        <table class="about-table">
+          <tr><td>年龄 / 家庭</td><td>32 岁 · 已婚（稳定性与长期承诺）</td></tr>
+          <tr><td>现职</td><td>太原重工 · 工程起重机分公司 · 业务经理 / 大客户销售（高空作业平台：剪叉 4–14m / 臂式 16–60m）</td></tr>
+          <tr><td>学历</td><td>本科·黄淮学院·汽车服务工程（2015–2017）；大专·鹤壁职业技术学院·汽车检测（2012–2015）</td></tr>
+          <tr><td>工作地点</td><td>河南郑州 · 可出差（湖北 / 河南 / 粤东均有客户基础）</td></tr>
+        </table>
+        <div class="about-note"><b>为什么投融资租赁：</b>十年里我一直在卖"设备 + 金融"的组合方案——帮客户算账、
+        设计首付与月供、跟进回款。换到租赁公司一侧，同样的设备、同样的客户、同样的账，只是角色更专业。</div>
+      </div>
+      <div class="about-side">
+        <div class="side-card reveal">
+          <h4><span class="tag">背书</span>公司背书</h4>
+          <ul>
+            <li>太原重工：<b>76 年底蕴</b>的国有重工企业</li>
+            <li>A 股上市公司，股票代码 <b>600169</b></li>
+            <li>2025 年营收约 <b>103.79 亿</b></li>
+          </ul>
+          <div class="endorse">现职平台为国有上市重工企业，在职证明、业绩数据均可接受背景调查。</div>
+        </div>
+        <div class="side-card reveal">
+          <h4><span class="tag">画像</span>我是哪种候选人</h4>
+          <ul>
+            <li><b>懂设备</b>：旋挖钻机 / 履带吊 / 空压机 / 高空作业平台，产品参数到残值</li>
+            <li><b>懂客户</b>：0→180 家客户开发，租赁公司、施工企业两类客群都做过</li>
+            <li><b>懂账期</b>：主导过应收催收与风险评估，112 条客户信息底账</li>
+            <li><b>懂提效</b>：8 个 AI 定制技能，把销售过程工具化、流程化</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 03 · 核心卖点
+     ============================================================ -->
+<section class="sec section-anchor" id="edge">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">SECTION 03</span>
+      <h2 class="sec-title">核心卖点 <em>— 融资租赁候选人的四条硬实力</em></h2>
+      <span class="sec-en">CORE EDGES</span>
+    </div>
+    <div class="sec-rule"></div>
+
+    <div class="edge-grid">
+      <div class="edge-card reveal">
+        <span class="e-no">01</span>
+        <h4>融资租赁方案设计<span class="en">LEASE STRUCTURING</span></h4>
+        <p>厂商系销售十年，成交中主推融资租赁：帮客户算 IRR、回本周期、租金结构与首付账期，
+        把"贵设备"卖成"付得起的月供"。</p>
+        <div class="proof">佐证：<b>finance-payback-audit</b> 财务审计技能；本页内嵌测算器；
+        三一时期年均 1500 万多为融资租赁成交。</div>
+      </div>
+      <div class="edge-card reveal">
+        <span class="e-no">02</span>
+        <h4>应收账款风控<span class="en">RECEIVABLES &amp; RISK</span></h4>
+        <p>中联重科期间主导应收账款催收与风险评估：客户信息完善 112 条（含资信与账期标签），
+        建立应收管理底账，懂逾期、懂催收节奏、懂风险识别。</p>
+        <div class="proof">佐证：中联重科 · 河南区域 · 112 条客户信息完善 + 主导催收与风险评估。</div>
+      </div>
+      <div class="edge-card reveal">
+        <span class="e-no">03</span>
+        <h4>懂租赁生意<span class="en">LEASING BUSINESS SENSE</span></h4>
+        <p>高空作业平台客户多为<b>设备租赁公司</b>——我的客户就是"租赁同行"：
+        天然理解租赁公司的经营模型、账期压力、回本逻辑与续租转售。</p>
+        <div class="proof">佐证：太原重工高机业务 · 湖北市场 · 意向价值 1.2 亿、已完成订单 1500 万、协助意向订单 1 亿、协助完成订单 1400 万。</div>
+      </div>
+      <div class="edge-card reveal">
+        <span class="e-no">04</span>
+        <h4>大客户经营与渠道<span class="en">KEY ACCOUNT &amp; CHANNELS</span></h4>
+        <p>工程机械租赁公司渠道从 0 到 1：三一河南客户 0→180 家、宇通粤东 40→132 家、
+        太原重工湖北 113 条线索——渠道即资产，客户即现金流。</p>
+        <div class="proof">佐证：0→180 客户开发 · 1.2 亿意向价值 · 年业绩 600 万→1500 万。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 04 · 关键数字
+     ============================================================ -->
+<section class="sec section-anchor" id="nums">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">SECTION 04</span>
+      <h2 class="sec-title">关键数字 <em>— 十年业绩一目了然</em></h2>
+      <span class="sec-en">BY THE NUMBERS</span>
+    </div>
+    <div class="sec-rule"></div>
+
+    <div class="nums">
+      <div class="num-tile reveal">
+        <div class="n"><span class="num" data-count="10">10</span><i>年</i></div>
+        <div class="l">重工大客户销售</div>
+        <div class="s">2017 至今 · 设备一线</div>
+      </div>
+      <div class="num-tile reveal">
+        <div class="n"><span class="num" data-count="180">180</span><i>+</i></div>
+        <div class="l">客户开发（三一 0→180）</div>
+        <div class="s">河南区域独立开发</div>
+      </div>
+      <div class="num-tile reveal">
+        <div class="n"><span class="num" data-count="35">35</span><i>份</i></div>
+        <div class="l">独立完成标书</div>
+        <div class="s">复盛实业 · 协助投标 19 项</div>
+      </div>
+      <div class="num-tile reveal">
+        <div class="n">1.2<i>亿</i></div>
+        <div class="l">意向价值（湖北高机）</div>
+        <div class="s">太原重工 · 潜在租赁资产池</div>
+      </div>
+      <div class="num-tile reveal">
+        <div class="n"><span class="num" data-count="1500">1500</span><i>万</i></div>
+        <div class="l">已完成订单（湖北高机）</div>
+        <div class="s">含以租代售 / 租赁方案</div>
+      </div>
+      <div class="num-tile reveal">
+        <div class="n"><span class="num" data-count="1">1</span><i>亿</i></div>
+        <div class="l">协助意向订单</div>
+        <div class="s">太重湖北 · 协助团队推进</div>
+      </div>
+      <div class="num-tile reveal">
+        <div class="n"><span class="num" data-count="1400">1400</span><i>万</i></div>
+        <div class="l">协助完成订单</div>
+        <div class="s">太重湖北 · 协同落地</div>
+      </div>
+      <div class="num-tile reveal">
+        <div class="n"><span class="num" data-count="113">113</span><i>条</i></div>
+        <div class="l">湖北客户线索拓展</div>
+        <div class="s">新增 74 条 · 高机市场</div>
+      </div>
+      <div class="num-tile reveal">
+        <div class="n"><span class="num" data-count="92">92</span><i>条</i></div>
+        <div class="l">空压机报备意向</div>
+        <div class="s">复盛实业 · 河南区域</div>
+      </div>
+      <div class="num-tile reveal">
+        <div class="n"><span class="num" data-count="8">8</span><i>个</i></div>
+        <div class="l">AI 定制技能</div>
+        <div class="s">WorkBuddy 技能库</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 05 · 职业履历（资产/账期/风控视角重述）
+     ============================================================ -->
+<section class="sec section-anchor" id="career">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">SECTION 05</span>
+      <h2 class="sec-title">职业履历 <em>— 以资产 / 账期 / 风控视角重述</em></h2>
+      <span class="sec-en">CAREER RECORD</span>
+    </div>
+    <div class="sec-rule"></div>
+    <p class="sec-sub">同一段销售履历，换一副"租赁视角"的眼镜看：每一段都对应
+    <b style="color:var(--gold)">资产规模、账期结构与风险控制</b>三个维度。时间从早到晚。</p>
+
+    <div class="paper reveal">
+      <table class="career-table">
+        <thead>
+          <tr>
+            <th>期间</th>
+            <th>公司 · 产品 · 区域</th>
+            <th>销售事实</th>
+            <th>资产 / 账期 / 风控视角解读</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="per">2017.10<br>– 2021.03</td>
+            <td class="co"><b>宇通重工</b><span>旋挖钻机 / 履带吊 · 粤东区域</span></td>
+            <td class="fact">
+              <ul>
+                <li>目标客户 40 → 132 家</li>
+                <li>年业绩 600–1000 万</li>
+                <li>同批 60+ 新人最早转正</li>
+              </ul>
+            </td>
+            <td class="lease">以融促售起步：通过融资租赁方案降低客户一次性购机门槛，
+            粤东客户基数 40→132 家——<b>资产规模与客户网络同步扩张</b>；
+            早期即形成"方案 + 账期"的成交习惯。</td>
+          </tr>
+          <tr>
+            <td class="per">2021.04<br>– 2023.06</td>
+            <td class="co"><b>三一重工</b><span>旋挖钻机 · 河南区域</span></td>
+            <td class="fact">
+              <ul>
+                <li>独立开发市场，客户 0 → 180 家</li>
+                <li>年均销售 1500 万</li>
+              </ul>
+            </td>
+            <td class="lease">三一厂商金融配套成熟，<b>年均 1500 万多为融资租赁成交</b>——
+            首付 + 月供结构促成高价值桩工设备成交；客户 0→180 家，
+            等于在河南沉淀了一张<b>可授信、可续租的资产客户地图</b>。</td>
+          </tr>
+          <tr>
+            <td class="per">2023.07<br>– 2024.10</td>
+            <td class="co"><b>中联重科</b><span>旋挖钻机 · 河南区域</span></td>
+            <td class="fact">
+              <ul>
+                <li>完善客户信息 112 条</li>
+                <li>主导应收账款催收与风险评估</li>
+              </ul>
+            </td>
+            <td class="lease">最"租赁"的一段：<b>112 条客户信息底账</b>（含资信与账期标签），
+            形成应收管理台账；<b>主导催收与风险评估</b>——逾期识别、催收节奏、
+            坏账预判，正是租赁公司客户经理的日常工作。</td>
+          </tr>
+          <tr>
+            <td class="per">2025.05<br>– 2025.12</td>
+            <td class="co"><b>复盛实业（上海）</b><span>空压机 · 河南区域</span></td>
+            <td class="fact">
+              <ul>
+                <li>报备意向 92 条</li>
+                <li>独立完成标书 35 份</li>
+                <li>协助投标 19 项</li>
+              </ul>
+            </td>
+            <td class="lease">92 条商机报备 = 一手<b>意向资产池</b>；
+            35 份标书、19 项投标协助——设备采购与招标文本能力，
+            与租赁评审材料、合同文本<b>同源的合规流程能力</b>。</td>
+          </tr>
+          <tr>
+            <td class="per">2025.12<br>– 至今</td>
+            <td class="co"><b>太原重工·工程起重机分公司</b><span>高空作业平台 · 湖北市场</span></td>
+            <td class="fact">
+              <ul>
+                <li>拓展客户 113 条、新增 74 条</li>
+                <li>意向价值 1.2 亿</li>
+                <li>已完成订单 1500 万</li>
+                <li>协助意向订单 1 亿</li>
+                <li>协助完成订单 1400 万</li>
+              </ul>
+            </td>
+            <td class="lease">高机客户多为<b>设备租赁公司</b>——客户即租赁同行，
+            天然理解租赁公司经营与账期；<b>1.2 亿意向 = 潜在租赁资产池</b>，
+            1500 万已完成订单含以租代售 / 租赁方案，另协助团队推进意向 1 亿、协同完成订单 1400 万——已在"租赁生意"里实战。</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="career-foot">注：以上业绩均为真实从业记录；如需要，可提供在职证明与业绩数据用于背调核实。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 06 · 能力标签（8 项，按规格排序）
+     ============================================================ -->
+<section class="sec section-anchor" id="skills">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">SECTION 06</span>
+      <h2 class="sec-title">能力标签 <em>— 八项核心能力</em></h2>
+      <span class="sec-en">CAPABILITIES</span>
+    </div>
+    <div class="sec-rule"></div>
+
+    <div class="skill-grid">
+      <div class="skill-card reveal">
+        <span class="s-no">SKILL 01</span>
+        <h4>融资租赁方案设计</h4>
+        <p>帮客户算 IRR、回本周期、租金结构；设计首付、期限与利率组合；有 finance-payback-audit 财务审计技能。</p>
+        <div class="s-proof">佐证：十年厂商系销售主推融资租赁 · 本页测算器</div>
+      </div>
+      <div class="skill-card reveal">
+        <span class="s-no">SKILL 02</span>
+        <h4>应收账款风控</h4>
+        <p>应收台账、逾期识别、催收节奏、风险预判；以账期标签管理客户资信。</p>
+        <div class="s-proof">佐证：中联 112 条客户信息 + 主导催收与风险评估</div>
+      </div>
+      <div class="skill-card reveal">
+        <span class="s-no">SKILL 03</span>
+        <h4>大客户经营</h4>
+        <p>设备租赁公司与施工企业两类客群；从线索、方案到回款的全周期经营。</p>
+        <div class="s-proof">佐证：0→180 客户开发 · 1.2 亿意向价值</div>
+      </div>
+      <div class="skill-card reveal">
+        <span class="s-no">SKILL 04</span>
+        <h4>客户成功 / 续约</h4>
+        <p>以租养贷、续租、转售与设备更新跟进；把一次性成交做成持续现金流。</p>
+        <div class="s-proof">佐证：高机客户多为租赁公司，持续经营即生意本质</div>
+      </div>
+      <div class="skill-card reveal">
+        <span class="s-no">SKILL 05</span>
+        <h4>招投标 / 标书</h4>
+        <p>独立完成标书编制与投标配合，熟悉设备采购合规流程与文本规范。</p>
+        <div class="s-proof">佐证：35 份独立标书 · 协助投标 19 项</div>
+      </div>
+      <div class="skill-card reveal">
+        <span class="s-no">SKILL 06</span>
+        <h4>区域 0→1 开拓</h4>
+        <p>从零客户到区域网络：市场摸底、线索采集、渠道铺开、样板成交。</p>
+        <div class="s-proof">佐证：三一河南 0→180 · 太原重工湖北 113 条</div>
+      </div>
+      <div class="skill-card reveal">
+        <span class="s-no">SKILL 07</span>
+        <h4>AI 提效</h4>
+        <p>WorkBuddy 8 个定制技能：线索采集、热力作战图、行业简报流水线（每月 5 日自动）。</p>
+        <div class="s-proof">佐证：AI 技能库 · 详见作品 W-02</div>
+      </div>
+      <div class="skill-card reveal">
+        <span class="s-no">SKILL 08</span>
+        <h4>可量化业绩</h4>
+        <p>每一步都用数字说话：客户数、订单额、意向池、标书数、报备数。</p>
+        <div class="s-proof">佐证：年业绩 600–1000 万 → 1500 万 · 已完成订单 1500 万 · 协助意向订单 1 亿 · 协助完成订单 1400 万</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 07 · 融资租赁方案测算器（特色板块 · 纯 JS 交互）
+     ============================================================ -->
+<section class="sec section-anchor" id="calc">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">SECTION 07</span>
+      <h2 class="sec-title">融资租赁方案测算器 <em>— 我帮客户算过账</em></h2>
+      <span class="sec-en">LEASE CALCULATOR</span>
+    </div>
+    <div class="sec-rule"></div>
+    <p class="sec-sub">这是我日常工作方式的实景演示：输入设备金额、首付、期限与年利率，
+    立刻给出首付额、等额本息月供、总利息、总还款与回本提示。十年里我就是这样帮客户
+    把"买不买得起"算成"月供划不划算"。</p>
+
+    <div class="calc-wrap reveal">
+      <div class="calc-head">
+        <h4>融资租赁方案测算器</h4>
+        <span class="en">EQUIPMENT LEASE QUOTATION TOOL</span>
+        <span class="mark">等额本息 · 单文件 · 本地计算</span>
+      </div>
+      <div class="calc-body">
+        <!-- 输入区 -->
+        <div class="calc-form">
+          <h5>输入参数 INPUTS</h5>
+          <div class="f-label">设备金额（万元）</div>
+          <input class="f-input" id="calc-amount" type="number" min="0.1" step="0.1" value="60" inputmode="decimal">
+          <div style="height:6px;"></div>
+          <div class="f-label">首付比例（0–50%）<small> 当前 <output id="down-out">20</output>%</small></div>
+          <div class="range-row">
+            <input type="range" id="calc-down" min="0" max="50" step="1" value="20" aria-label="首付比例">
+            <output id="down-pct">20%</output>
+          </div>
+          <div style="height:6px;"></div>
+          <div class="f-label">期限（月）</div>
+          <div class="term-chips" id="termChips">
+            <button type="button" class="term-chip" data-term="12">12</button>
+            <button type="button" class="term-chip" data-term="24">24</button>
+            <button type="button" class="term-chip active" data-term="36">36</button>
+            <button type="button" class="term-chip" data-term="48">48</button>
+            <button type="button" class="term-chip" data-term="60">60</button>
+          </div>
+          <div style="height:6px;"></div>
+          <div class="f-label">年利率（%）</div>
+          <input class="f-input" id="calc-rate" type="number" min="0.1" max="30" step="0.1" value="6.5" inputmode="decimal">
+          <div style="height:6px;"></div>
+          <div class="f-label">设备月租金收入（万元，可选）<small> 用于回本提示</small></div>
+          <input class="f-input" id="calc-rent" type="number" min="0" step="0.01" placeholder="例：1.2（万元/月）" inputmode="decimal">
+          <div style="height:6px;"></div>
+          <div class="f-label">常用设备预设</div>
+          <div class="presets" id="presets">
+            <button type="button" class="preset" data-amount="10" data-term="24" data-down="20" data-rate="6.5">剪叉车 ¥10万</button>
+            <button type="button" class="preset active" data-amount="60" data-term="36" data-down="20" data-rate="6.5">臂式高机 ¥60万</button>
+            <button type="button" class="preset" data-amount="300" data-term="48" data-down="30" data-rate="6">旋挖钻机 ¥300万</button>
+            <button type="button" class="preset" data-amount="15" data-term="24" data-down="20" data-rate="6.5">空压机 ¥15万</button>
+          </div>
+          <div class="calc-err" id="calc-err"></div>
+          <div class="calc-ability">
+            <b>我帮客户算过账：</b>十年厂商系销售主推融资租赁，帮客户算 <b>IRR、回本周期、租金结构</b>；
+            有 <b>finance-payback-audit</b> 财务审计技能；对等额本息、首付账期、残值与续租结构都熟。
+          </div>
+        </div>
+        <!-- 输出区 -->
+        <div class="calc-result">
+          <h5 style="font-family:var(--sans);font-size:11.5px;font-weight:700;letter-spacing:2px;color:var(--gold-ink);border-bottom:1px dashed rgba(11,31,58,.22);padding-bottom:5px;margin-bottom:12px;">测算结果 OUTPUTS</h5>
+          <div class="result-tiles">
+            <div class="r-tile"><div class="rt-l">首付额</div><div class="rt-v" id="out-down">—</div></div>
+            <div class="r-tile"><div class="rt-l">融资额</div><div class="rt-v" id="out-principal">—</div></div>
+            <div class="r-tile hl"><div class="rt-l">等额本息月供</div><div class="rt-v" id="out-monthly">—</div></div>
+            <div class="r-tile"><div class="rt-l">总利息</div><div class="rt-v" id="out-interest">—</div></div>
+            <div class="r-tile"><div class="rt-l">总还款（含首付）</div><div class="rt-v" id="out-total">—</div></div>
+            <div class="r-tile"><div class="rt-l">首期构成</div><div class="rt-v" id="out-first" style="font-size:15px;">—</div></div>
+          </div>
+          <div class="payback" id="out-payback">等待输入……</div>
+          <h5 style="font-family:var(--sans);font-size:11.5px;font-weight:700;letter-spacing:2px;color:var(--gold-ink);border-bottom:1px dashed rgba(11,31,58,.22);padding-bottom:5px;margin-bottom:8px;">分年度还款明细 AMORTIZATION</h5>
+          <table class="sched-table" id="sched-table">
+            <thead>
+              <tr><th>年度</th><th>期数</th><th>当期本金（万）</th><th>当期利息（万）</th><th>期末余额（万）</th></tr>
+            </thead>
+            <tbody id="sched-body"><tr><td colspan="5" style="text-align:center;color:var(--ink-soft);">运行测算后显示明细</td></tr></tbody>
+          </table>
+          <p class="calc-note">说明：等额本息按月还款，本金逐月递减，资金实际占用成本高于名义利率；
+          测算结果仅供沟通演示，不构成投资、融资或授信建议，最终方案以租赁公司评审为准。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 08 · 作品（4 个）
+     ============================================================ -->
+<section class="sec section-anchor" id="works">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">SECTION 08</span>
+      <h2 class="sec-title">作品 <em>— 四个真实作品</em></h2>
+      <span class="sec-en">PORTFOLIO</span>
+    </div>
+    <div class="sec-rule"></div>
+
+    <div class="work-grid">
+      <div class="work-card reveal">
+        <span class="w-no">WORK 01</span>
+        <h4>高机销售资料库</h4>
+        <span class="w-tag">📚 行业工具箱</span>
+        <p>湖北市场开发工具箱：产品推介、市场开发、融资租赁、客户运营、行业资讯 6 类归档，
+        沉淀 1000+ 销售资料，随取随用。</p>
+        <ul class="w-list">
+          <li>融资租赁类目 = 方案模板、账期话术、租金结构案例</li>
+          <li>从一线销售到区域打法的完整弹药库</li>
+        </ul>
+      </div>
+      <div class="work-card reveal">
+        <span class="w-no">WORK 02</span>
+        <h4>AI 技能库</h4>
+        <span class="w-tag">🤖 WorkBuddy · 8 个定制技能</span>
+        <p>把销售过程工具化的 8 个 AI 技能，覆盖线索采集到客户运营全链路：</p>
+        <div class="skill-chips">
+          <span class="skill-chip"><b>market-dev-kit</b> 区域开发总入口</span>
+          <span class="skill-chip"><b>amap-poi-collector</b> 高德客户线索采集</span>
+          <span class="skill-chip"><b>customer-geo-viz</b> 客户热力作战图</span>
+          <span class="skill-chip"><b>sales-lead-workbook</b> 销售执行体系</span>
+          <span class="skill-chip"><b>sales-pitch-ppt</b> 高转化 14 页推介 PPT</span>
+          <span class="skill-chip"><b>wechat-addfriend</b> 微信获客助手</span>
+          <span class="skill-chip"><b>secure-html-deploy</b> 加密部署</span>
+          <span class="skill-chip"><b>industry-briefing</b> 行业简报流水线（每月 5 日自动）</span>
+        </div>
+      </div>
+      <div class="work-card reveal">
+        <span class="w-no">WORK 03</span>
+        <h4>汉青职业工作台</h4>
+        <span class="w-tag">⚙️ 效率应用</span>
+        <p>单文件 HTML 效率应用，6 大模块：学习 / 积累 / 记录 / 提高 / 事项安排 / 自我进化；
+        localStorage 持久化 + JSON 导入导出，离线可用。</p>
+        <ul class="w-list">
+          <li>把十年销售沉淀为可检索的个人知识库</li>
+          <li>单文件、零依赖、双击即用的职业操作系统</li>
+        </ul>
+      </div>
+      <div class="work-card reveal">
+        <span class="w-no">WORK 04</span>
+        <h4>微信获客助手</h4>
+        <span class="w-tag">🔐 客户触达工具</span>
+        <p>状态机 + CSV 备份 + 加密的单文件客户触达工具，内置每日 25–30 条触达节奏 SOP，
+        把获客动作变成可管理、可复盘、可交接的流程。</p>
+        <ul class="w-list">
+          <li>获客 / 触达节奏标准化，新人可复制</li>
+          <li>加密部署 + 本地备份，客户数据可控</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 09 · 三年纲领 2026–2028
+     ============================================================ -->
+<section class="sec section-anchor" id="plan">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">SECTION 09</span>
+      <h2 class="sec-title">三年纲领 <em>— 2026–2028</em></h2>
+      <span class="sec-en">THREE-YEAR ROADMAP</span>
+    </div>
+    <div class="sec-rule"></div>
+
+    <div class="plan-timeline">
+      <div class="plan-card reveal">
+        <span class="p-y">2026 · 动身</span>
+        <div class="p-theme">动身求职</div>
+        <p class="p-desc">把十年销售经验打包成"融资租赁候选人"定位，
+        <b>秋金月 8–11 月发力</b>，聚焦头部租赁机构与厂商金融，密集投递 + 内推并行。</p>
+        <div class="p-step">关键动作：<b>内推＞海投</b>；整理业绩数据包与测算工具演示。</div>
+      </div>
+      <div class="plan-card reveal">
+        <span class="p-y">2027 · 定盘</span>
+        <div class="p-theme">定盘 · 名分落实</div>
+        <p class="p-desc">入职后快速复现区域打法：<b>卖方案不卖力气</b>，
+        以租赁方案设计与账期管理立住名分，把首年业绩目标拆成可量化动作。</p>
+        <div class="p-step">关键动作：区域 0→1 再打一遍，沉淀租赁版客户地图。</div>
+      </div>
+      <div class="plan-card reveal">
+        <span class="p-y">2028 · 上阶</span>
+        <div class="p-theme">上阶 · 争取带团队</div>
+        <p class="p-desc"><b>攻坚大单必组队</b>；以团队产出上台阶，
+        从客户经理走向团队长，带区域、带指标、带人。</p>
+        <div class="p-step">关键动作：<b>赚大钱之前先站上大平台</b>——平台即杠杆。</div>
+      </div>
+    </div>
+
+    <div class="plan-heart reveal">
+      <div class="heart-item"><b>内推＞海投</b><br>关系先行</div>
+      <div class="heart-item"><b>卖方案不卖力气</b><br>用专业换溢价</div>
+      <div class="heart-item"><b>攻坚大单必组队</b><br>单兵时代结束</div>
+      <div class="heart-item"><b>先站上大平台</b><br>再赚大钱</div>
+    </div>
+    <p class="plan-foot">◆ 四年经营心法：内推＞海投；卖方案不卖力气；攻坚大单必组队；赚大钱之前先站上大平台。</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 10 · 联系方式
+     ============================================================ -->
+<section class="sec section-anchor" id="contact">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-no">SECTION 10</span>
+      <h2 class="sec-title">联系方式 <em>— 期待与您面谈</em></h2>
+      <span class="sec-en">CONTACT</span>
+    </div>
+    <div class="sec-rule"></div>
+
+    <div class="contact-grid">
+      <div class="contact-card reveal">
+        <h4>直接联系</h4>
+        <div class="contact-row">
+          <span class="c-ico">📞</span>
+          <div><div class="c-l">电话 / 微信</div><div class="c-v">177-7211-8785</div></div>
+        </div>
+        <div class="contact-row">
+          <span class="c-ico">✉️</span>
+          <div><div class="c-l">邮箱</div><div class="c-v">1820688914@qq.com</div></div>
+        </div>
+        <div class="contact-row">
+          <span class="c-ico">📍</span>
+          <div><div class="c-l">base</div><div class="c-v">河南郑州</div><div class="c-s">可出差 · 湖北 / 河南 / 粤东有客户基础</div></div>
+        </div>
+        <div class="contact-note"><b>面谈建议：</b>带一台笔记本，现场演示测算器与 AI 技能库——
+        十分钟看懂我的工作方式；业绩数据、在职证明均可背调。</div>
+      </div>
+      <div class="contact-card reveal">
+        <h4>随附材料</h4>
+        <div class="side-card" style="box-shadow:none;background:var(--cream-2);padding:16px 18px;">
+          <ul>
+            <li>本白皮书（可打印归档，附风险提示页脚）</li>
+            <li>融资租赁方案测算器（本页内嵌，可现场演示）</li>
+            <li>AI 技能库 8 个技能清单（W-02）</li>
+            <li>高机销售资料库 · 融资租赁类目样例</li>
+            <li>工作台 / 获客助手成品演示</li>
+          </ul>
+        </div>
+        <p style="font-size:13px;color:var(--ink-soft);margin-top:14px;line-height:1.7;">
+        到岗时间：可协商（现职交接期）。求职方向：设备融资租赁客户经理 / 团队长（工程机械方向），
+        目标企业：远东宏信、平安租赁、厂商金融。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     页脚：版权 + 返回总览 + 风险提示（合规感小字）
+     ============================================================ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-main">
+      <span>© 2026 邵汉青</span><span class="sep">·</span>
+      <span>个人网站合集</span><span class="sep">·</span>
+      <a href="index.html">返回总览</a>
+    </div>
+    <p class="foot-risk"><b>风险提示：</b>本页为求职自荐白皮书（编号 HQ-CREDIT-2026-012），
+    所载业绩与履历均为候选人真实从业记录；测算器输出仅供沟通演示，不构成任何投资、融资或授信建议，
+    最终融资方案以租赁公司评审与合同为准。</p>
+    <p class="foot-imprint">单文件 HTML · 零外部依赖 · 双击可离线运行 · 本页可打印归档</p>
+  </div>
+</footer>
+
+<!-- 返回顶部 -->
+<button class="to-top" id="toTop" type="button" title="返回顶部">↑</button>
+
+<!-- ============================================================
+     验章面板（点击红色印章打开）
+     ============================================================ -->
+<div class="modal-mask" id="sealMask">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="sealTitle">
+    <div class="modal-head">
+      <span class="m-seal">邵汉青印</span>
+      <h4 id="sealTitle">验章 · 信息核对</h4>
+      <small>VERIFIED BY CANDIDATE · 信息真实可背调</small>
+      <button class="modal-close" id="sealClose" type="button" aria-label="关闭">×</button>
+    </div>
+    <div class="modal-body">
+      <table>
+        <tr><td>姓名</td><td>邵汉青（汉青）· 32 岁 · 已婚 · base 河南郑州（可出差）</td></tr>
+        <tr><td>学历</td><td>本科·黄淮学院·汽车服务工程（2015–2017）；大专·鹤壁职业技术学院·汽车检测（2012–2015）</td></tr>
+        <tr><td>现职</td><td>太原重工·工程起重机分公司 · 业务经理 / 大客户销售（高空作业平台：剪叉 4–14m / 臂式 16–60m）</td></tr>
+        <tr><td>公司背书</td><td>太原重工：76 年底蕴 · A 股 600169 · 2025 营收约 103.79 亿</td></tr>
+        <tr><td>联系方式</td><td>电话 177-7211-8785 · 邮箱 1820688914@qq.com</td></tr>
+        <tr><td>求职方向</td><td>设备融资租赁客户经理 / 团队长（工程机械方向）· 远东宏信 · 平安租赁 · 厂商金融</td></tr>
+      </table>
+      <div class="m-note">声明：以上信息真实有效，欢迎任何形式的背景调查与面谈核实。</div>
+    </div>
+  </div>
+</div>
+
+<noscript>
+  <style>
+    /* 无 JS 兜底：所有内容保持默认可见，不依赖脚本 */
+    .reveal{opacity:1 !important;transform:none !important;}
+    .top-nav{position:static;opacity:1;pointer-events:auto;flex-wrap:wrap;}
+    .burger{display:none !important;}
+  </style>
+</noscript>
+
+<script>
+/* ============================================================
+   12_融资租赁.html — 原生 JS（零依赖）
+   ------------------------------------------------------------
+   交互清单：
+   01 融资租赁方案测算器（等额本息 + 分年度明细 + 回本提示）
+   02 锚点导航：固定头偏移 + 滚动高亮当前章节
+   03 移动端汉堡菜单
+   04 滚动渐入（仅 html.js 启用隐藏，默认可见；尊重减弱动态偏好）
+   05 关键数字滚动计数（静态文本兜底，无 JS 时显示最终值）
+   06 验章面板（红色印章点击 / 键盘）
+   07 打印 / 归档按钮（window.print）
+   08 返回顶部按钮
+   ============================================================ */
+
+(function () {
+  "use strict";
+  document.documentElement.classList.add("js");   /* 开启滚动渐入开关（默认可见） */
+
+  /* ===== 01 融资租赁方案测算器 ============================ */
+  var $ = function (id) { return document.getElementById(id); };
+  var amountEl = $("calc-amount"),
+      downEl   = $("calc-down"),
+      downOut  = $("down-out"),
+      downPct  = $("down-pct"),
+      rateEl   = $("calc-rate"),
+      rentEl   = $("calc-rent"),
+      errEl    = $("calc-err");
+  var term = 36;   /* 当前期限 */
+
+  /* 万元保留两位小数（千分位） */
+  function fmtWan(v) {
+    return v.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  /* 元（整数千分位） */
+  function fmtYuan(v) { return Math.round(v).toLocaleString("zh-CN"); }
+
+  function showErr(msg) {
+    errEl.textContent = msg;
+    errEl.style.display = "block";
+  }
+
+  /* 核心计算：等额本息 */
+  function calc() {
+    errEl.style.display = "none";
+    var amount = parseFloat(amountEl.value);
+    var downPctV = parseFloat(downEl.value);
+    var rate = parseFloat(rateEl.value);
+    var rent = parseFloat(rentEl.value);
+
+    if (!(amount > 0)) { showErr("请先输入设备金额（万元），如 60 表示 60 万。"); return; }
+    if (isNaN(downPctV) || downPctV < 0 || downPctV > 50) { showErr("首付比例需在 0–50% 之间。"); return; }
+    if (isNaN(rate) || rate <= 0 || rate >= 100) { showErr("请输入有效的年利率（%），如 6.5。"); return; }
+
+    var downWan  = amount * downPctV / 100;                 /* 首付（万元） */
+    var P        = amount - downWan;                        /* 融资额（万元） */
+    var r        = rate / 100 / 12;                         /* 月利率 */
+    var n        = term;
+    var M        = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);  /* 月供（万元） */
+    var totInt   = M * n - P;                               /* 总利息（万元） */
+    var totPay   = downWan + M * n;                         /* 总还款（万元） */
+
+    $("out-down").innerHTML      = fmtWan(downWan) + "<i>万</i>";
+    $("out-principal").innerHTML = fmtWan(P) + "<i>万</i>";
+    $("out-monthly").innerHTML   = fmtYuan(M * 10000) + "<i>元/月</i>";
+    $("out-interest").innerHTML  = fmtWan(totInt) + "<i>万</i>";
+    $("out-total").innerHTML     = fmtWan(totPay) + "<i>万</i>";
+
+    /* 首期构成 */
+    var i1 = P * r, p1 = M - i1;
+    $("out-first").innerHTML = "本金 " + fmtYuan(p1 * 10000) + "<br>利息 " + fmtYuan(i1 * 10000);
+
+    /* 回本提示 */
+    var pb = $("out-payback");
+    if (rent && rent > 0) {
+      var cov = rent / M * 100;
+      var months = Math.ceil(downWan / rent);
+      var lv, lvCls;
+      if (cov >= 120)      { lv = "以租养贷健康（覆盖比 ≥120%）"; lvCls = "lv-ok"; }
+      else if (cov >= 100) { lv = "以租养贷临界（覆盖比 100%–120%）"; lvCls = "lv-warn"; }
+      else                 { lv = "租金缺口（覆盖比 <100%），需追加自有资金或提价"; lvCls = "lv-bad"; }
+      pb.innerHTML =
+        "<b>回本提示：</b>设备月租金收入 " + fmtWan(rent) + " 万 / 月供 " + fmtWan(M) + " 万 → " +
+        "覆盖比 <b>" + cov.toFixed(0) + "%</b>，<span class='level " + lvCls + "'>" + lv + "</span>；" +
+        "仅以租金回填首付计，回本周期约 <b>" + months + " 个月</b>（" + (months / 12).toFixed(1) + " 年）。";
+    } else {
+      var need = M * 1.1;
+      pb.innerHTML =
+        "<b>回本提示：</b>融资租赁回本的关键是「以租养贷」——设备月租金收入需覆盖月供。" +
+        "当前月供 <b>" + fmtWan(M) + " 万</b>，建议设备月租金 ≥ <b>" + fmtWan(need) + " 万</b>" +
+        "（月供的 1.1 倍）；可输入月租金收入获得精确覆盖比与回本周期。";
+    }
+
+    /* 分年度还款明细 */
+    var body = $("sched-body");
+    var bal = P, rows = "", totP = 0, totI = 0, year = 1;
+    for (var k = 1; k <= n; k++) {
+      var interest = bal * r;
+      var principal = M - interest;
+      bal -= principal;
+      totP += principal; totI += interest;
+      if (k % 12 === 0 || k === n) {
+        var startK = k - 11 > 1 ? k - 11 : 1;
+        rows += "<tr><td>第 " + year + " 年</td><td>" + startK + "–" + k + " 期</td>" +
+                "<td>" + fmtWan(totP) + "</td><td>" + fmtWan(totI) + "</td>" +
+                "<td>" + fmtWan(Math.max(bal, 0)) + "</td></tr>";
+        totP = 0; totI = 0; year++;
+      }
+    }
+    rows += "<tr class='total'><td>合计</td><td>" + n + " 期</td><td>" +
+            fmtWan(P) + "</td><td>" + fmtWan(totInt) + "</td><td>0.00</td></tr>";
+    body.innerHTML = rows;
+  }
+
+  /* 期限按钮 */
+  var termChips = $("termChips");
+  termChips.addEventListener("click", function (e) {
+    var b = e.target.closest(".term-chip");
+    if (!b) return;
+    term = parseInt(b.getAttribute("data-term"), 10);
+    Array.prototype.forEach.call(termChips.children, function (c) {
+      c.classList.toggle("active", c === b);
+    });
+    calc();
+  });
+
+  /* 首付滑杆 */
+  downEl.addEventListener("input", function () {
+    downPct.textContent = downEl.value + "%";
+    downOut.textContent = downEl.value;
+    calc();
+  });
+
+  /* 预设按钮 */
+  $("presets").addEventListener("click", function (e) {
+    var b = e.target.closest(".preset");
+    if (!b) return;
+    Array.prototype.forEach.call($("presets").children, function (c) {
+      c.classList.toggle("active", c === b);
+    });
+    amountEl.value = b.getAttribute("data-amount");
+    downEl.value = b.getAttribute("data-down");
+    downPct.textContent = downEl.value + "%";
+    downOut.textContent = downEl.value;
+    rateEl.value = b.getAttribute("data-rate");
+    term = parseInt(b.getAttribute("data-term"), 10);
+    Array.prototype.forEach.call(termChips.children, function (c) {
+      c.classList.toggle("active", parseInt(c.getAttribute("data-term"), 10) === term);
+    });
+    calc();
+  });
+
+  /* 数字输入即时重算 */
+  ["input", "change"].forEach(function (ev) {
+    amountEl.addEventListener(ev, calc);
+    rateEl.addEventListener(ev, calc);
+    rentEl.addEventListener(ev, calc);
+  });
+
+  calc();   /* 初始测算 */
+
+  /* ===== 02 锚点导航：滚动高亮当前章节 ===================== */
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll(".top-nav a"));
+  var sections = navLinks.map(function (a) { return document.querySelector(a.getAttribute("href")); });
+  var spy = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) {
+        var id = "#" + en.target.id;
+        navLinks.forEach(function (a) {
+          a.classList.toggle("active", a.getAttribute("href") === id);
+        });
+      }
+    });
+  }, { rootMargin: "-38% 0px -55% 0px", threshold: 0 });
+  sections.forEach(function (s) { if (s) spy.observe(s); });
+
+  /* ===== 03 移动端汉堡菜单 ================================= */
+  var burger = $("burger"), nav = $("topNav");
+  burger.addEventListener("click", function () { nav.classList.toggle("open"); });
+  nav.addEventListener("click", function (e) {
+    if (e.target.tagName === "A") nav.classList.remove("open");
+  });
+
+  /* ===== 04 滚动渐入（仅 JS 启用后隐藏，默认可见） ========= */
+  var revealEls = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
+  if ("IntersectionObserver" in window) {
+    var ro = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add("in");
+          ro.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(function (el) { ro.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  /* ===== 05 关键数字滚动计数（静态文本兜底） =============== */
+  var nums = Array.prototype.slice.call(document.querySelectorAll(".num"));
+  function runCount(el) {
+    var target = parseInt(el.getAttribute("data-count"), 10) || 0;
+    var start = null, dur = 1100;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased).toLocaleString("zh-CN");
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  if ("IntersectionObserver" in window) {
+    var no = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { runCount(en.target); no.unobserve(en.target); }
+      });
+    }, { threshold: 0.4 });
+    nums.forEach(function (el) { no.observe(el); });
+  }
+
+  /* ===== 06 验章面板 ======================================= */
+  var mask = $("sealMask");
+  function openSeal() { mask.classList.add("open"); }
+  function closeSeal() { mask.classList.remove("open"); }
+  $("sealBtn").addEventListener("click", openSeal);
+  $("sealBtn").addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openSeal(); }
+  });
+  $("sealClose").addEventListener("click", closeSeal);
+  mask.addEventListener("click", function (e) { if (e.target === mask) closeSeal(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeSeal();
+  });
+
+  /* ===== 07 打印 / 归档 ==================================== */
+  $("btnPrint").addEventListener("click", function () { window.print(); });
+
+  /* ===== 08 返回顶部 ======================================= */
+  var toTop = $("toTop");
+  window.addEventListener("scroll", function () {
+    toTop.classList.toggle("show", window.scrollY > 600);
+  }, { passive: true });
+  toTop.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+})();
+</script>
+</body>
+</html>

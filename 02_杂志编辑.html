@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>汉青志 THE HANQING JOURNAL · 总第01期 · 邵汉青</title>
+<meta name="description" content="汉青志·总第01期：一本关于邵汉青的纸刊杂志——十年工程机械大客户销售 × AI重度实践者，五站西行、四件作品、八个能力、三年纲领。单文件、零外部依赖、可离线阅读。">
+<style>
+/* ═══════════════════════════════════════════════════════════════════ 汉青志 THE HANQING JOURNAL · 总第01期 纸刊杂志风格 · 单文件HTML5 · 零外部依赖 · 可双击离线运行 ═══════════════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────────────────────── 01 · 设计变量与基础重置 米纸 #f6f1e7 / 墨 #1a1a1a / 刊红 #a33 ───────────────────────────────────────────── */
+:root{
+  --paper:      #f6f1e7;   /* 米色纸底 */ --paper-deep: #ece3d0;   /* 深一档纸色：页面外衬 */ --paper-soft: #fbf8f1;   /* 浅一档纸色：卡片内衬 */
+  --ink:        #1a1a1a;   /* 墨色正文 */ --ink-soft:   #4d463a;   /* 次级墨色 */ --ink-faint:  #6e6553;   /* 淡墨：页码/注释（≥4.5:1） */
+  --red:        #a33;      /* 刊红 */ --red-deep:   #8a2e2e;   /* 深刊红 */ --line:       #d8cdb6;   /* 栏线/纸纹线 */
+  --serif: Georgia, "Times New Roman", "Songti SC", "STSong", SimSun, "宋体", serif; --sans:  "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif; --mono:  ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
+  --page-w: 1180px;        /* 纸张宽度 */
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  font-family:var(--serif); font-size:17px; line-height:1.9;
+  color:var(--ink); background:var(--paper-deep); padding:2.2rem 1rem 4rem;
+  overflow-x:hidden;
+}
+::selection{ background:var(--red); color:var(--paper); }
+img,svg{ display:block; }
+a{ color:inherit; }
+b,strong{ font-weight:700; }
+em{ font-style:italic; }
+
+/* ───────────────────────────────────────────── 02 · 印刷噪点层（纯CSS颗粒，无图片） ───────────────────────────────────────────── */
+body::after{
+  content:""; position:fixed; inset:-50%;
+  width:200%; height:200%; background-image: repeating-linear-gradient(115deg, rgba(26,26,26,.026) 0 1px, transparent 1px 3px), repeating-linear-gradient(25deg,  rgba(170,51,51,.012) 0 1px, transparent 1px 4px), repeating-radial-gradient(circle at 30% 25%, rgba(26,26,26,.018) 0 1px, transparent 1px 3px);
+  background-size:7px 7px, 9px 9px, 11px 11px; pointer-events:none; z-index:9990;
+  opacity:.6; mix-blend-mode:multiply;
+}
+
+/* ───────────────────────────────────────────── 03 · 纸张容器与纸边 ───────────────────────────────────────────── */
+.page{
+  max-width:var(--page-w); margin:0 auto 3rem; background:var(--paper);
+  border:1px solid rgba(26,26,26,.06); position:relative; padding:3.4rem 4.6rem 4.4rem;
+  box-shadow: 0 1px 2px rgba(60,40,15,.08), 0 14px 40px rgba(60,40,15,.20);
+}
+.page::before{                 /* 纸边内侧旧化 */
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  box-shadow:
+    inset 0 0 0 1px rgba(170,51,51,.05),
+    inset 0 0 70px rgba(120,88,44,.06);
+}
+.page::after{                  /* 右上角小刊花 */
+  content:"❦";
+  position:absolute;
+  top:1.15rem; right:1.6rem;
+  font-size:.95rem;
+  color:var(--red);
+  opacity:.55;
+}
+
+/* ───────────────────────────────────────────── 04 · 页眉（刊名 + 期号 + 页码） ───────────────────────────────────────────── */
+.folio{
+  display:flex; justify-content:space-between; align-items:baseline;
+  font-family:var(--sans); font-size:.68rem; letter-spacing:.24em;
+  text-transform:uppercase; color:var(--ink-faint); border-bottom:2px solid var(--ink);
+  padding-bottom:.6rem; margin-bottom:2.4rem;
+}
+.folio .f-mark{ color:var(--red); letter-spacing:.1em; }
+.folio .f-mark::before{ content:"✦ "; font-size:.75rem; }
+
+/* ───────────────────────────────────────────── 05 · 章节页：大数字页码 + 题眉 ───────────────────────────────────────────── */
+.chapter{
+  display:grid; grid-template-columns:repeat(12,1fr); column-gap:2rem;
+  align-items:end; margin-bottom:2.6rem;
+}
+.chapter-num{
+  grid-column:span 3; font-size:clamp(5.5rem, 13vw, 9.5rem); line-height:.9;
+  font-weight:700; color:rgba(170,51,51,.13); -webkit-text-stroke:1.5px var(--red);
+  text-align:left; user-select:none;
+}
+.chapter-txt{ grid-column:span 9; padding-bottom:.35rem; }
+.kicker{
+  font-family:var(--sans); font-size:.7rem; letter-spacing:.34em;
+  text-transform:uppercase; color:var(--red); margin-bottom:.6rem;
+}
+.chapter-txt h2{ font-size:clamp(1.7rem, 4.2vw, 2.7rem); line-height:1.25; font-weight:700; letter-spacing:.04em; }
+.chapter-txt h2 span{           /* 英文副题 */
+  display:block;
+  font-family:var(--sans);
+  font-size:.72rem;
+  font-weight:400;
+  letter-spacing:.5em;
+  color:var(--ink-faint);
+  margin-top:.45rem;
+  text-transform:uppercase;
+}
+
+/* ───────────────────────────────────────────── 06 · 12栏网格工具 ───────────────────────────────────────────── */
+.grid-12{ display:grid; grid-template-columns:repeat(12,1fr); column-gap:2rem; row-gap:2rem; }
+.g-3{ grid-column:span 3; }
+.g-4{ grid-column:span 4; }
+.g-5{ grid-column:span 5; }
+.g-6{ grid-column:span 6; }
+.g-7{ grid-column:span 7; }
+.g-8{ grid-column:span 8; }
+.g-9{ grid-column:span 9; }
+.g-10{ grid-column:span 10; }
+.g-12{ grid-column:span 12; }
+
+/* ───────────────────────────────────────────── 07 · 排版工具：导语/双栏/首字下沉/引言/图注 ───────────────────────────────────────────── */
+.lead{ font-size:1.14rem; line-height:1.95; color:var(--ink-soft); margin-bottom:1.6rem; }
+.cols2{ column-count:2; column-gap:3rem; column-rule:1px solid var(--line); text-align:justify; }
+.cols2 > *{ break-inside:avoid; }
+.dropcap::first-letter{
+  float:left; font-size:3.3em; line-height:.86;
+  padding:.06em .14em 0 0; font-weight:700; color:var(--red);
+}
+.pullquote{
+  font-size:1.5rem; line-height:1.7; font-weight:700;
+  color:var(--ink); margin:2.2rem 0; padding:1.4rem 0 1.4rem 2rem;
+  border-left:4px solid var(--red);
+}
+.pullquote::before{
+  content:"“"; display:block; font-size:3.4rem;
+  line-height:.5; color:var(--red); margin-bottom:.6rem;
+}
+.pullquote small{
+  display:block; margin-top:.7rem; font-size:.8rem;
+  font-weight:400; color:var(--ink-faint); font-family:var(--sans);
+  letter-spacing:.14em;
+}
+.fig-cap{
+  font-family:var(--sans); font-size:.72rem; letter-spacing:.1em;
+  color:var(--ink-faint); text-align:center; margin-top:1rem;
+}
+.fig-cap::before{ content:"图注 · "; color:var(--red); }
+.hr-rule{ border:none; border-top:1px solid var(--line); margin:2.6rem 0; position:relative; }
+.hr-rule::after{
+  content:"◆"; position:absolute; top:-.62rem; left:50%;
+  transform:translateX(-50%); font-size:.6rem; color:var(--red);
+  background:var(--paper); padding:0 .6rem;
+}
+.hr-rule.red{ border-top-color:var(--red); }
+
+/* ───────────────────────────────────────────── 08 · 封面 ───────────────────────────────────────────── */
+.cover{ padding-top:2rem; }
+.masthead{ text-align:center; padding:1rem 0 2rem; }
+.mast-rule{
+  display:flex; align-items:center; justify-content:center;
+  gap:1rem; color:var(--red); font-size:.8rem;
+}
+.mast-rule::before,.mast-rule::after{ content:""; height:1px; width:clamp(3rem, 14vw, 9rem); background:var(--ink); }
+.masthead h1{
+  font-size:clamp(3.6rem, 13vw, 8rem); line-height:1.02; letter-spacing:.16em;
+  text-indent:.16em; font-weight:700; margin:.4rem 0 .2rem;
+}
+.masthead h1 .zh-red{ color:var(--red); }
+.mag-en{
+  font-family:var(--sans); font-size:clamp(.62rem, 2vw, .9rem); letter-spacing:.72em;
+  text-indent:.72em; text-transform:uppercase; color:var(--ink-soft);
+}
+.issue-line{
+  margin-top:1rem; font-size:.8rem; letter-spacing:.3em;
+  text-indent:.3em; color:var(--ink-faint); font-family:var(--sans);
+}
+.issue-line b{ color:var(--red); font-weight:400; }
+/* 封面 · CSS剪叉升降平台插画 */
+.lift-art{
+  position:relative; height:210px; margin:1.6rem auto 0;
+  max-width:640px; overflow:hidden;
+}
+.lift-sun{
+  position:absolute; right:9%; top:14%; width:44px; height:44px;
+  border-radius:50%; background:var(--red); opacity:.85;
+  box-shadow:0 0 0 10px rgba(170,51,51,.08), 0 0 0 22px rgba(170,51,51,.05);
+}
+.lift-mount{ position:absolute; bottom:34px; border-style:solid; border-color:transparent transparent var(--line) transparent; }
+.lift-mount-a{ left:2%; border-width:0 130px 84px 0; opacity:.75; }
+.lift-mount-b{ right:4%; border-width:0 0 120px 160px; opacity:.6; }
+.lift-machine{ position:absolute; left:50%; bottom:34px; transform:translateX(-50%); width:170px; height:120px; }
+.lift-platform{
+  position:absolute; bottom:66px; left:50%; transform:translateX(-50%);
+  width:150px; height:16px; background:var(--red); border-radius:1px;
+}
+.lift-platform::after{
+  content:"作业平台"; position:absolute; top:-20px; left:50%;
+  transform:translateX(-50%); font-family:var(--sans); font-size:.6rem;
+  letter-spacing:.18em; color:var(--ink-soft); white-space:nowrap;
+}
+.lift-arm{
+  position:absolute; bottom:14px; width:2px; height:56px;
+  background:var(--ink); transform-origin:bottom center;
+}
+.lift-arm-l{ left:50%; transform:translateX(-50%) rotate(-34deg); }
+.lift-arm-r{ left:50%; transform:translateX(-50%) rotate(34deg); }
+.lift-pin{
+  position:absolute; bottom:44px; left:50%; width:8px; height:8px;
+  transform:translateX(-50%); background:var(--paper); border:2px solid var(--ink);
+  border-radius:50%;
+}
+.lift-base{
+  position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+  width:92px; height:14px; background:var(--ink); border-radius:1px;
+}
+.lift-ground{
+  position:absolute; bottom:26px; left:-4%; right:-4%; height:3px;
+  background:var(--ink); opacity:.85;
+}
+.lift-arrow{
+  position:absolute; right:16%; top:6%; font-size:1.6rem;
+  color:var(--red); animation:rise 2.4s ease-in-out infinite;
+}
+@keyframes rise{ 0%,100%{ transform:translateY(6px); } 50%{ transform:translateY(-6px); } }
+}
+/* 封面主体区 */
+.cover-body{ margin:1.2rem 0 2rem; }
+.cover-feature h2{
+  font-size:1.05rem; letter-spacing:.24em; border-bottom:1px solid var(--ink);
+  padding-bottom:.5rem; margin-bottom:1.1rem; font-weight:700;
+}
+.cover-feature h2::after{ content:" · 本期要点"; font-family:var(--sans); font-size:.6rem; letter-spacing:.3em; color:var(--red); }
+.issue-item{
+  display:grid; grid-template-columns:auto 1fr auto; gap:.9rem;
+  align-items:baseline; padding:.65rem 0; border-bottom:1px dotted var(--line);
+}
+.issue-item .ii-no{ font-family:var(--sans); font-size:.68rem; letter-spacing:.14em; color:var(--red); }
+.issue-item .ii-t{ font-size:.98rem; line-height:1.6; }
+.issue-item .ii-t small{ display:block; color:var(--ink-faint); font-size:.8rem; }
+.issue-item .ii-pg{
+  font-family:var(--sans); font-size:.68rem; letter-spacing:.1em;
+  color:var(--ink-faint); white-space:nowrap;
+}
+/* 封面 · 名片卡 */
+.biz-card{ border:1px solid var(--ink); padding:1.4rem 1.5rem 1.3rem; position:relative; background:var(--paper-soft); }
+.biz-card::before{
+  content:"PERSONAL · 名片"; position:absolute; top:-.7rem; left:1rem;
+  background:var(--paper); padding:0 .5rem; font-family:var(--sans);
+  font-size:.62rem; letter-spacing:.22em; color:var(--red);
+}
+.bc-name{ font-size:1.55rem; font-weight:700; letter-spacing:.14em; }
+.bc-name span{ font-family:var(--sans); font-size:.62rem; letter-spacing:.3em; color:var(--ink-faint); margin-left:.5rem; }
+.bc-role{ font-size:.86rem; color:var(--red); margin:.25rem 0 .9rem; letter-spacing:.06em; }
+.bc-line{
+  display:flex; justify-content:space-between; gap:1rem;
+  font-size:.82rem; color:var(--ink-soft); border-top:1px dotted var(--line);
+  padding:.42rem 0;
+}
+.bc-line i{ font-style:normal; color:var(--ink-faint); font-family:var(--sans); font-size:.68rem; letter-spacing:.14em; }
+.bc-slogan{
+  margin-top:.9rem; border-left:3px solid var(--red); padding:.5rem 0 .5rem .8rem;
+  font-size:.95rem; font-weight:700;
+}
+.bc-slogan small{
+  display:block; font-weight:400; font-size:.78rem;
+  color:var(--ink-faint); margin-top:.2rem;
+}
+/* 封面 · 主编手记 */
+.editor-note{ margin-top:2.4rem; border-top:3px double var(--ink); border-bottom:1px solid var(--line); padding:1.6rem 0 1.2rem; }
+.editor-note h3{
+  font-family:var(--sans); font-size:.72rem; letter-spacing:.34em;
+  text-transform:uppercase; color:var(--red); margin-bottom:1rem;
+}
+.editor-note p{ margin-bottom:1rem; text-align:justify; }
+.editor-note .sign{ text-align:right; font-size:.9rem; color:var(--ink-soft); letter-spacing:.1em; }
+.editor-note .sign::before{ content:"—— "; color:var(--red); }
+.cover-bottom{
+  margin-top:1.6rem; text-align:center; font-family:var(--sans);
+  font-size:.72rem; letter-spacing:.3em; color:var(--ink-faint);
+}
+.cover-bottom .down{ display:block; margin-top:.4rem; font-size:1.1rem; color:var(--red); animation:rise 1.8s ease-in-out infinite; }
+
+/* ───────────────────────────────────────────── 09 · 目录页 ───────────────────────────────────────────── */
+.toc-title-head{ text-align:center; margin:0 0 2.4rem; }
+.toc-title-head h2{ font-size:clamp(2rem, 6vw, 3.4rem); letter-spacing:.42em; text-indent:.42em; font-weight:700; }
+.toc-title-head h2 span{ color:var(--red); }
+.toc-title-head p{
+  font-family:var(--sans); font-size:.7rem; letter-spacing:.5em;
+  text-indent:.5em; text-transform:uppercase; color:var(--ink-faint);
+  margin-top:.6rem;
+}
+.toc-list{ list-style:none; max-width:860px; margin:0 auto; }
+.toc-list li{ border-bottom:1px solid var(--line); }
+.toc-list a{
+  display:flex; align-items:baseline; gap:1.1rem;
+  padding:1.05rem .2rem; text-decoration:none; color:var(--ink);
+}
+.toc-no{
+  font-family:var(--sans); font-size:.7rem; letter-spacing:.14em;
+  color:var(--red); width:2.6rem; flex:none;
+}
+.toc-t{ font-size:1.06rem; letter-spacing:.04em; flex:none; }
+.toc-t small{
+  display:block; font-size:.74rem; color:var(--ink-faint);
+  font-family:var(--sans); letter-spacing:.16em; margin-top:.15rem;
+}
+.toc-dots{ flex:1; border-bottom:1px dotted var(--ink-faint); margin:0 .3rem; transform:translateY(-4px); }
+.toc-pg{
+  font-family:var(--sans); font-size:.78rem; letter-spacing:.08em;
+  color:var(--red); flex:none;
+}
+.toc-list a:hover .toc-t{ text-decoration:underline; text-decoration-color:var(--red); text-underline-offset:5px; text-decoration-thickness:2px; }
+.toc-list a.active .toc-t{ color:var(--red); }
+.toc-note{
+  max-width:860px; margin:2.4rem auto 0; font-size:.8rem;
+  color:var(--ink-faint); font-family:var(--sans); letter-spacing:.04em;
+  line-height:1.9; border:1px dashed var(--line); padding:1rem 1.2rem;
+}
+.toc-note b{ color:var(--red); font-weight:400; }
+
+/* ───────────────────────────────────────────── 10 · 人物专访 ───────────────────────────────────────────── */
+.interview-lead{
+  border:1px solid var(--line); border-left:4px solid var(--red); background:var(--paper-soft);
+  padding:1.3rem 1.6rem; margin-bottom:2rem; font-size:.95rem;
+  color:var(--ink-soft); line-height:1.95;
+}
+.interview-lead b{ color:var(--ink); }
+.qa{ margin-bottom:1.7rem; }
+.qa-q{ font-weight:700; color:var(--ink); margin-bottom:.5rem; }
+.qa-q::before{
+  content:"记者问 · "; font-family:var(--sans); font-size:.68rem;
+  letter-spacing:.22em; color:var(--red); font-weight:400;
+}
+.qa-a{ color:var(--ink-soft); text-align:justify; }
+.qa-a::first-letter{ font-weight:700; color:var(--ink); }
+.qa-a::before{
+  content:"汉青答 · "; font-family:var(--sans); font-size:.68rem;
+  letter-spacing:.22em; color:var(--ink-faint);
+}
+.qa-meta{
+  margin-top:.7rem; font-size:.8rem; color:var(--ink-faint);
+  font-family:var(--sans); line-height:1.8;
+}
+.qa-meta b{ color:var(--red); font-weight:400; }
+.blocknote{
+  border:1px dashed var(--line); border-left:3px solid var(--red); padding:.9rem 1.1rem;
+  margin:1.6rem 0; font-size:.82rem; color:var(--ink-faint);
+  font-family:var(--sans); line-height:1.9; break-inside:avoid;
+}
+.blocknote::before{ content:"记者注 · "; color:var(--red); letter-spacing:.2em; font-size:.66rem; }
+
+/* ───────────────────────────────────────────── 11 · 数字速览 ───────────────────────────────────────────── */
+.stat-card{
+  border:1px solid var(--line); background:var(--paper-soft); padding:1.5rem 1.4rem 1.3rem;
+  position:relative; overflow:hidden;
+}
+.stat-card::before{
+  content:attr(data-tag); position:absolute; top:.7rem; right:.8rem;
+  font-family:var(--sans); font-size:.58rem; letter-spacing:.2em;
+  color:var(--ink-faint);
+}
+.stat-num{
+  font-size:clamp(2.3rem, 6vw, 3.6rem); line-height:1; font-weight:700;
+  color:var(--red); letter-spacing:.02em;
+}
+.stat-num small{
+  font-size:.5em; font-weight:400; color:var(--ink-soft);
+  letter-spacing:.1em; margin-left:.25em;
+}
+.stat-name{ margin-top:.55rem; font-size:.98rem; font-weight:700; letter-spacing:.03em; }
+.stat-desc{
+  margin-top:.25rem; font-size:.78rem; color:var(--ink-faint);
+  font-family:var(--sans); line-height:1.7;
+}
+.stat-bar{ margin-top:1rem; height:7px; background:var(--line); position:relative; }
+.stat-bar i{ position:absolute; left:0; top:0; bottom:0; background:var(--red); }
+.stat-bar i::after{
+  content:""; position:absolute; right:-1px; top:-3px; bottom:-3px;
+  width:2px; background:var(--ink);
+}
+
+/* ───────────────────────────────────────────── 12 · 十年西行记（履历时间线） ───────────────────────────────────────────── */
+.journey{ border-left:2px solid var(--line); margin-left:.4rem; padding-left:2.6rem; }
+.leg{ position:relative; margin-bottom:3.4rem; }
+.leg::before{                /* 站点圆点 */
+  content:"";
+  position:absolute;
+  left:calc(-2.6rem - 7px);
+  top:.55rem;
+  width:12px; height:12px;
+  background:var(--red);
+  border:3px solid var(--paper);
+  border-radius:50%;
+  box-shadow:0 0 0 1px var(--red);
+}
+.leg:last-child::after{      /* 未完待续箭头 */
+  content:"";
+  position:absolute;
+  left:calc(-2.6rem - 7px);
+  bottom:-3.2rem;
+  width:12px; height:12px;
+  border-left:2px solid var(--red);
+  border-bottom:2px solid var(--red);
+  transform:rotate(-45deg);
+}
+.leg-head{
+  display:flex; align-items:baseline; flex-wrap:wrap;
+  gap:.8rem 1.2rem; margin-bottom:.8rem;
+}
+.leg-no{
+  font-family:var(--sans); font-size:.66rem; letter-spacing:.3em;
+  color:var(--paper); background:var(--red); padding:.3rem .7rem .3rem .9rem;
+}
+.leg-head h3{ font-size:1.4rem; letter-spacing:.05em; font-weight:700; }
+.leg-date{ font-family:var(--sans); font-size:.74rem; letter-spacing:.16em; color:var(--ink-faint); }
+.leg-sub{ font-size:.9rem; color:var(--ink-soft); margin-bottom:1rem; }
+.leg-body p{ text-align:justify; margin-bottom:.9rem; }
+.leg-facts{
+  list-style:none; margin:1rem 0; display:grid;
+  grid-template-columns:repeat(12,1fr); column-gap:1.4rem; row-gap:.6rem;
+}
+.leg-facts li{
+  grid-column:span 4; font-size:.88rem; color:var(--ink-soft);
+  padding-left:1.1rem; position:relative;
+}
+.leg-facts li::before{
+  content:"◆"; position:absolute; left:0; top:.05rem;
+  font-size:.55rem; color:var(--red);
+}
+.leg-facts li b{ color:var(--ink); }
+.leg-note{
+  font-size:.8rem; color:var(--ink-faint); font-family:var(--sans);
+  line-height:1.85; border-top:1px dotted var(--line); margin-top:1.1rem;
+  padding-top:.8rem;
+}
+.leg-note::before{ content:"站点注 · "; color:var(--red); letter-spacing:.16em; font-size:.64rem; }
+
+/* ───────────────────────────────────────────── 13 · 栏目 · 八艺（8个能力标签） ───────────────────────────────────────────── */
+.rubric-card{
+  border:1px solid var(--line); background:var(--paper-soft); padding:1.5rem 1.3rem 1.2rem;
+  display:flex; flex-direction:column; position:relative;
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.rubric-card:hover{ transform:translateY(-4px); box-shadow:0 10px 22px rgba(60,40,15,.14); }
+.rubric-ico{ font-size:1.6rem; line-height:1; margin-bottom:.7rem; }
+.rubric-card h3{ font-size:1.08rem; letter-spacing:.04em; font-weight:700; }
+.rubric-card h3 span{
+  display:block; font-family:var(--sans); font-size:.6rem;
+  font-weight:400; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--ink-faint); margin-top:.25rem;
+}
+.rubric-card p{
+  margin-top:.6rem; font-size:.82rem; color:var(--ink-soft);
+  line-height:1.8; flex:1;
+}
+.rubric-no{
+  position:absolute; top:.7rem; right:.85rem; font-family:var(--sans);
+  font-size:.6rem; letter-spacing:.18em; color:var(--red);
+}
+
+/* ───────────────────────────────────────────── 14 · 作品专栏 ───────────────────────────────────────────── */
+.work-card{
+  display:grid; grid-template-columns:repeat(12,1fr); column-gap:2.4rem;
+  border-top:1px solid var(--ink); padding:2rem 0 2.2rem;
+}
+.work-card:last-of-type{ border-bottom:1px solid var(--ink); }
+.wc-main{ grid-column:span 7; }
+.wc-side{ grid-column:span 5; }
+.wc-kicker{
+  font-family:var(--sans); font-size:.66rem; letter-spacing:.3em;
+  text-transform:uppercase; color:var(--red); margin-bottom:.5rem;
+}
+.wc-main h3{ font-size:clamp(1.25rem, 3vw, 1.7rem); letter-spacing:.03em; margin-bottom:.4rem; }
+.wc-main h3 .en{
+  font-family:var(--sans); font-size:.6rem; font-weight:400;
+  letter-spacing:.3em; color:var(--ink-faint); margin-left:.5rem;
+  text-transform:uppercase;
+}
+.wc-abstract{
+  font-size:.92rem; color:var(--ink-soft); line-height:1.9;
+  text-align:justify; margin-top:.6rem;
+}
+.wc-side{ border-left:1px solid var(--line); padding-left:2.4rem; }
+.wc-side h4{
+  font-family:var(--sans); font-size:.66rem; letter-spacing:.26em;
+  color:var(--ink-faint); margin-bottom:.7rem; font-weight:400;
+}
+.wc-side h4::before{ content:"— "; color:var(--red); }
+.skill-list{ list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:.55rem .9rem; }
+.skill-list li{
+  font-size:.78rem; line-height:1.65; color:var(--ink-soft);
+  padding-left:.85rem; position:relative;
+}
+.skill-list li::before{
+  content:"·"; position:absolute; left:0;
+  color:var(--red); font-weight:700;
+}
+.skill-list li code{
+  font-family:var(--mono); font-size:.72rem; color:var(--ink);
+  background:rgba(170,51,51,.07); padding:.05rem .3rem; border-radius:2px;
+}
+.wc-meta{
+  margin-top:1rem; font-family:var(--sans); font-size:.74rem;
+  color:var(--ink-faint); line-height:2;
+}
+.wc-meta b{ color:var(--red); font-weight:400; letter-spacing:.08em; }
+.wc-pg{
+  margin-top:1rem; text-align:right; font-family:var(--sans);
+  font-size:.72rem; letter-spacing:.2em; color:var(--ink-faint);
+}
+.wc-pg b{ color:var(--red); font-size:1.1rem; letter-spacing:.04em; }
+
+/* ───────────────────────────────────────────── 15 · 编辑推荐 · 三年纲领 ───────────────────────────────────────────── */
+.editor-pick{
+  border:3px double var(--red); background:var(--paper-soft); padding:2.2rem 2.2rem 2rem;
+  position:relative; margin-top:.6rem;
+}
+.editor-pick > .ep-tag{
+  position:absolute; top:-.85rem; left:50%; transform:translateX(-50%);
+  background:var(--red); color:var(--paper); font-family:var(--sans);
+  font-size:.66rem; letter-spacing:.4em; padding:.35rem 1.2rem;
+  white-space:nowrap;
+}
+.ep-intro{ text-align:center; font-size:.95rem; color:var(--ink-soft); margin-bottom:1.8rem; }
+.plan-years{ display:grid; grid-template-columns:repeat(12,1fr); column-gap:1.8rem; row-gap:1.8rem; }
+.plan-year{
+  grid-column:span 4; border:1px solid var(--line); background:var(--paper);
+  padding:1.5rem 1.4rem 1.3rem; position:relative;
+}
+.plan-year .py-no{ font-size:clamp(1.6rem, 4vw, 2.3rem); font-weight:700; color:var(--red); letter-spacing:.06em; }
+.plan-year .py-word{
+  display:block; font-size:.82rem; color:var(--ink-soft);
+  letter-spacing:.3em; margin:.2rem 0 .9rem; font-family:var(--sans);
+}
+.plan-year ul{ list-style:none; }
+.plan-year li{
+  font-size:.84rem; color:var(--ink-soft); line-height:1.85;
+  padding-left:1rem; position:relative; margin-bottom:.35rem;
+}
+.plan-year li::before{
+  content:"◆"; position:absolute; left:0; top:.05rem;
+  font-size:.5rem; color:var(--red);
+}
+.plan-year li b{ color:var(--ink); }
+.plan-year.window{ border-color:var(--red); background:rgba(170,51,51,.045); }
+.plan-year.window::after{
+  content:"重点窗口"; position:absolute; top:-.7rem; right:1rem;
+  background:var(--red); color:var(--paper); font-family:var(--sans);
+  font-size:.56rem; letter-spacing:.26em; padding:.25rem .6rem;
+}
+.ep-xinfa{ margin-top:2rem; border-top:1px solid var(--line); padding-top:1.4rem; }
+.ep-xinfa h4{
+  font-family:var(--sans); font-size:.68rem; letter-spacing:.34em;
+  color:var(--red); margin-bottom:1rem; font-weight:400;
+}
+.xinfa-grid{ display:grid; grid-template-columns:repeat(12,1fr); column-gap:1.4rem; row-gap:.9rem; }
+.xinfa-item{
+  grid-column:span 3; font-size:.92rem; color:var(--ink);
+  padding:1rem 1.1rem; border:1px solid var(--line); background:var(--paper);
+  position:relative;
+}
+.xinfa-item::before{
+  content:"心法"; display:block; font-family:var(--sans);
+  font-size:.56rem; letter-spacing:.3em; color:var(--red);
+  margin-bottom:.3rem;
+}
+.xinfa-item b{ display:block; font-weight:700; }
+
+/* ───────────────────────────────────────────── 16 · 封底：联系方式 + 版权页 + 传阅声明 ───────────────────────────────────────────── */
+.back-cover .folio{ border-bottom:3px double var(--ink); }
+.contact-grid{ display:grid; grid-template-columns:repeat(12,1fr); column-gap:2rem; row-gap:2rem; }
+.contact-main{ grid-column:span 7; }
+.contact-main h2{ font-size:clamp(1.9rem, 5vw, 3rem); letter-spacing:.1em; margin-bottom:.3rem; }
+.contact-main h2 span{ color:var(--red); }
+.contact-main .sub{
+  font-family:var(--sans); font-size:.72rem; letter-spacing:.4em;
+  color:var(--ink-faint); margin-bottom:1.6rem;
+}
+.contact-row{
+  display:flex; align-items:baseline; gap:1.4rem;
+  border-bottom:1px dotted var(--line); padding:.8rem 0; font-size:1.05rem;
+}
+.contact-row .cr-label{
+  width:6.5rem; flex:none; font-family:var(--sans);
+  font-size:.68rem; letter-spacing:.26em; color:var(--red);
+}
+.contact-row a{ text-decoration:none; color:var(--ink); border-bottom:1px solid transparent; transition:border-color .2s ease; }
+.contact-row a:hover{ border-bottom-color:var(--red); color:var(--red-deep); }
+.contact-aside{ grid-column:span 5; }
+.contact-aside .who{
+  border:1px solid var(--ink); padding:1.3rem 1.4rem; background:var(--paper-soft);
+  font-size:.9rem; color:var(--ink-soft); line-height:2;
+}
+.contact-aside .who b{ color:var(--ink); }
+.colophon{
+  margin-top:2.6rem; border-top:3px double var(--ink); padding-top:1.6rem;
+  display:grid; grid-template-columns:repeat(12,1fr); column-gap:2rem;
+  row-gap:.55rem;
+}
+.colophon h4{
+  grid-column:span 12; font-family:var(--sans); font-size:.68rem;
+  letter-spacing:.34em; color:var(--red); margin-bottom:.6rem;
+  font-weight:400;
+}
+.colophon .co-item{
+  grid-column:span 6; font-size:.8rem; color:var(--ink-soft);
+  font-family:var(--sans); line-height:1.8;
+}
+.colophon .co-item i{
+  display:inline-block; width:5.4rem; font-style:normal;
+  letter-spacing:.14em; color:var(--ink-faint);
+}
+.free-pass{
+  margin-top:2rem; border:1px dashed var(--red); padding:1.2rem 1.5rem;
+  font-size:.88rem; color:var(--ink-soft); line-height:2;
+  position:relative;
+}
+.free-pass::before{
+  content:"免费传阅"; position:absolute; top:-.75rem; left:1.2rem;
+  background:var(--paper); padding:0 .6rem; color:var(--red);
+  font-family:var(--sans); font-size:.64rem; letter-spacing:.34em;
+}
+.free-pass b{ color:var(--ink); }
+.site-footer{
+  margin-top:2.4rem; border-top:1px solid var(--ink); padding-top:1.1rem;
+  text-align:center; font-family:var(--sans); font-size:.78rem;
+  letter-spacing:.14em; color:var(--ink-soft);
+}
+.site-footer a{ color:var(--red); text-decoration:none; border-bottom:1px solid var(--red); transition:background .2s ease, color .2s ease; }
+.site-footer a:hover{ background:var(--red); color:var(--paper); }
+.site-footer .back-top-link{ display:block; margin-top:.6rem; color:var(--ink-faint); letter-spacing:.3em; }
+.site-footer .back-top-link:hover{ color:var(--red); background:none; border-bottom:none; }
+
+/* ───────────────────────────────────────────── 17 · 交互组件：进度条 / 返回卷首 / 滚动渐入 ───────────────────────────────────────────── */
+.progressbar{
+  position:fixed; top:0; left:0; height:3px;
+  width:0%; background:var(--red); z-index:9998;
+  transition:width .12s linear;
+}
+#toTop{
+  position:fixed; right:1.4rem; bottom:1.4rem; width:3.2rem; height:3.2rem;
+  border-radius:50%; border:2px solid var(--red); background:var(--paper);
+  color:var(--red); font-family:var(--serif); font-size:.8rem;
+  letter-spacing:.08em; cursor:pointer; opacity:0;
+  visibility:hidden; transform:translateY(12px); transition:opacity .3s ease, transform .3s ease, visibility .3s;
+  z-index:9997; box-shadow:0 6px 18px rgba(60,40,15,.25);
+}
+#toTop.show{ opacity:1; visibility:visible; transform:translateY(0); }
+#toTop:hover{ background:var(--red); color:var(--paper); }
+.print-btn{
+  font-family:var(--sans); font-size:.7rem; letter-spacing:.2em;
+  border:1px solid var(--ink); background:transparent; color:var(--ink);
+  padding:.45rem 1rem; cursor:pointer; transition:background .2s ease, color .2s ease;
+}
+.print-btn:hover{ background:var(--ink); color:var(--paper); }
+.reveal{ opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease; }
+.reveal.in{ opacity:1; transform:translateY(0); }
+/* 通栏长段行宽约束，便于阅读 */
+.editor-note p,.leg-body p,.free-pass,.interview-lead{ max-width:40em; }
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; } .reveal{ opacity:1; transform:none; transition:none; } .lift-arrow,.cover-bottom .down{ animation:none; }
+}
+
+/* ───────────────────────────────────────────── 18 · 打印样式 ───────────────────────────────────────────── */
+@media print{
+  body{ background:#fff; padding:0; }
+  body::after, .progressbar, #toTop, .print-btn, .cover-bottom .down{ display:none !important; }
+  .page{ max-width:none; margin:0 0 1.5rem; box-shadow:none; border:none; break-after:page; padding:1.5rem 2rem; }
+  .reveal{ opacity:1; transform:none; }
+  a{ text-decoration:none; }
+}
+/* ───────────────────────────────────────────── 19 · 响应式：窄屏单栏（≤768px） ───────────────────────────────────────────── */
+@media (max-width:768px){
+  body{ font-size:15.5px; padding:1rem .6rem 2.5rem; line-height:1.85; } .page{ padding:2.2rem 1.3rem 2.6rem; margin-bottom:1.8rem; } .page::after{ display:none; }
+  .folio{ letter-spacing:.12em; font-size:.6rem; } .folio .f-sub{ display:none; } .chapter{ column-gap:1rem; margin-bottom:1.8rem; }
+  .chapter-num{ grid-column:span 12; font-size:clamp(4rem,20vw,6rem); text-align:center; } .chapter-txt{ grid-column:span 12; text-align:center; } .grid-12, .plan-years, .xinfa-grid, .contact-grid, .colophon{ column-gap:1rem; row-gap:1.2rem; }
+  .g-3,.g-4,.g-5,.g-6,.g-7,.g-8,.g-9,.g-10{ grid-column:span 12; } .cols2{ column-count:1; column-gap:0; column-rule:none; } .pullquote{ font-size:1.25rem; padding-left:1.2rem; }
+  .masthead h1{ letter-spacing:.08em; text-indent:.08em; } .lift-art{ height:170px; } .issue-item{ grid-template-columns:auto 1fr; }
+  .issue-item .ii-pg{ display:none; } .biz-card{ margin-top:1.4rem; } .toc-list a{ gap:.6rem; padding:.85rem .1rem; }
+  .toc-no{ width:2.2rem; } .leg-facts li{ grid-column:span 12; } .journey{ margin-left:.2rem; padding-left:1.6rem; }
+  .leg::before{ left:calc(-1.6rem - 7px); } .leg:last-child::after{ left:calc(-1.6rem - 7px); } .work-card{ grid-template-columns:1fr; column-gap:0; padding:1.5rem 0; }
+  .wc-main,.wc-side{ grid-column:span 1; } .wc-side{ border-left:none; padding-left:0; margin-top:1.2rem; } .wc-pg{ text-align:left; }
+  .plan-year{ grid-column:span 12; } .xinfa-item{ grid-column:span 12; } .editor-pick{ padding:1.7rem 1.2rem 1.4rem; }
+  .contact-main,.contact-aside{ grid-column:span 12; } .colophon .co-item{ grid-column:span 12; } .contact-row{ gap:.8rem; font-size:.95rem; flex-wrap:wrap; }
+  .contact-row .cr-label{ width:auto; min-width:4.6rem; } #toTop{ width:2.8rem; height:2.8rem; right:.9rem; bottom:.9rem; font-size:.68rem; }
+}
+@media (max-width:420px){
+  .mast-rule::before,.mast-rule::after{ width:2rem; } .mag-en{ letter-spacing:.4em; text-indent:.4em; } .issue-line{ letter-spacing:.16em; text-indent:.16em; line-height:2; }
+  .skill-list{ grid-template-columns:1fr; } .folio{ font-size:.56rem; }
+}</style>
+<noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
+</head>
+<body>
+<div class="progressbar" id="progressbar" role="presentation" aria-hidden="true"></div>
+
+<main id="top">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     封面 · COVER
+     刊头 + 本期要点 + 主编手记
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="page cover" id="cover" aria-label="封面">
+  <div class="masthead">
+    <div class="mast-rule">◆</div>
+    <h1>汉青<span class="zh-red">志</span></h1>
+    <p class="mag-en">The Hanqing Journal</p>
+    <p class="issue-line">总第<b>01</b>期 · 二〇二六年 · 单页合订本 · 免费传阅</p>
+
+    <!-- 纯CSS插画：剪叉式高空作业平台（呼应现职业务） -->
+    <div class="lift-art" aria-hidden="true">
+      <div class="lift-sun"></div>
+      <div class="lift-mount lift-mount-a"></div>
+      <div class="lift-mount lift-mount-b"></div>
+      <div class="lift-arrow">↑</div>
+      <div class="lift-machine">
+        <div class="lift-platform"></div>
+        <div class="lift-arm lift-arm-l"></div>
+        <div class="lift-arm lift-arm-r"></div>
+        <div class="lift-pin"></div>
+        <div class="lift-base"></div>
+      </div>
+      <div class="lift-ground"></div>
+    </div>
+    <p class="fig-cap">剪叉式高空作业平台 4–14m · 臂式 16–60m</p>
+  </div>
+
+  <div class="cover-body grid-12">
+    <!-- 本期要点 -->
+    <div class="cover-feature g-7">
+      <h2>本期</h2>
+      <div class="issue-item">
+        <span class="ii-no">壹</span>
+        <span class="ii-t">封面故事 · 人物专访<small>既懂销售，又懂AI——十年重工销售 × AI重度实践者自述</small></span>
+        <span class="ii-pg">页 02</span>
+      </div>
+      <div class="issue-item">
+        <span class="ii-no">贰</span>
+        <span class="ii-t">数字速览<small>八个关键数字，读懂十年工程机械大客户销售</small></span>
+        <span class="ii-pg">页 04</span>
+      </div>
+      <div class="issue-item">
+        <span class="ii-no">叁</span>
+        <span class="ii-t">十年西行记<small>从粤东到湖北：五站职业地图，一程比一程开阔</small></span>
+        <span class="ii-pg">页 05</span>
+      </div>
+      <div class="issue-item">
+        <span class="ii-no">肆</span>
+        <span class="ii-t">作品专栏<small>高机资料库 · AI技能库 · 汉青职业工作台 · 微信获客助手</small></span>
+        <span class="ii-pg">页 09</span>
+      </div>
+      <div class="issue-item">
+        <span class="ii-no">伍</span>
+        <span class="ii-t">编辑推荐<small>2026–2028 三年行动纲领：动身 · 定盘 · 上阶</small></span>
+        <span class="ii-pg">页 12</span>
+      </div>
+    </div>
+
+    <!-- 名片卡 -->
+    <div class="g-5">
+      <div class="biz-card reveal">
+        <p class="bc-name">邵汉青<span>HANQING SHAO</span></p>
+        <p class="bc-role">太原重工 · 工程起重机分公司 业务经理 / 大客户销售</p>
+        <div class="bc-line"><i>产品</i><span>高空作业平台 · 剪叉4–14m / 臂式16–60m</span></div>
+        <div class="bc-line"><i>区域</i><span>湖北市场（base 河南郑州 · 可出差）</span></div>
+        <div class="bc-line"><i>年龄</i><span>32岁 · 已婚</span></div>
+        <div class="bc-line"><i>学历</i><span>黄淮学院 · 汽车服务工程 / 鹤壁职业技术学院 · 汽车检测</span></div>
+        <div class="bc-line"><i>电话</i><span>177-7211-8785</span></div>
+        <div class="bc-line"><i>邮箱</i><span>1820688914@qq.com</span></div>
+        <p class="bc-slogan">「既懂销售，又懂AI」
+          <small>10年工程机械大客户销售 × AI重度实践者</small>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主编手记 -->
+  <div class="editor-note">
+    <h3>Editor's Note · 主编手记</h3>
+    <p class="dropcap">这一期杂志，我们只写一个人，却写了一个完整的人。他叫邵汉青，朋友们唤他汉青。十年来，他一直在做同一件事——把工程机械卖给中国最挑剔的客户：旋挖钻机、履带吊、空压机，如今是高空作业平台。别人把十年过成一个重复的十年，他把十年过成五站地图：从粤东到河南，再到湖北。</p>
+    <p>与此同时，他的另一只手始终在敲键盘。WorkBuddy 上八个自建AI技能、一个汉青职业工作台、一个获客助手——他把重复的事做成了自动化流水线，把销售方法论做成了14页PPT流水线。他说：「既懂销售，又懂AI」。这句话印在本期封面，也印在他十年的每一个深夜。</p>
+    <p>本期为总第01期，我们从五个版块走近他：一场专访、八个数字、五站西行、四件作品、三年纲领。所有数据均出自本人真实经历，无一处虚构；排版仿纸刊，却只有一页——请随光标向下翻页。</p>
+    <p class="sign">主编 邵汉青 · 于郑州</p>
+  </div>
+
+  <div class="cover-bottom">
+    请向下翻阅本刊
+    <span class="down">↓</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     目录 · CONTENTS（点线引导 + 页码）
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="page" id="toc" aria-label="目录">
+  <div class="folio">
+    <span class="f-mark">汉青志 · THE HANQING JOURNAL</span>
+    <span>总第01期 · 第01页</span>
+  </div>
+
+  <div class="toc-title-head">
+    <h2>目<span>录</span></h2>
+    <p>Contents · 本期导读</p>
+  </div>
+
+  <ol class="toc-list" id="tocList">
+    <li>
+      <a href="#cover">
+        <span class="toc-no">壹</span>
+        <span class="toc-t">封面 · 刊头与本期要点<small>COVER · MASTHEAD &amp; HIGHLIGHTS</small></span>
+        <span class="toc-dots"></span>
+        <span class="toc-pg">封面</span>
+      </a>
+    </li>
+    <li>
+      <a href="#toc">
+        <span class="toc-no">贰</span>
+        <span class="toc-t">目录 · 本期导读<small>CONTENTS · HOW TO READ THIS ISSUE</small></span>
+        <span class="toc-dots"></span>
+        <span class="toc-pg">01</span>
+      </a>
+    </li>
+    <li>
+      <a href="#interview">
+        <span class="toc-no">叁</span>
+        <span class="toc-t">人物专访 · 既懂销售，又懂AI<small>COVER STORY · AN INTERVIEW</small></span>
+        <span class="toc-dots"></span>
+        <span class="toc-pg">02</span>
+      </a>
+    </li>
+    <li>
+      <a href="#figures">
+        <span class="toc-no">肆</span>
+        <span class="toc-t">数字速览 · 八个关键数字<small>BY THE NUMBERS</small></span>
+        <span class="toc-dots"></span>
+        <span class="toc-pg">04</span>
+      </a>
+    </li>
+    <li>
+      <a href="#journey">
+        <span class="toc-no">伍</span>
+        <span class="toc-t">十年西行记 · 从粤东到湖北<small>THE WESTWARD JOURNEY · 5 STOPS</small></span>
+        <span class="toc-dots"></span>
+        <span class="toc-pg">05</span>
+      </a>
+    </li>
+    <li>
+      <a href="#rubric">
+        <span class="toc-no">陆</span>
+        <span class="toc-t">栏目 · 八艺<small>EIGHT CRAFTS · ABILITY TAGS</small></span>
+        <span class="toc-dots"></span>
+        <span class="toc-pg">08</span>
+      </a>
+    </li>
+    <li>
+      <a href="#works">
+        <span class="toc-no">柒</span>
+        <span class="toc-t">作品专栏 · 四件作品<small>FOUR WORKS · PORTFOLIO</small></span>
+        <span class="toc-dots"></span>
+        <span class="toc-pg">09</span>
+      </a>
+    </li>
+    <li>
+      <a href="#plan">
+        <span class="toc-no">捌</span>
+        <span class="toc-t">编辑推荐 · 三年纲领<small>EDITOR'S PICK · 2026–2028 PLAN</small></span>
+        <span class="toc-dots"></span>
+        <span class="toc-pg">12</span>
+      </a>
+    </li>
+    <li>
+      <a href="#contact">
+        <span class="toc-no">玖</span>
+        <span class="toc-t">封底 · 联系方式与版权页<small>BACK COVER · CONTACT &amp; COLOPHON</small></span>
+        <span class="toc-dots"></span>
+        <span class="toc-pg">封底</span>
+      </a>
+    </li>
+  </ol>
+
+  <div class="toc-note">
+    <b>本刊说明 ·</b> 本刊为「个人网站合集」第02号站点（杂志编辑风格）。全部数据来自受访者真实经历，口径截至2026年初；全刊为单文件HTML，零外部依赖，可离线双击阅读。目录页码为仿真排版，滚动即达。
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     人物专访 · COVER STORY（杂志专访体 · 一问一答）
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="page" id="interview" aria-label="人物专访">
+  <div class="folio">
+    <span class="f-mark">汉青志 · THE HANQING JOURNAL</span>
+    <span>总第01期 · 第02–03页</span>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-num" aria-hidden="true">02</div>
+    <div class="chapter-txt">
+      <p class="kicker">Cover Story · 封面故事</p>
+      <h2>既懂销售，又懂AI<span>An Interview with Hanqing Shao</span></h2>
+    </div>
+  </div>
+
+  <div class="interview-lead">
+    <b>编者按：</b>十年前，一个河南青年从汽车检测专业毕业，走进工程机械的工棚；十年后，他站在太原重工的高空作业平台业务里，口袋里装着八个AI定制技能。本期封面故事，我们与汉青坐下来，聊了十二个问题。答案没有一句漂亮话，全是工地上磨出来的。
+  </div>
+
+  <div class="cols2">
+    <div class="qa reveal">
+      <p class="qa-q">先做个自我介绍吧。</p>
+      <p class="qa-a">我是邵汉青，朋友们叫我汉青。现职太原重工·工程起重机分公司业务经理、大客户销售，负责高空作业平台在湖北市场的开拓——产品是剪叉式4到14米、臂式16到60米。base在河南郑州，可以出差。32岁，已婚。一句话人设：「既懂销售，又懂AI」。</p>
+    </div>
+
+    <div class="qa reveal">
+      <p class="qa-q">「十年工程机械大客户销售」，这十年从哪一年算起？</p>
+      <p class="qa-a">从2017年10月算起，到今天正好十年上下。学历的底子更早：2012到2015年在鹤壁职业技术学院读汽车检测，2015到2017年在黄淮学院读汽车服务工程本科。学的是车，干的却是比车大得多的家伙——旋挖钻机、履带吊、空压机，现在轮到高空作业平台。</p>
+    </div>
+
+    <div class="qa reveal">
+      <p class="qa-q">第一站是宇通重工，粤东区域，2017年10月到2021年3月。那段日子什么样？</p>
+      <p class="qa-a">卖旋挖钻机和履带吊，面对的是粤东的桩基公司和基建客户。目标客户从40家做到132家，年业绩做到600到1000万。最有纪念意义的一件事：同批60多位新人里，我是最早转正的那个。</p>
+      <p class="qa-meta">数据：目标客户 40 → 132家 · 年业绩 600–1000万 · 同批60+新人最早转正</p>
+    </div>
+
+    <div class="blocknote">记者注：粤东三年，他反复强调的不是单量，而是「客户数量」。132这个数字后来被他写进了销售执行体系的底层逻辑里——先有地图，再谈战役。</div>
+
+    <div class="qa reveal">
+      <p class="qa-q">第二站三一重工，2021年4月到2023年6月，河南区域，旋挖钻机。为什么说这是最重要的0→1？</p>
+      <p class="qa-a">因为是从零开始的。公司给了市场，没给客户。我一个人在河南跑，把客户从0做到180家，年均销售1500万。0到180这个数字，是我职业生涯里最硬的一张底牌——它证明「区域0→1开拓」不是简历上的形容词，是可复现的路径。</p>
+      <p class="qa-meta">数据：独立开发市场 · 客户 0 → 180家 · 年均销售 1500万</p>
+    </div>
+
+    <div class="qa reveal">
+      <p class="qa-q">第三站中联重科只有一年多：2023年7月到2024年10月。这站补了什么课？</p>
+      <p class="qa-a">补了风控这一课。还是在河南卖旋挖钻机，但这一站我做的最多的不是开新客户，而是完善客户信息112条，主导应收账款催收与风险评估。销售的天花板往往不在签约，而在回款——这一课让我后来的方案里永远带着「融资租赁」和「账期安全」两个模块。</p>
+      <p class="qa-meta">数据：完善客户信息 112条 · 主导应收账款催收与风险评估</p>
+    </div>
+
+    <div class="qa reveal">
+      <p class="qa-q">第四站换了赛道：复盛实业（上海），空压机，2025年5月到12月。半年时间，凭什么立住？</p>
+      <p class="qa-a">凭标书。半年里我报备意向92条，独立完成标书35份，协助投标19项。空压机是工业配套设备，客户决策链条长，招标多。35份标书让我把「招投标/标书」从会变成了精——从资质梳理、技术方案到商务报价，整套流程闭着眼睛能走完。</p>
+      <p class="qa-meta">数据：报备意向 92条 · 独立完成标书 35份 · 协助投标 19项</p>
+    </div>
+
+    <div class="qa reveal">
+      <p class="qa-q">现在这站：太原重工·工程起重机分公司，高空作业平台，湖北市场，2025年12月至今。进展如何？</p>
+      <p class="qa-a">拓展客户113条、新增74条；意向价值1.2亿；已完成订单1500万；协助意向订单1亿；协助完成订单1400万。太原重工是76年底蕴的老牌国企，A股600169，2025年营收约103.79亿——大平台给大单背书，这正是我选它的原因：赚大钱之前，先站上大平台。</p>
+      <p class="qa-meta">数据：拓展客户 113条 / 新增 74条 · 意向价值 1.2亿 · 已完成订单 1500万 · 协助意向订单 1亿 · 协助完成订单 1400万</p>
+    </div>
+
+    <div class="blocknote">记者注：四家公司、五个区域，他始终在「旋挖钻机」这条主线上加杠杆，直到太重这一站换成高空作业平台。问他为什么敢换，他说：行业会变，大客户销售的底层能力不会变。</div>
+
+    <div class="qa reveal">
+      <p class="qa-q">说说「AI重度实践者」这半个身份。八个定制技能是什么来路？</p>
+      <p class="qa-a">我在 WorkBuddy 上自建了八个AI定制技能，全部服务于销售闭环：market-dev-kit 是区域开发总入口；amap-poi-collector 用高德采集客户线索；customer-geo-viz 把客户画成热力作战图；sales-lead-workbook 管销售执行体系；sales-pitch-ppt 自动生成高转化14页推介PPT；wechat-addfriend 是微信获客助手；secure-html-deploy 做加密部署；industry-briefing 是行业简报流水线，每月5日自动出刊。重复的事交给AI，我腾出手去攻单。</p>
+      <p class="qa-meta">平台：WorkBuddy · 技能数：8个 · 详见本刊作品专栏 页09</p>
+    </div>
+
+    <div class="qa reveal">
+      <p class="qa-q">「汉青职业工作台」——单文件效率应用，这怎么讲？</p>
+      <p class="qa-a">一个单文件HTML效率应用，六个模块：学习、积累、记录、提高、事项安排、自我进化。localStorage持久化，数据不丢；JSON导入导出，换设备无缝迁移；jsdom功能自检10项全PASS。别人用一堆软件管自己，我用一个文件管整个职业进程。</p>
+      <p class="qa-meta">模块：学习 / 积累 / 记录 / 提高 / 事项安排 / 自我进化 · 自检：jsdom 10项全PASS</p>
+    </div>
+
+    <div class="qa reveal">
+      <p class="qa-q">微信获客助手又是干什么的？</p>
+      <p class="qa-a">一个状态机驱动的单文件获客工具，带CSV备份和加密，内置每日25–30条客户触达节奏。大客户销售的本质是触达密度，这个工具把「重复的事自动化」落到每一天。我的学习原则就四条：结果导向、先模仿后创造、重复的事自动化、小步快跑。</p>
+    </div>
+
+    <div class="qa reveal">
+      <p class="qa-q">2026到2028，三年纲领是什么？</p>
+      <p class="qa-a">2026动身求职：秋金月（8到11月）发力，10月下旬到11月中旬是签约窗口。主攻工业互联网SaaS行业的销售与客户成功，目标企业是树根互联、徐工汉云、卡奥斯、腾讯云工业、华为云；保底是融资租赁客户经理，比如远东宏信、平安租赁、厂商金融；近选是高空作业平台头部厂的销售管理岗，临工、星邦、鼎力。2027定盘：名分落实，是业绩年。2028上阶：争取带团队。</p>
+      <p class="qa-meta">详见本刊编辑推荐 · 页12</p>
+    </div>
+
+    <div class="qa reveal">
+      <p class="qa-q">最后，你的心法是什么？</p>
+      <p class="qa-a">四句话：内推大于海投；卖方案不卖力气；攻坚大单必组队；赚大钱之前先站上大平台。至于我是谁——座右铭「既懂销售，又懂AI」。沟通风格：专业干练，直奔结果。</p>
+    </div>
+
+    <div class="blocknote">记者注：采访结束前，他补了一句：所有数字都在工地上、标书里、加班夜里。本刊只负责把它们排成好看的样子。</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     数字速览 · BY THE NUMBERS（纯CSS条形图 + 大数字）
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="page" id="figures" aria-label="数字速览">
+  <div class="folio">
+    <span class="f-mark">汉青志 · THE HANQING JOURNAL</span>
+    <span>总第01期 · 第04页</span>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-num" aria-hidden="true">04</div>
+    <div class="chapter-txt">
+      <p class="kicker">By The Numbers · 数据栏目</p>
+      <h2>数字速览<span>Eight Numbers, One Decade</span></h2>
+    </div>
+  </div>
+
+  <p class="lead">数字不会说谎，也最难编造。本期编辑部从十年的履历中挑出八个数字——它们分别是资历、开拓、标书、意向、落单、线索、报备与AI，构成一册「汉青速读」。</p>
+
+  <div class="grid-12">
+    <div class="stat-card g-6 reveal" data-tag="资历">
+      <p class="stat-num">10<small>年</small></p>
+      <p class="stat-name">重工大客户销售</p>
+      <p class="stat-desc">2017–2026，宇通 / 三一 / 中联 / 复盛 / 太重，五站连贯</p>
+      <div class="stat-bar"><i style="width:100%"></i></div>
+    </div>
+
+    <div class="stat-card g-6 reveal" data-tag="开拓">
+      <p class="stat-num">180<small>+ 家</small></p>
+      <p class="stat-name">客户开发（三一 0→180）</p>
+      <p class="stat-desc">三一重工河南区域，独立开发市场，从零到一百八</p>
+      <div class="stat-bar"><i style="width:96%"></i></div>
+    </div>
+
+    <div class="stat-card g-3 reveal" data-tag="标书">
+      <p class="stat-num">35<small>份</small></p>
+      <p class="stat-name">独立完成标书</p>
+      <p class="stat-desc">复盛实业半年内，另协助投标19项</p>
+      <div class="stat-bar"><i style="width:72%"></i></div>
+    </div>
+
+    <div class="stat-card g-3 reveal" data-tag="意向">
+      <p class="stat-num">1.2<small>亿</small></p>
+      <p class="stat-name">意向价值（太重·湖北）</p>
+      <p class="stat-desc">高空作业平台湖北市场，意向在手</p>
+      <div class="stat-bar"><i style="width:90%"></i></div>
+    </div>
+
+    <div class="stat-card g-3 reveal" data-tag="落单">
+      <p class="stat-num">1500<small>万</small></p>
+      <p class="stat-name">已完成订单</p>
+      <p class="stat-desc">太重湖北，自2025年12月入职以来</p>
+      <div class="stat-bar"><i style="width:74%"></i></div>
+    </div>
+
+    <div class="stat-card g-3 reveal" data-tag="协助意向">
+      <p class="stat-num">1<small>亿</small></p>
+      <p class="stat-name">协助意向订单</p>
+      <p class="stat-desc">太重湖北，协助伙伴累计意向金额</p>
+      <div class="stat-bar"><i style="width:84%"></i></div>
+    </div>
+
+    <div class="stat-card g-3 reveal" data-tag="协助完成">
+      <p class="stat-num">1400<small>万</small></p>
+      <p class="stat-name">协助完成订单</p>
+      <p class="stat-desc">太重湖北，协助伙伴落地订单金额</p>
+      <div class="stat-bar"><i style="width:70%"></i></div>
+    </div>
+
+    <div class="stat-card g-3 reveal" data-tag="线索">
+      <p class="stat-num">113<small>条</small></p>
+      <p class="stat-name">湖北客户线索</p>
+      <p class="stat-desc">其中新增74条，仍在持续拓展</p>
+      <div class="stat-bar"><i style="width:60%"></i></div>
+    </div>
+
+    <div class="stat-card g-3 reveal" data-tag="报备">
+      <p class="stat-num">92<small>条</small></p>
+      <p class="stat-name">空压机报备意向</p>
+      <p class="stat-desc">复盛实业期间，半年报备92条</p>
+      <div class="stat-bar"><i style="width:56%"></i></div>
+    </div>
+
+    <div class="stat-card g-3 reveal" data-tag="AI">
+      <p class="stat-num">8<small>个</small></p>
+      <p class="stat-name">AI定制技能</p>
+      <p class="stat-desc">WorkBuddy 自建，覆盖开发/采集/绘图/简报</p>
+      <div class="stat-bar"><i style="width:48%"></i></div>
+    </div>
+
+    <div class="stat-card g-3 reveal" data-tag="资料">
+      <p class="stat-num">1000<small>+</small></p>
+      <p class="stat-name">销售资料归档</p>
+      <p class="stat-desc">高机销售资料库，6类分类归档（见作品专栏）</p>
+      <div class="stat-bar"><i style="width:66%"></i></div>
+    </div>
+
+    <div class="stat-card g-3 reveal" data-tag="新人">
+      <p class="stat-num">60<small>+</small></p>
+      <p class="stat-name">同批新人中最早转正</p>
+      <p class="stat-desc">宇通重工2017批次，粤东区域首位</p>
+      <div class="stat-bar"><i style="width:52%"></i></div>
+    </div>
+  </div>
+
+  <p class="fig-cap">条形长度为相对刻度，仅作排版示意；数据口径与出处见正文各章</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     十年西行记 · THE WESTWARD JOURNEY（履历时间线 · 文章体）
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="page" id="journey" aria-label="十年西行记">
+  <div class="folio">
+    <span class="f-mark">汉青志 · THE HANQING JOURNAL</span>
+    <span>总第01期 · 第05–07页</span>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-num" aria-hidden="true">05</div>
+    <div class="chapter-txt">
+      <p class="kicker">Feature · 专题长文</p>
+      <h2>十年西行记<span>From East Guangdong to Hubei · Five Stops</span></h2>
+    </div>
+  </div>
+
+  <p class="lead">地理上，这是一条从粤东沿海一路向西、折返中原、再赴湖北的路线；职业上，这是旋挖钻机到高空作业平台的五次换乘。本期专题，我们把它写成一篇五站的游记——每一站都有地名、有年月、有账本。</p>
+
+  <div class="journey">
+
+    <article class="leg reveal">
+      <header class="leg-head">
+        <span class="leg-no">第一站</span>
+        <h3>宇通重工</h3>
+        <span class="leg-date">2017.10 – 2021.03 · 粤东区域</span>
+      </header>
+      <p class="leg-sub">旋挖钻机 / 履带吊 · 大客户销售 · 广州以东的工棚与桩机</p>
+      <div class="leg-body">
+        <p class="dropcap">三年半，粤东。初入行时他手里没有客户名单，只有一张地图：目标客户40家。旋挖钻机一台几百吨，履带吊一台上百米，成交靠的不是热情，是工地上的蹲守与算账。他把40家跑成132家，年业绩做到600到1000万——同批60多位新人里，他是最早转正的。</p>
+        <ul class="leg-facts">
+          <li>目标客户 <b>40 → 132</b> 家</li>
+          <li>年业绩 <b>600–1000万</b></li>
+          <li>同批60+新人 <b>最早转正</b></li>
+        </ul>
+        <p class="leg-note">粤东教会他的第一课：客户数量是销售的地基。这句话后来写进了他的销售执行体系。</p>
+      </div>
+    </article>
+
+    <article class="leg reveal">
+      <header class="leg-head">
+        <span class="leg-no">第二站</span>
+        <h3>三一重工</h3>
+        <span class="leg-date">2021.04 – 2023.06 · 河南区域</span>
+      </header>
+      <p class="leg-sub">旋挖钻机 · 独立开发市场 · 从零到一百八</p>
+      <div class="leg-body">
+        <p class="dropcap">回到河南，平台换成了三一，任务也换了：没人给你客户，市场是空的。两年间，他靠自己的脚把河南的桩基圈走了一遍，客户从0做到180家，年均销售1500万。这是他职业履历里最被反复引用的一页——0到180，不是运气，是方法论。</p>
+        <ul class="leg-facts">
+          <li>独立开发市场，<b>客户 0 → 180 家</b></li>
+          <li>年均销售 <b>1500万</b></li>
+          <li>沉淀区域开拓 <b>可复现路径</b></li>
+        </ul>
+        <p class="leg-note">「区域0→1开拓」从此成为他的标签之一，也为后来的AI客户采集工具埋下伏笔。</p>
+      </div>
+    </article>
+
+    <article class="leg reveal">
+      <header class="leg-head">
+        <span class="leg-no">第三站</span>
+        <h3>中联重科</h3>
+        <span class="leg-date">2023.07 – 2024.10 · 河南区域</span>
+      </header>
+      <p class="leg-sub">旋挖钻机 · 风控与回款 · 销售的另一半功夫</p>
+      <div class="leg-body">
+        <p class="dropcap">这一站只有一年多，却是他「补课」的一站：完善客户信息112条，主导应收账款催收与风险评估。桩机行业垫资重、回款慢，他把合同、台账、账期全部梳理了一遍——销售签单只是上半场，把钱收回来才是下半场。</p>
+        <ul class="leg-facts">
+          <li>完善客户信息 <b>112条</b></li>
+          <li>主导应收账款 <b>催收与风险评估</b></li>
+          <li>补齐销售 <b>风控闭环</b></li>
+        </ul>
+        <p class="leg-note">这一站让他后来的融资租赁方案设计里，永远先算账期，再谈价格。</p>
+      </div>
+    </article>
+
+    <article class="leg reveal">
+      <header class="leg-head">
+        <span class="leg-no">第四站</span>
+        <h3>复盛实业（上海）</h3>
+        <span class="leg-date">2025.05 – 2025.12 · 河南区域</span>
+      </header>
+      <p class="leg-sub">空压机 · 招投标 · 半年35份标书</p>
+      <div class="leg-body">
+        <p class="dropcap">从桩机切到空压机，产品变了，打法也跟着变：空压机走招标，客户决策链长。半年里他报备意向92条，独立完成标书35份，协助投标19项——招投标从一项工作变成了一套肌肉记忆。</p>
+        <ul class="leg-facts">
+          <li>报备意向 <b>92条</b></li>
+          <li>独立完成标书 <b>35份</b></li>
+          <li>协助投标 <b>19项</b></li>
+        </ul>
+        <p class="leg-note">35份标书练出来的招投标能力，成为他面向工业互联网行业求职时的硬通货。</p>
+      </div>
+    </article>
+
+    <article class="leg reveal">
+      <header class="leg-head">
+        <span class="leg-no">第五站</span>
+        <h3>太原重工 · 工程起重机分公司</h3>
+        <span class="leg-date">2025.12 – 至今 · 湖北市场</span>
+      </header>
+      <p class="leg-sub">高空作业平台（剪叉4–14m / 臂式16–60m）· 大平台开局</p>
+      <div class="leg-body">
+        <p class="dropcap">第五站，他选了一家76年底蕴的老牌国企——太原重工，A股600169，2025年营收约103.79亿。业务是高空作业平台，市场是湖北。入职以来拓展客户113条、新增74条，意向价值1.2亿，已完成订单1500万，协助意向订单1亿、协助完成订单1400万。故事，还在继续写。</p>
+        <ul class="leg-facts">
+          <li>拓展客户 <b>113条</b> / 新增 <b>74条</b></li>
+          <li>意向价值 <b>1.2亿</b></li>
+          <li>已完成订单 <b>1500万</b></li>
+          <li>协助意向订单 <b>1亿</b> / 协助完成订单 <b>1400万</b></li>
+        </ul>
+        <p class="leg-note">站点注：高机行业近选目标已列入三年纲领——临工、星邦、鼎力（见页12）。</p>
+      </div>
+    </article>
+  </div>
+
+  <blockquote class="pullquote">
+    五年五站，地图越画越大；十年之后回头看，最值钱的是0到180那条路。
+    <small>—— 汉青，谈三一重工岁月</small>
+  </blockquote>
+
+  <hr class="hr-rule red">
+
+  <div class="grid-12">
+    <div class="g-5 reveal">
+      <p class="kicker">路标 · 学历与来处</p>
+      <p class="cols2" style="column-count:1;">
+        鹤壁职业技术学院 · 汽车检测（2012–2015）——他在河南的第一张名片；
+        黄淮学院 · 汽车服务工程（2015–2017）——本科毕业那年，他第一次站上工地。
+        学的是汽车，卖的是工程机械，如今做的是高空作业平台——机器越来越大，道理越来越简单：懂设备，才能懂客户。
+      </p>
+    </div>
+    <div class="g-5 reveal" style="grid-column:span 5;">
+      <p class="kicker">路标 · 气质画像</p>
+      <p class="cols2" style="column-count:1;">
+        编辑部请他给自己画像，他给了六个字：<b>「既懂销售，又懂AI」</b>。我们理解的意思是——懂设备、懂客户、懂账期，还能把重复的事交给工具；既能把大单谈下来，又能把效率提上去。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     栏目 · 八艺 EIGHT CRAFTS（8个能力标签）
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="page" id="rubric" aria-label="栏目八艺">
+  <div class="folio">
+    <span class="f-mark">汉青志 · THE HANQING JOURNAL</span>
+    <span>总第01期 · 第08页</span>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-num" aria-hidden="true">08</div>
+    <div class="chapter-txt">
+      <p class="kicker">Column · 固定栏目</p>
+      <h2>八艺<span>Eight Crafts · Ability Tags</span></h2>
+    </div>
+  </div>
+
+  <p class="lead">本栏目仿古代「艺」之谓，把十年销售生涯打磨出的八项能力做成八个条目。每一艺，都能在他的履历里找到对应的账本。</p>
+
+  <div class="grid-12">
+    <div class="rubric-card g-3 reveal">
+      <span class="rubric-no">壹</span>
+      <span class="rubric-ico" aria-hidden="true">🏛️</span>
+      <h3>大客户经营<span>Key Account</span></h3>
+      <p>十年面对工程机械大客户：旋挖钻机、履带吊、空压机、高空作业平台。懂设备、懂工况、懂账期，签的是几十万到千万级的单。</p>
+    </div>
+
+    <div class="rubric-card g-3 reveal">
+      <span class="rubric-no">贰</span>
+      <span class="rubric-ico" aria-hidden="true">🧭</span>
+      <h3>区域0→1开拓<span>0 to 1 Expansion</span></h3>
+      <p>三一河南独立开发，客户0到180家；太重湖北拓展113条、新增74条。给一张空白地图，还你一张作战图。</p>
+    </div>
+
+    <div class="rubric-card g-3 reveal">
+      <span class="rubric-no">叁</span>
+      <span class="rubric-ico" aria-hidden="true">📑</span>
+      <h3>招投标 / 标书<span>Tender &amp; Bid</span></h3>
+      <p>复盛实业半年独立完成标书35份、协助投标19项。资质、技术、商务，整套标书流程闭眼可走。</p>
+    </div>
+
+    <div class="rubric-card g-3 reveal">
+      <span class="rubric-no">肆</span>
+      <span class="rubric-ico" aria-hidden="true">💠</span>
+      <h3>融资租赁方案设计<span>Leasing Structuring</span></h3>
+      <p>工程机械大额成交绕不开融资租赁。他的方案永远先算账期再谈价格，把「买不起」变成「租得起、还得起」。</p>
+    </div>
+
+    <div class="rubric-card g-3 reveal">
+      <span class="rubric-no">伍</span>
+      <span class="rubric-ico" aria-hidden="true">🛡️</span>
+      <h3>应收账款风控<span>Receivables Control</span></h3>
+      <p>中联重科时期主导应收账款催收与风险评估，完善客户信息112条。销售的上半场是签约，下半场是回款。</p>
+    </div>
+
+    <div class="rubric-card g-3 reveal">
+      <span class="rubric-no">陆</span>
+      <span class="rubric-ico" aria-hidden="true">🤝</span>
+      <h3>客户成功 / 续约<span>Customer Success</span></h3>
+      <p>客户从40家到132家、0到180家——存量客户持续经营才是复利。他习惯把客户台账当资产表来维护。</p>
+    </div>
+
+    <div class="rubric-card g-3 reveal">
+      <span class="rubric-no">柒</span>
+      <span class="rubric-ico" aria-hidden="true">🤖</span>
+      <h3>AI提效<span>AI Leverage</span></h3>
+      <p>WorkBuddy 八个自建技能：线索采集、热力作战图、14页推介PPT、行业简报流水线。重复的事交给AI。</p>
+    </div>
+
+    <div class="rubric-card g-3 reveal">
+      <span class="rubric-no">捌</span>
+      <span class="rubric-ico" aria-hidden="true">📊</span>
+      <h3>可量化业绩<span>Quantified Results</span></h3>
+      <p>40→132、0→180、112条、92条、35份、113条、1.2亿、1500万、1亿、1400万——每一项能力背后都有数字，无一例外。</p>
+    </div>
+  </div>
+
+  <hr class="hr-rule">
+
+  <div class="grid-12">
+    <div class="g-6 reveal">
+      <p class="kicker">方法论 · 学习原则</p>
+      <p>结果导向 → 先模仿后创造 → 重复的事自动化 → 小步快跑。四步循环，是他从「会卖货」到「会造工具」的底层引擎。</p>
+    </div>
+    <div class="g-6 reveal">
+      <p class="kicker">风格 · 沟通</p>
+      <p>专业干练，直奔结果。不绕弯、不画饼、不欠人情账——客户和猎头都这么说。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     作品专栏 · FOUR WORKS（标题 / 摘要 / 页码）
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="page" id="works" aria-label="作品专栏">
+  <div class="folio">
+    <span class="f-mark">汉青志 · THE HANQING JOURNAL</span>
+    <span>总第01期 · 第09–11页</span>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-num" aria-hidden="true">09</div>
+    <div class="chapter-txt">
+      <p class="kicker">Portfolio · 作品专栏</p>
+      <h2>四件作品<span>Four Works, One Workbench</span></h2>
+    </div>
+  </div>
+
+  <p class="lead">销售的尽头是体系，体系的尽头是工具。本专栏收录汉青亲手做的四件作品——一份资料库、一套AI技能、一个职业工作台、一个获客助手。它们全部是真东西，全部单文件可跑。</p>
+
+  <article class="work-card reveal">
+    <div class="wc-main">
+      <p class="wc-kicker">作品 壹 · Works No.1</p>
+      <h3>高机销售资料库<span class="en">Sales Library</span></h3>
+      <p class="wc-abstract">湖北市场开发工具箱，按「产品推介 / 市场开发 / 融资租赁 / 客户运营 / 行业资讯」五大类归档——编辑部数了一下，另有第六类：销售资料总库，合计1000+份资料。新人进湖北，先翻库，再出门。</p>
+    </div>
+    <div class="wc-side">
+      <h4>归档结构</h4>
+      <ul class="skill-list">
+        <li>产品推介</li>
+        <li>市场开发</li>
+        <li>融资租赁</li>
+        <li>客户运营</li>
+        <li>行业资讯</li>
+        <li>资料总量 <b>1000+</b></li>
+      </ul>
+      <p class="wc-meta"><b>用途 ·</b> 湖北市场开发工具箱<br><b>形态 ·</b> 本地资料库，离线可用</p>
+      <p class="wc-pg">内页 <b>09</b></p>
+    </div>
+  </article>
+
+  <article class="work-card reveal">
+    <div class="wc-main">
+      <p class="wc-kicker">作品 贰 · Works No.2</p>
+      <h3>AI技能库<span class="en">AI Skill Kit</span></h3>
+      <p class="wc-abstract">在 WorkBuddy 上自建八个定制技能，从线索采集到作战图，从执行体系到自动简报，构成一套完整的「AI销售军火库」。其中 industry-briefing 每月5日自动出行业简报——重复的事，一天都不手写。</p>
+    </div>
+    <div class="wc-side">
+      <h4>八个技能清单</h4>
+      <ul class="skill-list">
+        <li><code>market-dev-kit</code> 区域开发总入口</li>
+        <li><code>amap-poi-collector</code> 高德客户线索采集</li>
+        <li><code>customer-geo-viz</code> 客户热力作战图</li>
+        <li><code>sales-lead-workbook</code> 销售执行体系</li>
+        <li><code>sales-pitch-ppt</code> 高转化14页推介PPT</li>
+        <li><code>wechat-addfriend</code> 微信获客助手</li>
+        <li><code>secure-html-deploy</code> 加密部署</li>
+        <li><code>industry-briefing</code> 行业简报流水线（每月5日自动）</li>
+      </ul>
+      <p class="wc-meta"><b>平台 ·</b> WorkBuddy<br><b>数量 ·</b> 8个定制技能，全部自建</p>
+      <p class="wc-pg">内页 <b>10</b></p>
+    </div>
+  </article>
+
+  <article class="work-card reveal">
+    <div class="wc-main">
+      <p class="wc-kicker">作品 叁 · Works No.3</p>
+      <h3>汉青职业工作台<span class="en">Career Workbench</span></h3>
+      <p class="wc-abstract">单文件 HTML 效率应用——6 大模块：学习 / 积累 / 记录 / 提高 / 事项安排 / 自我进化；localStorage 持久化 + JSON 导入导出；jsdom 功能自检 10 项全 PASS。</p>
+    </div>
+    <div class="wc-side">
+      <h4>六大模块</h4>
+      <ul class="skill-list">
+        <li>学习</li>
+        <li>积累</li>
+        <li>记录</li>
+        <li>提高</li>
+        <li>事项安排</li>
+        <li>自我进化</li>
+      </ul>
+      <p class="wc-meta"><b>技术 ·</b> 单文件HTML · localStorage持久化 · JSON导入导出<br><b>自检 ·</b> jsdom 功能自检 10 项全 PASS</p>
+      <p class="wc-pg">内页 <b>10</b></p>
+    </div>
+  </article>
+
+  <article class="work-card reveal">
+    <div class="wc-main">
+      <p class="wc-kicker">作品 肆 · Works No.4</p>
+      <h3>微信获客助手<span class="en">WeChat Lead Tool</span></h3>
+      <p class="wc-abstract">状态机驱动的单文件获客工具：状态机 + CSV备份 + 加密三位一体，内置每日25–30条客户触达节奏。大客户销售靠触达密度，他把触达这件重复的事，做成了可审计、可备份、可加密的流水线。</p>
+    </div>
+    <div class="wc-side">
+      <h4>核心特性</h4>
+      <ul class="skill-list">
+        <li>状态机驱动流程</li>
+        <li>CSV 数据备份</li>
+        <li>加密存储</li>
+        <li>每日 25–30 条客户触达节奏</li>
+      </ul>
+      <p class="wc-meta"><b>形态 ·</b> 单文件工具，离线可跑<br><b>配套 ·</b> 已并入AI技能库 wechat-addfriend</p>
+      <p class="wc-pg">内页 <b>11</b></p>
+    </div>
+  </article>
+
+  <div class="grid-12" style="margin-top:2rem;">
+    <div class="g-8 reveal">
+      <p class="kicker">编辑部点评</p>
+      <p>四件作品有一条暗线：<b>把个人经验工具化，把工具产品化，把产品自动化</b>。资料库沉淀内容，技能库放大产能，职业工作台管理人，获客助手管理触达——一个人的「编辑部」，四张桌子，全部单文件。</p>
+    </div>
+    <div class="g-4 reveal">
+      <p class="kicker">相关内页</p>
+      <p style="font-family:var(--sans); font-size:.82rem; color:var(--ink-faint);">
+        八艺栏目 · 页08 ｜ 数字速览 · 页04 ｜ 专访之AI问答 · 页02
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     编辑推荐 · EDITOR'S PICK（三年纲领 2026–2028 框）
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="page" id="plan" aria-label="编辑推荐三年纲领">
+  <div class="folio">
+    <span class="f-mark">汉青志 · THE HANQING JOURNAL</span>
+    <span>总第01期 · 第12页</span>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-num" aria-hidden="true">12</div>
+    <div class="chapter-txt">
+      <p class="kicker">Editor's Pick · 编辑部力荐</p>
+      <h2>三年纲领 2026–2028<span>Move · Anchor · Ascend</span></h2>
+    </div>
+  </div>
+
+  <div class="editor-pick reveal">
+    <span class="ep-tag">本期编辑推荐</span>
+    <p class="ep-intro">十年存量，三年增量。汉青为2026–2028立下行动纲领：<b>动身求职 → 定盘业绩 → 上阶带团队</b>。编辑部认为，这是本刊最值得裱起来的一页。</p>
+
+    <div class="plan-years">
+      <div class="plan-year window reveal">
+        <span class="py-no">2026</span>
+        <span class="py-word">动身求职</span>
+        <ul>
+          <li>秋金月（8–11月）发力，<b>10月下旬–11月中旬</b>为签约窗口</li>
+          <li>主攻：工业互联网SaaS行业销售 / 客户成功——树根互联、徐工汉云、卡奥斯、腾讯云工业、华为云</li>
+          <li>保底：融资租赁客户经理——远东宏信、平安租赁、厂商金融</li>
+          <li>近选：高机头部厂销售管理岗——临工、星邦、鼎力</li>
+        </ul>
+      </div>
+
+      <div class="plan-year reveal">
+        <span class="py-no">2027</span>
+        <span class="py-word">定盘</span>
+        <ul>
+          <li>名分落实：身份、平台、行业三件事落定</li>
+          <li>业绩年：用可量化的数字坐稳位置</li>
+          <li>把大客户经营与AI提效复制到新行业</li>
+        </ul>
+      </div>
+
+      <div class="plan-year reveal">
+        <span class="py-no">2028</span>
+        <span class="py-word">上阶</span>
+        <ul>
+          <li>争取带团队：从「最会卖的人」到「最会带人卖的人」</li>
+          <li>沉淀方法论，把个人能力变成组织能力</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ep-xinfa">
+      <h4>心法 · FOUR TENETS</h4>
+      <div class="xinfa-grid">
+        <div class="xinfa-item reveal"><b>内推＞海投</b>让认识你的人替你敲门</div>
+        <div class="xinfa-item reveal"><b>卖方案不卖力气</b>价值先于价格</div>
+        <div class="xinfa-item reveal"><b>攻坚大单必组队</b>一个人扛不下大单</div>
+        <div class="xinfa-item reveal"><b>先站上大平台</b>赚大钱之前，先借大平台的势</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     封底 · BACK COVER（联系方式 + colophon版权页 + 免费传阅）
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="page back-cover" id="contact" aria-label="封底联系方式">
+  <div class="folio">
+    <span class="f-mark">汉青志 · THE HANQING JOURNAL</span>
+    <span>总第01期 · 封底</span>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-main">
+      <h2>来信<span>请寄</span></h2>
+      <p class="sub">CONTACT · 联系方式</p>
+
+      <div class="contact-row">
+        <span class="cr-label">电话</span>
+        <a href="tel:17772118785">177-7211-8785</a>
+      </div>
+      <div class="contact-row">
+        <span class="cr-label">邮箱</span>
+        <a href="mailto:1820688914@qq.com">1820688914@qq.com</a>
+      </div>
+      <div class="contact-row">
+        <span class="cr-label">现职</span>
+        <span>太原重工 · 工程起重机分公司 业务经理 / 大客户销售</span>
+      </div>
+      <div class="contact-row">
+        <span class="cr-label">坐标</span>
+        <span>河南郑州（可出差）</span>
+      </div>
+      <div class="contact-row">
+        <span class="cr-label">求约</span>
+        <span>工业互联网SaaS · 融资租赁 · 高机销售管理 三类岗位机会，欢迎来函</span>
+      </div>
+
+      <p style="margin-top:1.6rem;">
+        <button type="button" class="print-btn" id="printBtn">🖨 打印本刊</button>
+      </p>
+    </div>
+
+    <div class="contact-aside">
+      <div class="who reveal">
+        <b>邵汉青</b> · 32岁 · 已婚<br>
+        「10年工程机械大客户销售 × AI重度实践者」<br>
+        沟通风格：专业干练、直奔结果<br>
+        座右铭：既懂销售，又懂AI<br>
+        学习原则：结果导向 → 先模仿后创造 → 重复的事自动化 → 小步快跑
+      </div>
+      <div class="who reveal" style="margin-top:1.4rem;">
+        <b>公司背书 ·</b> 太原重工<br>
+        76年底蕴 · A股600169 · 2025营收约103.79亿<br>
+        产品线：高空作业平台（剪叉4–14m / 臂式16–60m）<br>
+        区域：湖北市场（base郑州 · 可出差）
+      </div>
+    </div>
+  </div>
+
+  <div class="colophon">
+    <h4>版权页 · COLOPHON</h4>
+    <div class="co-item"><i>刊名</i>汉青志 THE HANQING JOURNAL</div>
+    <div class="co-item"><i>期号</i>总第01期 · 二〇二六年</div>
+    <div class="co-item"><i>主编</i>邵汉青（汉青）</div>
+    <div class="co-item"><i>版式</i>纸刊杂志风 · 12栏网格 · 衬线排版</div>
+    <div class="co-item"><i>字体</i>Georgia / Times New Roman / 宋体（系统衬线栈）</div>
+    <div class="co-item"><i>技术</i>单文件HTML5 · 原生JS · 零外部依赖 · 双击即读</div>
+    <div class="co-item"><i>配色</i>米纸 #f6f1e7 · 墨色 #1a1a1a · 刊红 #a33</div>
+    <div class="co-item"><i>数据口径</i>全部真实经历，截至2026年初</div>
+  </div>
+
+  <div class="free-pass">
+    <b>免费传阅声明 ·</b> 本刊为「个人网站合集」第02号站点（02 杂志编辑），欢迎转发、打印、传阅，禁止篡改数据与事实。刊物虽薄，账本皆真。
+  </div>
+
+  <footer class="site-footer">
+    © 2026 邵汉青 · 个人网站合集 · <a href="index.html">返回总览</a>
+    <a class="back-top-link" href="#top">↑ 回到卷首 · BACK TO COVER</a>
+  </footer>
+</section>
+
+</main>
+
+<button id="toTop" type="button" title="返回卷首" aria-label="返回卷首">↑</button>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   汉青志 · 交互脚本（原生JS · 无框架 · 无外部请求）
+   01 滚动渐入 02 阅读进度条 03 返回卷首
+   04 目录滚动高亮 05 打印本刊
+   ═══════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  /* ── 01 滚动渐入：IntersectionObserver，逐页淡入 ── */
+  var reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(function(el){ io.observe(el); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  /* ── 02 阅读进度条：顶部刊红细线 ── */
+  var bar = document.getElementById('progressbar');
+  function paintProgress(){
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var h  = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (h > 0 ? (st / h * 100) : 0) + '%';
+  }
+  window.addEventListener('scroll', paintProgress, { passive: true });
+  window.addEventListener('resize', paintProgress);
+  paintProgress();
+
+  /* ── 03 返回卷首按钮 ── */
+  var topBtn = document.getElementById('toTop');
+  function toggleTopBtn(){
+    var st = window.scrollY || document.documentElement.scrollTop;
+    topBtn.classList.toggle('show', st > 640);
+  }
+  window.addEventListener('scroll', toggleTopBtn, { passive: true });
+  topBtn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  toggleTopBtn();
+
+  /* ── 04 目录滚动高亮：进入哪一节，目录哪一项点亮 ── */
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('#tocList a'));
+  var tocTargets = tocLinks.map(function(a){
+    var id = a.getAttribute('href');
+    return id && id.charAt(0) === '#' ? document.querySelector(id) : null;
+  });
+  function paintToc(){
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var current = 0;
+    tocTargets.forEach(function(sec, idx){
+      if (sec && sec.offsetTop - 160 <= st) { current = idx; }
+    });
+    tocLinks.forEach(function(a, idx){
+      a.classList.toggle('active', idx === current);
+    });
+  }
+  if (tocTargets.length) {
+    window.addEventListener('scroll', paintToc, { passive: true });
+    paintToc();
+  }
+
+  /* ── 05 打印本刊：window.print()，纸刊当然可以印出来 ── */
+  var printBtn = document.getElementById('printBtn');
+  if (printBtn) {
+    printBtn.addEventListener('click', function(){ window.print(); });
+  }
+
+  /* ── 06 降级兜底：不支持平滑滚动时的锚点定位 ── */
+  if (!('scrollBehavior' in document.documentElement.style)) {
+    document.querySelectorAll('a[href^="#"]').forEach(function(a){
+      a.addEventListener('click', function(ev){
+        var id = a.getAttribute('href');
+        if (!id || id.length < 2) { return; }
+        var t = document.querySelector(id);
+        if (t) {
+          ev.preventDefault();
+          window.scrollTo(0, t.offsetTop - 12);
+        }
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

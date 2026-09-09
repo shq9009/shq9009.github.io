@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="邵汉青 · 10年工程机械大客户销售 × AI重度实践者 —— HQ-TERM 终端命令行个人站点">
+<meta name="author" content="邵汉青">
+<title>HQ-TERM · 邵汉青 · 终端命令行</title>
+<style>
+/* ==========================================================================
+   [01] 全局设计变量 —— 主题色(磷光) / 字体 / CRT 基础色
+   默认主题: 绿色磷光 #33ff66; 可经 theme 命令切换 琥珀/蓝/白
+   ========================================================================== */
+:root {
+  --phosphor: #33ff66;
+  --phosphor-dim: rgba(51, 255, 102, 0.68);
+  --glow-soft: rgba(51, 255, 102, 0.18);
+  --glow-strong: rgba(51, 255, 102, 0.70);
+  --tint: rgba(51, 255, 102, 0.05);
+  --bg: #050805;
+  --bg-page: #070907;
+  --err: #ff6b5e;
+  --crt-bezel: #151815;
+  --crt-bezel-hi: #262b26;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas,
+               "Liberation Mono", "Courier New", monospace;
+}
+
+/* 主题: 琥珀 #ffb000 —— 老式琥珀色 CRT */
+body.theme-amber {
+  --phosphor: #ffb000;
+  --phosphor-dim: rgba(255, 176, 0, 0.55);
+  --glow-soft: rgba(255, 176, 0, 0.18);
+  --glow-strong: rgba(255, 176, 0, 0.70);
+  --tint: rgba(255, 176, 0, 0.05);
+  --bg: #080705;
+  --bg-page: #0a0806;
+}
+
+/* 主题: 荧光蓝 #4db8ff —— 冷色荧光管 */
+body.theme-blue {
+  --phosphor: #4db8ff;
+  --phosphor-dim: rgba(77, 184, 255, 0.55);
+  --glow-soft: rgba(77, 184, 255, 0.18);
+  --glow-strong: rgba(77, 184, 255, 0.70);
+  --tint: rgba(77, 184, 255, 0.05);
+  --bg: #05080a;
+  --bg-page: #070a0c;
+}
+
+/* 主题: 冷白 #e8e8e8 —— 黑白终端 */
+body.theme-white {
+  --phosphor: #e8e8e8;
+  --phosphor-dim: rgba(232, 232, 232, 0.55);
+  --glow-soft: rgba(232, 232, 232, 0.16);
+  --glow-strong: rgba(232, 232, 232, 0.60);
+  --tint: rgba(232, 232, 232, 0.04);
+  --bg: #0a0a0a;
+  --bg-page: #0c0c0c;
+}
+
+/* ==========================================================================
+   [02] 基础重置 —— 盒模型 / 全局字体 / 页面背景(暗室 + 微弱网格)
+   ========================================================================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { min-height: 100%; }
+
+body {
+  font-family: var(--font-mono);
+  color: var(--phosphor);
+  background:
+    radial-gradient(1100px 520px at 50% -8%, var(--tint), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.012) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.012) 0 1px, transparent 1px 46px),
+    var(--bg-page);
+  text-shadow: 0 0 1px var(--phosphor-dim), 0 0 7px var(--glow-soft);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+  transition: background 0.6s ease, color 0.6s ease;
+}
+
+/* 文本选中: 反色高亮, 更像真实终端 */
+::selection { background: var(--phosphor); color: #050805; text-shadow: none; }
+
+a {
+  color: var(--phosphor);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--phosphor-dim);
+}
+a:hover { border-bottom-style: solid; }
+
+/* ==========================================================================
+   [03] 页面布局 —— 桌面容器 / 页眉 / 页脚
+   ========================================================================== */
+.desktop {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 30px 14px 44px;
+}
+
+/* 页眉: 站点合集面包屑 */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--phosphor-dim);
+  user-select: none;
+}
+.page-header .mark { color: var(--phosphor); }
+.page-header .sep { opacity: 0.4; }
+.page-header .title { color: var(--phosphor); }
+
+/* 页脚: 版权 / 返回总览 / 移动端提示 */
+.page-footer {
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--phosphor-dim);
+  line-height: 1.9;
+  user-select: none;
+}
+.page-footer .foot-main { color: var(--phosphor); }
+
+/* 移动端提示: 仅窄屏显示 */
+.mobile-hint { display: none; }
+
+/* ==========================================================================
+   [04] CRT 显示器机身 —— 圆角塑料外壳 / 品牌贴纸 / 旋钮 / 支架底座
+   ========================================================================== */
+.monitor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(960px, 94vw);
+}
+
+/* 机身(含屏幕的包围盒) */
+.monitor-body {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(180deg, var(--crt-bezel-hi) 0%, var(--crt-bezel) 55%, #0b0d0b 100%);
+  border: 1px solid #343a34;
+  border-radius: 34px;
+  padding: 30px 26px 34px;
+  box-shadow:
+    0 34px 90px rgba(0, 0, 0, 0.8),
+    0 6px 20px rgba(0, 0, 0, 0.55),
+    inset 0 2px 2px rgba(255, 255, 255, 0.10),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.65);
+}
+
+/* 机身品牌贴纸 */
+.monitor-brand {
+  position: absolute;
+  top: 10px;
+  left: 22px;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #6d7a6d;
+  user-select: none;
+}
+.monitor-brand b { color: #8f9f8f; font-weight: normal; }
+
+/* 机身序列号贴纸 */
+.monitor-sn {
+  position: absolute;
+  bottom: 12px;
+  left: 24px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #4d574d;
+  user-select: none;
+}
+
+/* 机身旋钮 */
+.monitor-knob {
+  position: absolute;
+  bottom: 10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #414941, #121512);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.85), 0 1px 1px rgba(255, 255, 255, 0.10);
+}
+.monitor-knob.k1 { right: 34px; }
+.monitor-knob.k2 { right: 12px; width: 10px; height: 10px; bottom: 13px; }
+
+/* 屏幕下方的支架颈与底座 */
+.monitor-neck {
+  width: 24%;
+  height: 46px;
+  background: linear-gradient(180deg, #1c201c, #101210);
+  box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.06), 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+.monitor-base {
+  width: 44%;
+  height: 18px;
+  background: linear-gradient(180deg, #2c312c, #131613);
+  border-radius: 12px 12px 4px 4px;
+  box-shadow: 0 22px 34px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================================================================
+   [05] 屏幕本体 —— 内凹玻璃 / 磷光底 / 辉光边框 / 开机淡入
+   ========================================================================== */
+.screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: clamp(430px, 66vh, 640px);
+  background: radial-gradient(130% 130% at 50% 38%, #0a160c 0%, var(--bg) 62%);
+  border: 1px solid #000;
+  border-radius: 16px;
+  padding: 8px 12px 10px;
+  box-shadow:
+    inset 0 0 10px rgba(0, 0, 0, 0.95),
+    inset 0 0 70px rgba(0, 0, 0, 0.85),
+    0 0 44px var(--glow-soft),
+    0 0 2px var(--glow-strong);
+  animation: power-on 1.1s ease-out both;
+}
+
+/* 开机: 屏幕从暗到亮 + 轻微缩放 */
+@keyframes power-on {
+  0%   { opacity: 0; transform: scale(0.985); filter: brightness(2.4); }
+  40%  { opacity: 0.7; }
+  100% { opacity: 1; transform: scale(1); filter: brightness(1); }
+}
+
+/* 持续微闪 —— 老 CRT 的呼吸感 */
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  91%      { opacity: 1; }
+  92%      { opacity: 0.93; }
+  93%      { opacity: 1; }
+  96%      { opacity: 0.97; }
+  97%      { opacity: 1; }
+}
+.screen { animation: power-on 1.1s ease-out both, crt-flicker 6s linear infinite 1.2s; }
+
+/* 扫描线: 静态横纹, 叠加在内容之上但不挡交互 */
+.screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  border-radius: inherit;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.24) 0 1px,
+    transparent 1px 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+/* 暗角: 屏幕四周渐暗, 模拟玻璃弧度 */
+.screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at center, transparent 52%, rgba(0, 0, 0, 0.62) 100%);
+}
+
+/* 移动光带: 一条缓慢下扫的磷光余辉 */
+.crt-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--glow-soft) 50%,
+    transparent 100%
+  );
+  background-size: 100% 300px;
+  background-repeat: no-repeat;
+  animation: scan-move 7s linear infinite;
+  opacity: 0.5;
+}
+@keyframes scan-move {
+  0%   { background-position: 0 -300px; }
+  100% { background-position: 0 300px; }
+}
+
+/* ==========================================================================
+   [06] 状态栏 —— 顶部(HQ-TERM/信号灯/时钟) 与 底部(模式/主题/位置)
+   ========================================================================== */
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--phosphor-dim);
+  user-select: none;
+  z-index: 2;
+}
+
+.bar-top {
+  padding: 4px 2px 8px;
+  border-bottom: 1px solid var(--glow-soft);
+}
+
+.bar-name { letter-spacing: 2px; color: var(--phosphor); }
+.bar-clock { margin-left: auto; letter-spacing: 1px; }
+
+/* 信号灯: 三个发光 LED */
+.led {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 7px currentColor;
+}
+.led-power { color: #33ff66; }            /* 电源: 常亮绿 */
+.led-link  { color: #ffb000; animation: led-blink 1.6s steps(2, start) infinite; }  /* 链路: 琥珀慢闪 */
+.led-tx    { color: #33ff66; animation: led-blink 0.8s steps(2, start) infinite; }  /* 收发: 绿快闪 */
+
+@keyframes led-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.12; }
+}
+
+.bar-bottom {
+  padding: 7px 2px 2px;
+  margin-top: 6px;
+  border-top: 1px solid var(--glow-soft);
+  border-bottom: none;
+  gap: 16px;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.bar-bottom .st-right { margin-left: auto; }
+
+/* ==========================================================================
+   [07] 终端输出区 —— 滚动 / 行样式 / 块样式 / 滚动条
+   ========================================================================== */
+.term {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 2px 6px;
+  font-size: 14px;
+  line-height: 1.6;
+  scrollbar-width: thin;
+  scrollbar-color: var(--glow-strong) transparent;
+  z-index: 2;
+  outline: none;
+  overscroll-behavior: contain;
+}
+
+/* WebKit 滚动条 */
+.term::-webkit-scrollbar { width: 8px; height: 8px; }
+.term::-webkit-scrollbar-track { background: transparent; }
+.term::-webkit-scrollbar-thumb {
+  background: var(--glow-strong);
+  border-radius: 4px;
+  border: 2px solid var(--bg);
+}
+
+.term div { white-space: pre-wrap; word-break: break-word; }
+.term pre {
+  margin: 2px 0 6px;
+  font: inherit;
+  white-space: pre;
+  line-height: 1.45;
+}
+
+/* 行修饰类 */
+.term .dim { opacity: 0.75; }
+.term .ok  { color: var(--phosphor); text-shadow: 0 0 6px var(--glow-soft); }
+.term .hl  { color: var(--phosphor); text-shadow: 0 0 2px var(--glow-strong), 0 0 12px var(--glow-soft); font-weight: bold; }
+.term .err { color: var(--err); text-shadow: 0 0 7px rgba(255, 107, 94, 0.45); }
+
+/* 回显的命令行: 提示符 + 命令文本 */
+.term .line-cmd { color: var(--phosphor); }
+.term .line-cmd .prompt-inline { color: var(--phosphor); font-weight: bold; }
+
+/* ASCII 横幅 */
+.term .banner-pre {
+  font-size: 13px;
+  line-height: 1.35;
+  margin: 6px 0 10px;
+  padding-left: 2px;
+}
+
+/* ==========================================================================
+   [08] 输入行 —— 提示符 + 透明输入框(原生光标染成磷光色)
+   ========================================================================== */
+.input-line {
+  display: none;
+  align-items: center;
+  gap: 0;
+  flex: 0 0 auto;
+  z-index: 2;
+  padding: 8px 2px 2px;
+  border-top: 1px dashed var(--glow-soft);
+}
+.input-line.active { display: flex; }
+
+.input-line .prompt {
+  white-space: nowrap;
+  color: var(--phosphor);
+  font-weight: bold;
+  padding-right: 8px;
+}
+
+.input-line input {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--phosphor);
+  text-shadow: inherit;
+  caret-color: var(--phosphor);
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+}
+
+/* ==========================================================================
+   [09] 动画汇总 —— 闪烁 / 光带 / LED / 开机(集中管理, 便于维护)
+   ========================================================================== */
+/* (各关键帧已在对应组件旁定义, 此处保留分区注释以便索引)
+   1. power-on     —— 屏幕开机淡入          见 [05]
+   2. crt-flicker  —— 持续微闪              见 [05]
+   3. scan-move    —— 移动光带下扫          见 [05]
+   4. led-blink    —— 信号灯闪烁            见 [06]
+   -------------------------------------------------------------------------- */
+
+/* ==========================================================================
+   [10] 响应式 —— 窄屏(≤768px) 与 超窄屏(≤420px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .desktop { gap: 14px; padding: 18px 8px 30px; }
+
+  .monitor { width: 97vw; }
+  .monitor-body {
+    border-radius: 20px;
+    padding: 22px 10px 26px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+  }
+  .monitor-brand { top: 7px; left: 14px; font-size: 9px; letter-spacing: 2px; }
+  .monitor-sn { display: none; }
+  .monitor-knob { width: 12px; height: 12px; bottom: 8px; }
+  .monitor-knob.k1 { right: 26px; }
+  .monitor-knob.k2 { right: 10px; width: 8px; height: 8px; bottom: 10px; }
+  .monitor-neck { width: 30%; height: 34px; }
+  .monitor-base { width: 52%; height: 14px; }
+
+  .screen {
+    height: 72vh;
+    min-height: 420px;
+    border-radius: 10px;
+    padding: 6px 8px 8px;
+  }
+
+  .term { font-size: 13px; line-height: 1.6; }
+  .term .banner-pre { display: none; }   /* ASCII 横幅纯装饰，窄屏隐藏防横向溢出 */
+  .term pre { font-size: 10px; }
+
+  /* 输入框放大字号, 防止 iOS 聚焦时自动放大页面 */
+  .input-line input { font-size: 16px; }
+
+  .bar-top { font-size: 11px; }
+  .bar-bottom { font-size: 10px; gap: 8px; }
+
+  .page-header { font-size: 10.5px; flex-wrap: wrap; justify-content: center; }
+  .page-footer { font-size: 11px; }
+
+  /* 窄屏提示 */
+  .mobile-hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 10.5px;
+    color: var(--phosphor-dim);
+    opacity: 0.75;
+  }
+}
+
+@media (max-width: 420px) {
+  .term { font-size: 12px; line-height: 1.55; }
+  .bar-bottom { font-size: 10px; gap: 6px; }
+  .monitor-body { border-radius: 16px; padding: 20px 8px 22px; }
+}
+/* 超窄屏：底部状态栏允许换行，避免内容被裁 */
+@media (max-width: 480px) {
+  .bar-bottom { white-space: normal; overflow: visible; flex-wrap: wrap; row-gap: 2px; }
+  .bar-bottom .st-right { margin-left: 0; }
+}
+
+/* ==========================================================================
+   [11] 无障碍与降级 —— JS 关闭时的提示
+   ========================================================================== */
+.noscript-box {
+  max-width: 620px;
+  margin: 0 auto 20px;
+  padding: 14px 18px;
+  border: 1px dashed var(--phosphor-dim);
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--phosphor);
+  text-align: center;
+}
+</style>
+</head>
+<body class="theme-green" id="pageBody">
+
+<!-- ======================================================================
+     桌面容器: 页眉 / CRT 显示器 / 页脚
+     ====================================================================== -->
+<div class="desktop">
+
+  <!-- 页眉: 个人网站合集导航 -->
+  <header class="page-header">
+    <span class="mark">▚</span>
+    <span>个人网站合集</span>
+    <span class="sep">::</span>
+    <span>01 / 10</span>
+    <span class="sep">::</span>
+    <span class="title">终端命令行 HQ-TERM</span>
+  </header>
+
+  <!-- CRT 显示器主体 -->
+  <main class="monitor" aria-label="HQ-TERM 终端模拟器">
+
+    <!-- 机身(含屏幕) -->
+    <div class="monitor-body">
+      <!-- 机身装饰: 品牌 / 序列号 / 旋钮 -->
+      <div class="monitor-brand">HQ-TERM <b>· CRT-14</b></div>
+      <div class="monitor-sn">SN 2026-0104-HQ</div>
+      <div class="monitor-knob k1"></div>
+      <div class="monitor-knob k2"></div>
+
+      <!-- 屏幕区域 -->
+      <section class="screen" id="screen">
+
+        <!-- CRT 光效层(纯装饰, 不挡交互) -->
+        <div class="crt-overlay"></div>
+
+        <!-- 顶部状态栏: 信号灯 + 机器名 + JS 实时时钟 -->
+        <div class="bar bar-top">
+          <span class="led led-power" title="电源"></span>
+          <span class="led led-link" title="链路"></span>
+          <span class="led led-tx" title="收发"></span>
+          <span class="bar-name">HQ-TERM</span>
+          <span class="bar-clock" id="clock">----/--/-- --:--:--</span>
+        </div>
+
+        <!-- 终端输出区 -->
+        <div class="term" id="term" tabindex="-1" aria-live="polite"></div>
+
+        <!-- 输入行: 提示符 + 命令输入框 -->
+        <div class="input-line" id="inputLine">
+          <span class="prompt">guest@hq-term:~$</span>
+          <input id="input" type="text"
+                 autocomplete="off" autocapitalize="off" autocorrect="off"
+                 spellcheck="false" aria-label="输入命令">
+        </div>
+
+        <!-- 底部状态行 -->
+        <div class="bar bar-bottom">
+          <span class="st" id="stMode">MODE: BOOT</span>
+          <span class="st" id="stTheme">THEME: GREEN</span>
+          <span class="st st-right" id="stPos">POS: 河南郑州 · UPTIME: 10Y</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- 支架: 颈 + 底座 -->
+    <div class="monitor-neck"></div>
+    <div class="monitor-base"></div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="page-footer">
+    <p class="foot-main">© 2026 邵汉青 · 个人网站合集 · <a href="index.html">返回总览</a></p>
+    <p>CRT 模拟 · 绿色磷光 #33ff66 · 输入 theme 切换琥珀 / 蓝 / 白</p>
+    <div class="mobile-hint">窄屏体验受限 · 建议使用桌面浏览器获得完整体验</div>
+  </footer>
+</div>
+
+<noscript>
+  <div class="noscript-box">
+    本终端站点需要启用 JavaScript 才能运行。<br>
+    请开启 JS 后刷新页面；或返回 <a href="index.html">总览</a> 查看其他站点。
+  </div>
+</noscript>
+
+<script>
+"use strict";
+/* ==========================================================================
+   HQ-TERM · 终端引擎 (原生 JS, 零依赖, file:// 直接可运行)
+   --------------------------------------------------------------------------
+   目录:
+   [01] 工具函数          $ / sleep / esc / pad / nowStr / scrollBottom
+   [02] 主题系统          applyTheme / loadTheme / THEMES
+   [03] 时钟与状态栏      tick / updateStatus
+   [04] 输出渲染          printLine / printBlock / printCmd / clearScreen
+   [05] ASCII 横幅        FIGLET 字模 + figlet() 组合
+   [06] 内容数据          全部章节文本 (about/career/skills/stats/...)
+   [07] 虚拟文件系统      FS 文件表 + ls / cat
+   [08] 命令表            COMMANDS (23 条命令)
+   [09] 输入处理          runCommand / echoPrompt / 历史 / 方向键
+   [10] 启动序列          boot() 开机自检 + 打字机效果
+   [11] 初始化           事件绑定 + 启动
+   ========================================================================== */
+
+/* ==========================================================================
+   [01] 工具函数
+   ========================================================================== */
+const $ = (id) => document.getElementById(id);
+
+/* sleep: 若用户跳过启动动画, 则所有等待立即结束 */
+let skipBoot = false;
+const sleep = (ms) => new Promise((r) => setTimeout(r, skipBoot ? 0 : ms));
+
+/* 数字补零 */
+const pad = (n) => String(n).padStart(2, "0");
+
+/* 当前时间字符串: YYYY-MM-DD HH:MM:SS 星期X */
+function nowStr() {
+  const d = new Date();
+  const wd = ["日", "一", "二", "三", "四", "五", "六"][d.getDay()];
+  return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) +
+         " " + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds()) +
+         " 星期" + wd;
+}
+
+/* 终端输出区自动滚动到底部 */
+function scrollBottom() {
+  const t = $("term");
+  t.scrollTop = t.scrollHeight;
+}
+
+/* ==========================================================================
+   [02] 主题系统 —— 绿色磷光(默认) / 琥珀 / 蓝 / 白, 持久化到 localStorage
+   ========================================================================== */
+const THEMES = {
+  green: { hex: "#33ff66", name: "磷光绿" },
+  amber: { hex: "#ffb000", name: "琥珀黄" },
+  blue:  { hex: "#4db8ff", name: "荧光蓝" },
+  white: { hex: "#e8e8e8", name: "冷白" }
+};
+let currentTheme = "green";
+
+function applyTheme(t) {
+  currentTheme = THEMES[t] ? t : "green";
+  $("pageBody").className = "theme-" + currentTheme;
+  try { localStorage.setItem("hqterm-theme", currentTheme); } catch (e) { /* 隐私模式忽略 */ }
+}
+
+function loadTheme() {
+  try {
+    const t = localStorage.getItem("hqterm-theme");
+    if (THEMES[t]) applyTheme(t);
+  } catch (e) { /* 忽略 */ }
+}
+
+/* ==========================================================================
+   [03] 时钟与状态栏
+   ========================================================================== */
+let mode = "boot";   /* boot | interactive */
+
+function tick() {
+  $("clock").textContent = nowStr();
+}
+
+function updateStatus() {
+  $("stMode").textContent = mode === "boot" ? "MODE: BOOT" : "MODE: INTERACTIVE";
+  $("stTheme").textContent = "THEME: " + currentTheme.toUpperCase();
+}
+
+/* ==========================================================================
+   [04] 输出渲染
+   ========================================================================== */
+const termEl = () => $("term");
+
+/* 打印一行普通文本 (自动转义, 安全) */
+function printLine(text, cls) {
+  const div = document.createElement("div");
+  if (cls) div.className = cls;
+  div.textContent = text;
+  termEl().appendChild(div);
+  scrollBottom();
+  return div;
+}
+
+/* 打印多行保留空白文本 (ASCII 表格 / 横幅) */
+function printBlock(text, cls) {
+  const pre = document.createElement("pre");
+  if (cls) pre.className = cls;
+  pre.textContent = text;
+  termEl().appendChild(pre);
+  scrollBottom();
+  return pre;
+}
+
+/* 回显用户输入的命令行 */
+function echoPrompt(cmd) {
+  const div = document.createElement("div");
+  div.className = "line-cmd";
+  const p = document.createElement("span");
+  p.className = "prompt-inline";
+  p.textContent = "guest@hq-term:~$ ";
+  const c = document.createElement("span");
+  c.textContent = cmd;
+  div.appendChild(p);
+  div.appendChild(c);
+  termEl().appendChild(div);
+}
+
+/* 清屏 */
+function clearScreen() {
+  termEl().innerHTML = "";
+}
+
+/* ==========================================================================
+   [05] ASCII 横幅 —— 8 个字母的字模(7~8 列宽), 组合出 SHAO HANQING
+   ========================================================================== */
+const FIGLET = {
+  S: [" ____  ", "/ ___| ", "\\___ \\ ", " ___) |", "|____/ "],
+  H: [" _   _ ", "| | | |", "| |_| |", "|  _  |", "|_| |_|"],
+  A: ["   ___ ", "  / _ \\", " | | | |", " | |_| |", "  \\___/"],
+  O: ["  ___  ", " / _ \\ ", "| | | |", "| |_| |", " \\___/ "],
+  N: [" _   _ ", "| \\ | |", "|  \\| |", "| |\\  |", "|_| \\_|"],
+  Q: ["  ___  ", " / _ \\ ", "| | | |", "| |_| |", " \\__\\_\\"],
+  I: ["  ___  ", " |_ _| ", "  | |  ", "  | |  ", " |___| "],
+  G: ["  ____ ", " / ___|", "| |  _ ", "| |_| |", " \\____|"]
+};
+
+/* 组合任意单词为 5 行横幅 */
+function figlet(word) {
+  const rows = ["", "", "", "", ""];
+  for (const ch of word) {
+    const art = FIGLET[ch];
+    if (!art) {
+      for (let r = 0; r < 5; r++) rows[r] += "      ";
+      continue;
+    }
+    for (let r = 0; r < 5; r++) rows[r] += art[r] + "  ";
+  }
+  return rows.join("\n");
+}
+
+const BANNER = figlet("SHAO HANQING");
+
+/* ==========================================================================
+   [06] 内容数据 —— 全部章节文本 (仅使用【共享内容】中的真实事实)
+   ========================================================================== */
+
+/* about: 关于邵汉青 */
+const ABOUT_TEXT = [
+  "定位 : 10年工程机械大客户销售 × AI重度实践者",
+  "人设 : 「既懂销售，又懂AI」",
+  "",
+  "现职 : 太原重工 · 工程起重机分公司",
+  "       业务经理 / 大客户销售 (高空作业平台)",
+  "       产品覆盖: 剪叉 4-14m · 臂式 16-60m",
+  "",
+  "base : 河南郑州 (可出差)    |    32岁    |    已婚",
+  "",
+  "学历 :",
+  "       本科  黄淮学院 · 汽车服务工程 (2015-2017)",
+  "       大专  鹤壁职业技术学院 · 汽车检测 (2012-2015)",
+  "",
+  "背书 : 太原重工 76年底蕴 · A股600169 · 2025营收约103.79亿",
+  "",
+  "战绩 :",
+  "       意向价值 1.2亿 · 已完成订单 1500万",
+  "       客户开发 180+ 家 · 独立标书 35 份",
+  "",
+  "学习 : 结果导向 → 先模仿后创造 → 重复的事自动化 → 小步快跑",
+  "风格 : 专业干练、直奔结果"
+].join("\n");
+
+/* career: 职业履历时间线 (5 段, 从早到晚) */
+const CAREER_TEXT = [
+  "[履历] CAREER —— 职业时间线 (共5段, 从早到晚)",
+  "═══════════════════════════════════════════════════════════",
+  " [01] 2017.10 - 2021.03",
+  "      公司 : 宇通重工",
+  "      业务 : 旋挖钻机 / 履带吊",
+  "      区域 : 粤东区域",
+  "      战绩 : 目标客户 40 → 132 家",
+  "             年业绩 600-1000万",
+  "             同批 60+ 新人中最早转正",
+  "───────────────────────────────────────────────────────────",
+  " [02] 2021.04 - 2023.06",
+  "      公司 : 三一重工",
+  "      业务 : 旋挖钻机",
+  "      区域 : 河南区域",
+  "      战绩 : 独立开发市场, 客户 0 → 180 家",
+  "             年均销售 1500万",
+  "───────────────────────────────────────────────────────────",
+  " [03] 2023.07 - 2024.10",
+  "      公司 : 中联重科",
+  "      业务 : 旋挖钻机",
+  "      区域 : 河南区域",
+  "      战绩 : 完善客户信息 112 条",
+  "             主导应收账款催收与风险评估",
+  "───────────────────────────────────────────────────────────",
+  " [04] 2025.05 - 2025.12",
+  "      公司 : 复盛实业(上海)",
+  "      业务 : 空压机",
+  "      区域 : 河南区域",
+  "      战绩 : 报备意向 92 条",
+  "             独立完成标书 35 份",
+  "             协助投标 19 项",
+  "───────────────────────────────────────────────────────────",
+  " [05] 2025.12 - 至今",
+  "      公司 : 太原重工 · 工程起重机分公司",
+  "      业务 : 高空作业平台 (剪叉4-14m / 臂式16-60m)",
+  "      区域 : 湖北市场",
+  "      战绩 : 拓展客户 113 条、新增 74 条",
+  "             意向价值 1.2亿",
+  "             已完成订单 1500万",
+  "             协助意向订单 1亿",
+  "             协助完成订单 1400万",
+  "═══════════════════════════════════════════════════════════"
+].join("\n");
+
+/* skills: 8 项核心能力 */
+const SKILLS_TEXT = [
+  "[能力] SKILLS —— 8 项核心能力",
+  "──────────────────────────────────────────",
+  "  ◆ 大客户经营            ◆ 区域0→1开拓",
+  "  ◆ 招投标/标书           ◆ 融资租赁方案设计",
+  "  ◆ 应收账款风控          ◆ 客户成功/续约",
+  "  ◆ AI提效                ◆ 可量化业绩",
+  "──────────────────────────────────────────",
+  " 附: WorkBuddy 上自建 8 个 AI 定制技能",
+  "     每月5日自动生成行业简报 · 客户热力作战图",
+  "     (详见 projects 命令)"
+].join("\n");
+
+/* stats: 关键数字 */
+const STATS_TEXT = [
+  "[数字] STATS —— 关键数字",
+  "──────────────────────────────────────────",
+  "  ◆ 10 年     重工大客户销售",
+  "  ◆ 180+ 家   客户开发 (三一 0→180)",
+  "  ◆ 35 份     独立标书",
+  "  ◆ 1.2 亿    意向价值 (太重湖北市场)",
+  "  ◆ 1500 万   已完成订单",
+  "  ◆ 1 亿      协助意向订单 (太重湖北)",
+  "  ◆ 1400 万   协助完成订单",
+  "  ◆ 113 条    湖北客户线索",
+  "  ◆ 92 条     空压机报备意向",
+  "  ◆ 8 个      AI定制技能",
+  "──────────────────────────────────────────",
+  " 数字只陈述事实, 不负责谦虚。"
+].join("\n");
+
+/* projects: 4 个代表作品 */
+const PROJECTS_TEXT = [
+  "[作品] PROJECTS —— 4 个代表作",
+  "──────────────────────────────────────────",
+  " [01] 高机销售资料库 —— 湖北市场开发工具箱",
+  "      产品推介 / 市场开发 / 融资租赁 /",
+  "      客户运营 / 行业资讯  6类归档",
+  "      1000+ 销售资料",
+  "",
+  " [02] AI技能库 —— WorkBuddy 自建 8 个定制技能",
+  "      market-dev-kit        区域开发总入口",
+  "      amap-poi-collector    高德客户线索采集",
+  "      customer-geo-viz      客户热力作战图",
+  "      sales-lead-workbook   销售执行体系",
+  "      sales-pitch-ppt       高转化14页推介PPT",
+  "      wechat-addfriend      微信获客助手",
+  "      secure-html-deploy    加密部署",
+  "      industry-briefing     行业简报流水线(每月5日自动)",
+  "",
+  " [03] 汉青职业工作台 —— Career Workbench",
+  "      单文件HTML效率应用 · 6 大模块: 学习 / 积累 / 记录 /",
+  "      提高 / 事项安排 / 自我进化",
+  "      localStorage 持久化 + JSON 导入导出 · jsdom 功能自检 10 项全 PASS",
+  "",
+  " [04] 微信获客助手 —— 状态机 + CSV备份 + 加密",
+  "      单文件获客工具 · 每日 25–30 条客户触达节奏",
+  "──────────────────────────────────────────"
+].join("\n");
+
+/* plan: 三年行动纲领 2026-2028 */
+const PLAN_TEXT = [
+  "[纲领] PLAN —— 三年行动纲领 2026-2028",
+  "══════════════════════════════════════════",
+  " 2026 动身求职",
+  "   发力窗口 : Q3-Q4 (8-11月)",
+  "   签约窗口 : 10月下旬 - 11月中旬",
+  "   主攻     : 工业互联网SaaS行业 · 销售/客户成功",
+  "             (树根互联 / 徐工汉云 / 卡奥斯 /",
+  "              腾讯云工业 / 华为云)",
+  "   保底     : 融资租赁客户经理",
+  "             (远东宏信 / 平安租赁 / 厂商金融)",
+  "   近选     : 高机头部厂销售管理岗",
+  "             (临工 / 星邦 / 鼎力)",
+  "──────────────────────────────────────────",
+  " 2027 定盘 —— 名分落实, 业绩年",
+  "──────────────────────────────────────────",
+  " 2028 上阶 —— 争取带团队",
+  "══════════════════════════════════════════",
+  " 心法 :",
+  "   内推 ＞ 海投",
+  "   卖方案, 不卖力气",
+  "   攻坚大单, 必组队",
+  "   赚大钱之前, 先站上大平台"
+].join("\n");
+
+/* contact: 联系方式 */
+const CONTACT_TEXT = [
+  "[联系] CONTACT —— 联系方式",
+  "──────────────────────────────────────────",
+  "  电话 : 177-7211-8785",
+  "  邮箱 : 1820688914@qq.com",
+  "  位置 : 河南郑州 (可出差)",
+  "  现职 : 太原重工 · 工程起重机分公司",
+  "         业务经理 / 大客户销售",
+  "──────────────────────────────────────────",
+  "  想聊高机? 想聊AI? 想聊融资租赁方案?",
+  "  或者想看看 1.2亿 意向怎么落地成订单?",
+  "  欢迎直接联系 —— 专业干练、直奔结果。"
+].join("\n");
+
+/* motto: 心法语录 */
+const MOTTO_TEXT = [
+  "[心法] MOTTO —— 行动准则",
+  "──────────────────────────────────────────",
+  "  内推 ＞ 海投",
+  "  卖方案, 不卖力气",
+  "  攻坚大单, 必组队",
+  "  赚大钱之前, 先站上大平台",
+  "──────────────────────────────────────────",
+  "  学习 : 结果导向 → 先模仿后创造",
+  "         → 重复的事自动化 → 小步快跑"
+].join("\n");
+
+/* whoami */
+const WHOAMI_TEXT = [
+  "guest@hq-term",
+  "uid=1000(guest) gid=1000(guest) groups=1000(guest),27(sales)",
+  "──────────────────────────────────────────",
+  " 终端背后的人:",
+  "   邵汉青 —— 10年重工大客户销售 × AI重度实践者",
+  "   「既懂销售，又懂AI」",
+  "   现职: 太原重工 · 工程起重机分公司",
+  "         业务经理 / 大客户销售",
+  "   基地: 河南郑州 | 32岁 | 已婚"
+].join("\n");
+
+/* help: 命令手册 */
+const HELP_TEXT = [
+  "HQ-TERM 命令手册 v1.0",
+  "──────────────────────────────────────────",
+  "  help      显示本帮助手册",
+  "  about     关于邵汉青 —— 终端背后的人",
+  "  career    职业履历时间线 (5段)",
+  "  skills    8 项核心能力",
+  "  stats     关键数字",
+  "  projects  4 个代表作品",
+  "  plan      三年纲领 2026-2028",
+  "  contact   联系方式",
+  "  theme     切换主题  green|amber|blue|white",
+  "  ls        列出虚拟文件系统",
+  "  cat       读取文件内容  cat <文件名>",
+  "  date      显示系统时间",
+  "  whoami    显示当前身份",
+  "  history   查看输入历史",
+  "  banner    重新打印 ASCII 横幅",
+  "  motto     心法语录",
+  "  neofetch  系统信息 (彩蛋)",
+  "  ping      连通性测试 (彩蛋)",
+  "  echo      回显文本",
+  "  uname     系统版本信息",
+  "  sudo      超级用户权限 (彩蛋)",
+  "  clear     清屏",
+  "  exit      退出并重启系统",
+  "──────────────────────────────────────────",
+  " 提示: 方向键 ↑↓ 翻阅历史 · Ctrl+L 清屏",
+  "       点击屏幕任意处聚焦输入框"
+].join("\n");
+
+/* README: 虚拟文件系统入口文件 */
+const README_TEXT = [
+  "HQ-TERM 欢迎文件",
+  "=================",
+  " 本终端是邵汉青个人网站合集的 01 号站点,",
+  " 以 CRT 终端模拟器的形式呈现个人档案。",
+  "",
+  " 输入 help 查看全部命令;",
+  " 输入 about 了解终端背后的人。",
+  "",
+  " 「既懂销售，又懂AI」",
+  " 10年工程机械大客户销售 × AI重度实践者"
+].join("\n");
+
+/* neofetch 输出在命令体内动态生成, 保证主题名与当前主题一致(见 COMMANDS.neofetch) */
+
+/* ==========================================================================
+   [07] 虚拟文件系统 —— ls / cat 使用的文件表
+   ========================================================================== */
+const FS = {
+  "README.txt":    README_TEXT,
+  "about.txt":     ABOUT_TEXT,
+  "career.txt":    CAREER_TEXT,
+  "skills.txt":    SKILLS_TEXT,
+  "stats.txt":     STATS_TEXT,
+  "projects.txt":  PROJECTS_TEXT,
+  "plan.txt":      PLAN_TEXT,
+  "contact.txt":   CONTACT_TEXT
+};
+
+const FS_LIST = [
+  "总用量 36K",
+  "drwxr-xr-x  guest guest 4.0K  01-04 12:00  ./",
+  "drwxr-xr-x  guest guest 4.0K  01-04 12:00  ../",
+  "-rw-r--r--  guest guest 1.0K  01-04 12:00  README.txt",
+  "-rw-r--r--  guest guest 2.0K  01-04 12:00  about.txt",
+  "-rw-r--r--  guest guest 3.0K  01-04 12:00  career.txt",
+  "-rw-r--r--  guest guest 1.0K  01-04 12:00  skills.txt",
+  "-rw-r--r--  guest guest 1.0K  01-04 12:00  stats.txt",
+  "-rw-r--r--  guest guest 2.0K  01-04 12:00  projects.txt",
+  "-rw-r--r--  guest guest 1.0K  01-04 12:00  plan.txt",
+  "-rw-r--r--  guest guest 1.0K  01-04 12:00  contact.txt",
+  "drwxr-xr-x  guest guest 4.0K  01-04 12:00  workbuddy/",
+  "",
+  "提示: cat <文件名> 查看内容 · workbuddy/ 为 AI技能库目录"
+].join("\n");
+
+/* ==========================================================================
+   [08] 命令表 —— 23 条命令
+   ========================================================================== */
+const COMMANDS = {
+
+  /* 帮助 */
+  help: {
+    desc: "显示帮助手册",
+    run() { printBlock(HELP_TEXT); }
+  },
+
+  /* 关于 */
+  about: {
+    desc: "关于邵汉青",
+    run() {
+      printLine("[01] about —— 关于邵汉青", "hl");
+      printBlock(ABOUT_TEXT);
+    }
+  },
+
+  /* 职业履历时间线 */
+  career: {
+    desc: "职业履历时间线 (5段)",
+    run() { printBlock(CAREER_TEXT); }
+  },
+
+  /* 能力标签 */
+  skills: {
+    desc: "8 项核心能力",
+    run() { printBlock(SKILLS_TEXT); }
+  },
+
+  /* 关键数字 */
+  stats: {
+    desc: "关键数字",
+    run() { printBlock(STATS_TEXT); }
+  },
+
+  /* 作品 */
+  projects: {
+    desc: "4 个代表作品",
+    run() { printBlock(PROJECTS_TEXT); }
+  },
+
+  /* 三年纲领 */
+  plan: {
+    desc: "三年纲领 2026-2028",
+    run() { printBlock(PLAN_TEXT); }
+  },
+
+  /* 联系方式 */
+  contact: {
+    desc: "联系方式",
+    run() {
+      printLine("[09] contact —— 联系方式", "hl");
+      printBlock(CONTACT_TEXT);
+    }
+  },
+
+  /* 主题切换 */
+  theme: {
+    desc: "切换主题 green|amber|blue|white",
+    run(args) {
+      if (args.length === 0) {
+        printLine("当前主题: " + currentTheme.toUpperCase() +
+                  " (" + THEMES[currentTheme].name + " " + THEMES[currentTheme].hex + ")");
+        printBlock([
+          "可用主题:",
+          "  green  磷光绿  #33ff66  (默认)",
+          "  amber  琥珀黄  #ffb000",
+          "  blue   荧光蓝  #4db8ff",
+          "  white  冷白    #e8e8e8",
+          "",
+          "用法: theme <名称>  例: theme amber"
+        ].join("\n"));
+        return;
+      }
+      const t = args[0].toLowerCase();
+      if (THEMES[t]) {
+        applyTheme(t);
+        updateStatus();
+        printLine("theme 已切换: " + t.toUpperCase() +
+                  " (" + THEMES[t].name + " " + THEMES[t].hex + ")", "ok");
+      } else {
+        printLine("theme: 未知主题 '" + args[0] +
+                  "' (可用: green amber blue white)", "err");
+      }
+    }
+  },
+
+  /* 清屏 */
+  clear: {
+    desc: "清屏",
+    run() { clearScreen(); }
+  },
+
+  /* 列出文件 */
+  ls: {
+    desc: "列出虚拟文件系统",
+    run() { printBlock(FS_LIST); }
+  },
+
+  /* 读取文件 */
+  cat: {
+    desc: "读取文件内容",
+    run(args) {
+      if (args.length === 0) {
+        printLine("用法: cat <文件名>  (输入 ls 查看文件列表)", "dim");
+        return;
+      }
+      const f = args[0];
+      if (f.endsWith("/")) {
+        printLine("cat: " + f + ": Is a directory", "err");
+        return;
+      }
+      if (FS[f]) {
+        printBlock(FS[f]);
+      } else {
+        printLine("cat: " + f + ": No such file or directory", "err");
+      }
+    }
+  },
+
+  /* 系统时间 */
+  date: {
+    desc: "显示系统时间",
+    run() {
+      printLine("当前系统时间: " + nowStr());
+      printLine("终端时区: 中原标准时间 (base 河南郑州)", "dim");
+    }
+  },
+
+  /* 当前身份 */
+  whoami: {
+    desc: "显示当前身份",
+    run() { printBlock(WHOAMI_TEXT); }
+  },
+
+  /* 输入历史 */
+  history: {
+    desc: "查看输入历史",
+    run() {
+      if (cmdHistory.length === 0) {
+        printLine("(暂无历史命令)", "dim");
+        return;
+      }
+      const lines = cmdHistory.map(function (h, i) {
+        return "  " + pad(i + 1) + "  " + h;
+      });
+      printLine("共 " + cmdHistory.length + " 条历史:", "hl");
+      printBlock(lines.join("\n"));
+    }
+  },
+
+  /* 重新打印横幅 */
+  banner: {
+    desc: "重新打印 ASCII 横幅",
+    run() {
+      printBlock(BANNER, "banner-pre");
+      printLine("—— SHAO HANQING · HQ-TERM 个人终端", "dim");
+    }
+  },
+
+  /* 心法 */
+  motto: {
+    desc: "心法语录",
+    run() { printBlock(MOTTO_TEXT); }
+  },
+
+  /* 系统信息(彩蛋) */
+  neofetch: {
+    desc: "系统信息",
+    run() {
+      /* 动态生成, 保证主题名始终与当前一致 */
+      const txt = [
+        "      /\\_/\\",
+        "     ( o.o )",
+        "      > ^ <",
+        "  guest@hq-term",
+        "  -------------",
+        "  OS      : HQ-TERM CRT v1.0 (磷光终端)",
+        "  Host    : 太原重工 · 工程起重机分公司",
+        "  Uptime  : 10年重工大客户销售",
+        "  Region  : 河南郑州 (湖北市场开发中)",
+        "  Theme   : " + THEMES[currentTheme].name + " (theme 命令可切换)",
+        "  AI      : WorkBuddy · 8个定制技能",
+        "  Contact : 177-7211-8785"
+      ].join("\n");
+      printBlock(txt);
+    }
+  },
+
+  /* 连通性测试(彩蛋) */
+  ping: {
+    desc: "连通性测试",
+    async run() {
+      printLine("PING hq-term.local (127.0.0.1): 56 data bytes");
+      await sleep(420);
+      printLine("64 bytes from 127.0.0.1: icmp_seq=0 ttl=64 time=0.4 ms");
+      printLine("--- hq-term.local ping statistics ---");
+      printLine("1 packets transmitted, 1 packets received, 0% packet loss", "ok");
+    }
+  },
+
+  /* 回显 */
+  echo: {
+    desc: "回显文本",
+    run(args) {
+      printLine(args.join(" "));
+    }
+  },
+
+  /* 系统版本 */
+  uname: {
+    desc: "系统版本信息",
+    run() {
+      printLine("HQ-TERM 1.0.0 CRT guest");
+      printLine("Kernel: 大客户销售 10.0 —— 既懂销售，又懂AI", "dim");
+    }
+  },
+
+  /* 超级用户(彩蛋: 权限不足 + 幽默提示) */
+  sudo: {
+    desc: "超级用户权限(彩蛋)",
+    async run() {
+      printLine("[sudo] password for guest: ********", "dim");
+      await sleep(500);
+      printLine("正在验证身份 ..............");
+      await sleep(600);
+      printLine("");
+      printLine("⛔ ERROR 403 —— 权限不足", "err");
+      printBlock([
+        "  本终端最高权限仅授予『甲方爸爸』。",
+        "  你连自家 OA 都登不进去, 还想 root?",
+        "",
+        "  幽默提示: 卖方案, 不卖力气;",
+        "            想提权, 先拿下 1.2亿 的订单再说。"
+      ].join("\n"));
+    }
+  },
+
+  /* 退出并重启 */
+  exit: {
+    desc: "退出并重启系统",
+    async run() {
+      printLine("logout", "dim");
+      /* 立即切回 BOOT 模式: 隐藏输入行, 避免等待期间可继续输入 */
+      mode = "boot";
+      updateStatus();
+      $("inputLine").classList.remove("active");
+      await sleep(600);
+      boot();
+    }
+  }
+};
+
+/* ==========================================================================
+   [09] 输入处理 —— 回车执行 / 方向键历史 / Ctrl+L 清屏
+   ========================================================================== */
+const inputEl = $("input");
+let cmdHistory = [];
+let histIdx = 0;
+
+/* 历史持久化(失败时静默降级为内存态) */
+function loadHistory() {
+  try {
+    const h = JSON.parse(localStorage.getItem("hqterm-history") || "[]");
+    return Array.isArray(h) ? h : [];
+  } catch (e) { return []; }
+}
+function saveHistory() {
+  try { localStorage.setItem("hqterm-history", JSON.stringify(cmdHistory.slice(-200))); }
+  catch (e) { /* 忽略 */ }
+}
+
+function focusInput() {
+  inputEl.focus({ preventScroll: true });
+}
+
+/* 执行一条命令 */
+async function runCommand(raw) {
+  const cmd = raw.trim();
+  echoPrompt(cmd);
+  inputEl.value = "";
+  histIdx = cmdHistory.length;
+
+  if (cmd === "") { scrollBottom(); return; }
+
+  cmdHistory.push(cmd);
+  saveHistory();
+
+  const parts = cmd.split(/\s+/);
+  const name = parts[0].toLowerCase();
+  const args = parts.slice(1);
+  const c = COMMANDS[name];
+
+  if (c) {
+    await c.run(args);
+  } else {
+    printLine("bash: " + name + ": command not found", "err");
+    printLine("输入 help 查看全部可用命令", "dim");
+  }
+  scrollBottom();
+  focusInput();
+}
+
+/* 输入框按键处理 */
+inputEl.addEventListener("keydown", function (e) {
+  if (mode !== "interactive") return;
+
+  if (e.key === "Enter") {
+    e.preventDefault();
+    runCommand(inputEl.value);
+    return;
+  }
+
+  /* 方向键 ↑↓ 翻阅历史 */
+  if (e.key === "ArrowUp") {
+    e.preventDefault();
+    if (histIdx > 0) {
+      histIdx--;
+      inputEl.value = cmdHistory[histIdx];
+    }
+    return;
+  }
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    if (histIdx < cmdHistory.length - 1) {
+      histIdx++;
+      inputEl.value = cmdHistory[histIdx];
+    } else {
+      histIdx = cmdHistory.length;
+      inputEl.value = "";
+    }
+  }
+});
+
+/* Ctrl+L 清屏(桌面习惯) */
+document.addEventListener("keydown", function (e) {
+  if ((e.ctrlKey || e.metaKey) && (e.key === "l" || e.key === "L")) {
+    e.preventDefault();
+    if (mode === "interactive") clearScreen();
+  }
+});
+
+/* 点击屏幕任意处聚焦输入框 */
+$("screen").addEventListener("pointerdown", function (e) {
+  if (mode === "interactive" && e.target !== inputEl) focusInput();
+});
+
+/* 启动阶段: 任意按键/点击可跳过打字机动画 */
+document.addEventListener("keydown", function () {
+  if (mode === "boot") skipBoot = true;
+});
+document.addEventListener("pointerdown", function () {
+  if (mode === "boot") skipBoot = true;
+});
+
+/* ==========================================================================
+   [10] 启动序列 —— 开机自检日志 + ASCII 横幅 + 按回车进入
+   ========================================================================== */
+const BOOT_SEQ = [
+  { t: "HQ-TERM CRT BIOS v1.0 (c) 2026 SHAO HANQING", d: 50, c: "hl" },
+  { t: "CPU  : 10年重工大客户销售核心 @ 32岁主频", d: 40 },
+  { t: "MEM  : 自检 640K OK —— 客户缓存 180+ 条", d: 40, c: "ok" },
+  { t: "ROM  : 载入 35 份标书模板 / 8 个 AI 技能", d: 40 },
+  { t: "模块 : sales-engine.sys .............. [ OK ]", d: 28, c: "ok" },
+  { t: "模块 : negotiation-core.sys .......... [ OK ]", d: 28, c: "ok" },
+  { t: "模块 : ai-toolkit.sys ................ [ OK ]", d: 28, c: "ok" },
+  { t: "网络 : 湖北市场 gateway ............. [ OK ] 0ms", d: 28, c: "ok" },
+  { t: "网络 : WorkBuddy 技能服务 ............ [ OK ] 0ms", d: 28, c: "ok" },
+  { t: "校验 : 意向价值 1.2亿 / 已完成订单 1500万 ... [ OK ]", d: 42, c: "ok" },
+  { t: "启动完成 SYSTEM READY", d: 60, c: "hl" },
+  { t: "", d: 12 }
+];
+
+/* 打字机: 逐字符输出一行 */
+async function typeLine(text, cps, cls) {
+  const div = document.createElement("div");
+  if (cls) div.className = cls;
+  termEl().appendChild(div);
+  const step = cps > 0 ? Math.max(1, Math.round(1000 / cps)) : 1;
+  for (let i = 0; i < text.length; i++) {
+    div.textContent = text.slice(0, i + 1);
+    await sleep(step);
+  }
+  scrollBottom();
+  await sleep(90);
+}
+
+/* 打字机: 逐行输出多行块 */
+async function typeBlock(text, delay, cls) {
+  const pre = document.createElement("pre");
+  if (cls) pre.className = cls;
+  termEl().appendChild(pre);
+  const lines = text.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    pre.textContent = lines.slice(0, i + 1).join("\n");
+    await sleep(delay);
+  }
+  scrollBottom();
+  await sleep(160);
+}
+
+/* 开机 */
+async function boot() {
+  skipBoot = false;
+  mode = "boot";
+  updateStatus();
+  $("inputLine").classList.remove("active");
+  clearScreen();
+
+  /* 1. 自检日志(打字机) */
+  for (const item of BOOT_SEQ) {
+    await typeLine(item.t, item.d, item.c);
+    if (skipBoot) break;
+  }
+
+  /* 2. ASCII 横幅 SHAO HANQING */
+  await typeBlock(BANNER, 16, "banner-pre");
+  await typeLine("—— SHAO HANQING · HQ-TERM 个人终端 ——", 30, "dim");
+
+  /* 3. 欢迎语 */
+  await typeLine("个人网站合集 01/10 · 终端命令行", 40, "dim");
+  await typeLine("10年工程机械大客户销售 × AI重度实践者 · 「既懂销售，又懂AI」", 40);
+  await typeLine("输入 help 查看全部命令 · 方向键 ↑↓ 翻阅历史", 40);
+  await typeLine("", 0);
+  await typeLine("系统就绪 SYSTEM READY —— 按 [回车] 进入", 46, "ok");
+
+  /* 4. 进入交互模式 */
+  mode = "interactive";
+  updateStatus();
+  $("inputLine").classList.add("active");
+  focusInput();
+}
+
+/* ==========================================================================
+   [11] 初始化 —— 恢复主题/历史, 启动时钟, 开始开机
+   ========================================================================== */
+(function init() {
+  loadTheme();
+  cmdHistory = loadHistory();
+  histIdx = cmdHistory.length;
+  updateStatus();
+  tick();
+  setInterval(tick, 1000);
+  boot();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<script>document.documentElement.classList.add('js');</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="邵汉青 · 个人网站合集 07 · 玻璃拟态 GLASSMORPHISM · 毛玻璃美学个人名片">
+<title>07 玻璃拟态 GLASSMORPHISM · 邵汉青 · 个人网站合集</title>
+<style>
+/* ============================================================
+   07 · 玻璃拟态 GLASSMORPHISM — 毛玻璃美学
+   ------------------------------------------------------------
+   设计语言：
+   · 柔和渐变背景（浅紫 #a78bfa / 粉 #f9a8d4 / 青 #67e8f9）
+     大圆光斑 float 动画 + 跟随鼠标轻量视差
+   · 卡片：backdrop-filter:blur(20px) + 半透明白 +
+     1px rgba(255,255,255,.6) 高光描边 + inset 高光 +
+     圆角 24px + 柔和阴影
+   · 文字深灰 #2b2b3a，图标一律 emoji
+   · 布局：sticky 玻璃导航 → hero → 玻璃卡片网格
+     → 履历时间线 → 作品大卡 → 三年纲领步骤卡 → 联系 → 页脚
+   · 交互：卡片 hover 上浮、光斑视差、滚动渐入
+     IntersectionObserver、数字滚动、复制邮箱、汉堡菜单
+   · 零外部依赖：无 CDN / 外链字体 / 外链图片 / 外链 JS/CSS
+   ============================================================ */
+
+/* ===== 01 设计令牌 & 基础重置 ============================ */
+:root{
+  --ink:#2b2b3a;                 /* 主文字深灰 */
+  --ink-soft:rgba(43,43,58,.78); /* 次级文字 */
+  --ink-faint:rgba(43,43,58,.74);/* 弱化文字（≥4.5:1） */
+  --violet:#a78bfa;              /* 浅紫光斑 */
+  --pink:#f9a8d4;                /* 粉红光斑 */
+  --cyan:#67e8f9;                /* 青色光斑 */
+  --violet-deep:#7c3aed;         /* 深紫（渐变字/强调，浅底 ≥4.5:1） */
+  --pink-deep:#ec4899;           /* 深粉（渐变字/强调） */
+  --glass:rgba(255,255,255,.38); /* 半透明白玻璃底 */
+  --glass-strong:rgba(255,255,255,.55);
+  --stroke:rgba(255,255,255,.6); /* 高光描边 */
+  --shadow-soft:0 8px 32px rgba(139,92,246,.14);
+  --shadow-hover:0 24px 52px rgba(139,92,246,.30);
+  --radius:24px;
+  --wrap:1160px;                 /* 内容最大宽度 */
+  --nav-h:72px;
+  --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",
+         "Helvetica Neue",Arial,system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{
+  scroll-behavior:smooth;
+  scroll-padding-top:96px;      /* 锚点跳转避开 sticky 导航 */
+}
+body{
+  font-family:var(--font);
+  font-size:16px;
+  line-height:1.7;
+  color:var(--ink);
+  background:
+    linear-gradient(160deg,#eef2ff 0%,#fdf2f8 46%,#ecfeff 100%);
+  background-attachment:fixed;
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+a{color:inherit;text-decoration:none;}
+ul,ol{list-style:none;}
+img{max-width:100%;display:block;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+::selection{background:var(--violet);color:#fff;}
+/* 细滚动条（WebKit） */
+::-webkit-scrollbar{width:10px;}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.4);}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,var(--violet),var(--pink));
+  border-radius:8px;border:2px solid rgba(255,255,255,.6);
+}
+
+/* ===== 02 背景光斑场景 =================================== */
+/* 固定全屏画布，承载 4 个渐变光斑：
+   .blob-wrap 负责 float 呼吸动画，
+   .blob 由 JS 做鼠标视差位移，二者分层互不干扰 */
+.bg-scene{
+  position:fixed;inset:0;z-index:-2;
+  overflow:hidden;
+  pointer-events:none;
+}
+.blob-wrap{position:absolute;will-change:transform;}
+.blob{
+  position:absolute;border-radius:50%;
+  filter:blur(72px);
+  opacity:.62;
+  will-change:transform;
+}
+.blob-1{top:-9%;left:-7%;width:560px;height:560px;}
+.blob-1 .blob{width:100%;height:100%;background:radial-gradient(circle at 32% 34%,var(--violet),rgba(167,139,250,0));}
+.blob-2{top:4%;right:-10%;width:620px;height:620px;}
+.blob-2 .blob{width:100%;height:100%;background:radial-gradient(circle at 60% 40%,var(--pink),rgba(249,168,212,0));}
+.blob-3{bottom:-14%;left:6%;width:640px;height:640px;}
+.blob-3 .blob{width:100%;height:100%;background:radial-gradient(circle at 50% 60%,var(--cyan),rgba(103,232,249,0));}
+.blob-4{top:38%;left:44%;width:340px;height:340px;}
+.blob-4 .blob{width:100%;height:100%;background:radial-gradient(circle at 50% 50%,rgba(196,181,253,.9),rgba(196,181,253,0));opacity:.5;}
+/* float 呼吸动画：缓慢上浮 + 轻微缩放 */
+@keyframes floatA{
+  0%{transform:translate3d(0,0,0) scale(1);}
+  100%{transform:translate3d(0,-46px,0) scale(1.12);}
+}
+@keyframes floatB{
+  0%{transform:translate3d(0,0,0) scale(1.1);}
+  100%{transform:translate3d(0,52px,0) scale(1);}
+}
+@keyframes floatC{
+  0%{transform:translate3d(0,0,0) scale(1);}
+  100%{transform:translate3d(-42px,0,0) scale(1.14);}
+}
+.blob-1{animation:floatA 13s ease-in-out infinite alternate;}
+.blob-2{animation:floatB 16s ease-in-out infinite alternate;}
+.blob-3{animation:floatC 15s ease-in-out infinite alternate;}
+.blob-4{animation:floatA 11s ease-in-out infinite alternate;}
+
+/* ===== 03 玻璃卡片基类 =================================== */
+.glass{
+  position:relative;
+  background:linear-gradient(150deg,var(--glass-strong),var(--glass));
+  -webkit-backdrop-filter:blur(20px);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--stroke);
+  border-radius:var(--radius);
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 1px 0 rgba(255,255,255,.7),
+    inset 0 -1px 0 rgba(255,255,255,.22);
+}
+/* 左上斜向高光：增强“玻璃受光”质感 */
+.glass::before{
+  content:"";
+  position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(115deg,
+    rgba(255,255,255,.34) 0%,
+    rgba(255,255,255,0) 44%);
+  pointer-events:none;
+}
+/* 无 backdrop-filter 支持时的兜底底色（@supports 检测） */
+@supports not ((backdrop-filter:blur(20px)) or (-webkit-backdrop-filter:blur(20px))){
+  .glass{background:rgba(255,255,255,.82);}
+}
+/* hover 上浮 + 阴影加深 */
+.lift{transition:transform .38s cubic-bezier(.22,1,.36,1),box-shadow .38s ease;}
+.lift:hover{
+  transform:translateY(-9px);
+  box-shadow:
+    var(--shadow-hover),
+    inset 0 1px 0 rgba(255,255,255,.85),
+    inset 0 -1px 0 rgba(255,255,255,.3);
+}
+/* 滚动渐入基类：默认可见；仅 JS 启用（html.js）后隐藏，.in 后浮现 */
+.reveal{
+  opacity:1;
+  transform:none;
+  transition:opacity .75s ease,transform .75s cubic-bezier(.22,1,.36,1);
+}
+.js .reveal{
+  opacity:0;
+  transform:translateY(30px) scale(.985);
+}
+.reveal.in{opacity:1;transform:none;}
+
+/* ===== 04 顶部滚动进度条 ================================= */
+.progress-bar{
+  position:fixed;top:0;left:0;height:4px;width:0%;
+  background:linear-gradient(90deg,var(--violet),var(--pink),var(--cyan));
+  border-radius:0 4px 4px 0;
+  z-index:300;
+  box-shadow:0 0 12px rgba(236,72,153,.55);
+}
+
+/* ===== 05 sticky 玻璃导航 ================================ */
+.nav-wrap{
+  position:sticky;top:14px;z-index:200;
+  padding:0 18px;
+}
+.nav{
+  max-width:var(--wrap);margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:14px;
+  padding:11px 20px 11px 24px;
+  border-radius:999px;
+  background:linear-gradient(150deg,rgba(255,255,255,.62),rgba(255,255,255,.34));
+  -webkit-backdrop-filter:blur(22px);
+  backdrop-filter:blur(22px);
+  border:1px solid var(--stroke);
+  box-shadow:var(--shadow-soft),inset 0 1px 0 rgba(255,255,255,.7);
+  transition:box-shadow .35s ease,transform .35s ease;
+}
+.nav.scrolled{box-shadow:0 16px 40px rgba(139,92,246,.26),inset 0 1px 0 rgba(255,255,255,.7);}
+.nav-logo{
+  display:flex;align-items:center;gap:10px;
+  font-weight:800;font-size:17px;letter-spacing:.5px;
+  white-space:nowrap;
+}
+.nav-logo .logo-emoji{
+  width:38px;height:38px;border-radius:12px;
+  display:grid;place-items:center;font-size:20px;
+  background:linear-gradient(140deg,rgba(167,139,250,.45),rgba(249,168,212,.45));
+  border:1px solid rgba(255,255,255,.7);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 4px 12px rgba(139,92,246,.2);
+}
+.nav-logo small{
+  font-weight:600;font-size:11px;color:var(--ink-faint);
+  display:block;line-height:1.2;
+}
+.nav-links{display:flex;align-items:center;gap:2px;}
+.nav-links a{
+  padding:8px 14px;border-radius:999px;
+  font-size:14px;font-weight:600;color:var(--ink-soft);
+  transition:background .25s ease,color .25s ease;
+}
+.nav-links a:hover{background:rgba(255,255,255,.55);color:var(--ink);}
+.nav-links a.active{
+  background:linear-gradient(140deg,rgba(167,139,250,.5),rgba(249,168,212,.5));
+  color:var(--ink);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+}
+.nav-cta{
+  padding:9px 18px;border-radius:999px;
+  background:linear-gradient(120deg,#6d28d9,#be185d);
+  color:#fff;font-size:14px;font-weight:700;white-space:nowrap;
+  box-shadow:0 6px 18px rgba(236,72,153,.35),inset 0 1px 0 rgba(255,255,255,.5);
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(236,72,153,.45),inset 0 1px 0 rgba(255,255,255,.5);}
+/* 汉堡按钮（仅移动端显示） */
+.nav-burger{
+  display:none;width:42px;height:42px;border-radius:12px;
+  place-items:center;font-size:20px;
+  background:rgba(255,255,255,.5);
+  border:1px solid var(--stroke);
+  transition:background .25s ease;
+}
+.nav-burger:hover{background:rgba(255,255,255,.8);}
+
+/* ===== 06 章节通用 ======================================= */
+section{padding:96px 22px;position:relative;}
+.sec-inner{max-width:var(--wrap);margin:0 auto;}
+.sec-head{text-align:center;margin-bottom:44px;}
+.sec-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 18px;border-radius:999px;
+  font-size:13px;font-weight:700;letter-spacing:2px;color:var(--ink-soft);
+  margin-bottom:18px;
+}
+.sec-head h2{
+  font-size:clamp(28px,4.4vw,44px);
+  font-weight:900;letter-spacing:1px;
+  margin-bottom:10px;
+}
+.sec-head .sec-sub{color:var(--ink-faint);font-size:15px;max-width:640px;margin:0 auto;}
+.sec-divider{
+  width:72px;height:5px;border-radius:4px;margin:18px auto 0;
+  background:linear-gradient(90deg,var(--violet),var(--pink),var(--cyan));
+}
+
+/* ===== 07 Hero =========================================== */
+.hero{
+  min-height:calc(100vh - 120px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:110px 22px 70px;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 20px;border-radius:999px;
+  font-size:13px;font-weight:700;letter-spacing:3px;color:var(--ink-soft);
+  margin-bottom:26px;
+}
+.hero-badge .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(120deg,var(--violet),var(--pink));box-shadow:0 0 10px rgba(236,72,153,.7);}
+.hero h1{
+  font-size:clamp(52px,10vw,120px);
+  font-weight:900;line-height:1.05;letter-spacing:4px;
+  background:linear-gradient(115deg,#2b2b3a 12%,#6d28d9 52%,#db2777 90%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:var(--ink);
+  margin-bottom:6px;
+  text-shadow:0 0 60px rgba(167,139,250,.35);
+}
+.hero-sub-en{
+  font-size:14px;letter-spacing:7px;font-weight:700;
+  color:var(--ink-faint);text-transform:uppercase;margin-bottom:26px;
+}
+.hero-glass{
+  max-width:760px;margin:0 auto 30px;padding:26px 30px;
+  text-align:center;
+}
+.hero-glass p{font-size:clamp(16px,2.4vw,20px);font-weight:700;color:var(--ink);}
+.hero-glass p .hl{
+  background:linear-gradient(120deg,var(--violet-deep),var(--pink-deep));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hero-glass .hero-quote{
+  margin-top:8px;font-size:15px;font-weight:600;color:var(--ink-soft);
+}
+.hero-meta{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+  margin-bottom:36px;
+}
+.hero-meta .chip{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:8px 16px;border-radius:999px;
+  font-size:13.5px;font-weight:600;color:var(--ink-soft);
+}
+.hero-ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:13px 26px;border-radius:999px;
+  font-size:15px;font-weight:700;
+  transition:transform .25s ease,box-shadow .25s ease,background .25s ease;
+}
+.btn-primary{
+  background:linear-gradient(120deg,#6d28d9,#be185d);
+  color:#fff;
+  box-shadow:0 10px 26px rgba(236,72,153,.4),inset 0 1px 0 rgba(255,255,255,.5);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(236,72,153,.5),inset 0 1px 0 rgba(255,255,255,.5);}
+.btn-ghost{color:var(--ink);}
+.btn-ghost:hover{transform:translateY(-3px);background:rgba(255,255,255,.62);}
+/* 下滑指示 */
+.scroll-cue{
+  margin-top:52px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  color:var(--ink-faint);font-size:12px;letter-spacing:2px;
+}
+.scroll-cue .wheel{
+  width:26px;height:42px;border-radius:14px;
+  border:2px solid rgba(43,43,58,.4);
+  display:flex;justify-content:center;padding-top:7px;
+}
+.scroll-cue .wheel i{
+  width:4px;height:9px;border-radius:3px;
+  background:linear-gradient(180deg,var(--violet-deep),var(--pink-deep));
+  animation:wheel 1.7s ease-in-out infinite;
+}
+@keyframes wheel{
+  0%{transform:translateY(0);opacity:1;}
+  70%{transform:translateY(12px);opacity:0;}
+  100%{transform:translateY(0);opacity:0;}
+}
+
+/* ===== 08 关于 =========================================== */
+.about-card{padding:34px;}
+.about-grid{
+  display:grid;grid-template-columns:240px 1fr 300px;
+  gap:30px;align-items:start;
+}
+/* 头像 */
+.about-avatar{text-align:center;}
+.avatar-ring{
+  width:150px;height:150px;margin:0 auto 16px;
+  border-radius:50%;padding:5px;
+  background:conic-gradient(from 180deg,var(--violet),var(--pink),var(--cyan),var(--violet));
+  box-shadow:0 12px 30px rgba(139,92,246,.3);
+}
+.avatar-ring .avatar-core{
+  width:100%;height:100%;border-radius:50%;
+  display:grid;place-items:center;font-size:64px;
+  background:rgba(255,255,255,.75);
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+  border:2px solid rgba(255,255,255,.9);
+}
+.about-avatar h3{font-size:19px;font-weight:800;}
+.about-avatar .role{
+  margin-top:4px;font-size:13px;color:var(--ink-faint);font-weight:600;
+}
+.avatar-tags{margin-top:12px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;}
+.avatar-tags span{
+  padding:4px 11px;border-radius:999px;font-size:12px;font-weight:700;
+  background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.7);
+}
+/* 简介 */
+.about-bio h3{font-size:22px;font-weight:900;margin-bottom:12px;}
+.about-bio p{color:var(--ink-soft);font-size:15px;margin-bottom:12px;}
+.about-bio p strong{color:var(--ink);}
+.bio-quote{
+  margin-top:16px;padding:14px 18px;border-radius:16px;
+  border-left:4px solid var(--violet-deep);
+  background:rgba(255,255,255,.42);
+  font-size:14.5px;font-weight:700;color:var(--ink);
+}
+/* 个人档案小卡 */
+.about-profile{display:flex;flex-direction:column;gap:12px;}
+.profile-tile{
+  padding:14px 16px;border-radius:16px;
+  background:rgba(255,255,255,.4);
+  border:1px solid rgba(255,255,255,.65);
+}
+.profile-tile h4{font-size:13px;font-weight:800;letter-spacing:1px;color:var(--violet-deep);margin-bottom:5px;}
+.profile-tile p{font-size:13.5px;color:var(--ink-soft);line-height:1.65;}
+.profile-tile .edu-row{display:flex;align-items:baseline;gap:8px;font-size:13.5px;color:var(--ink-soft);}
+.profile-tile .edu-row b{color:var(--ink);}
+.profile-tile .edu-row time{font-size:12px;color:var(--ink-faint);margin-left:auto;white-space:nowrap;}
+/* 公司背书 */
+.about-endorse{
+  margin-top:26px;padding-top:22px;
+  border-top:1px dashed rgba(43,43,58,.16);
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+}
+.about-endorse .end-tag{
+  padding:7px 15px;border-radius:999px;font-size:13px;font-weight:700;
+  background:linear-gradient(140deg,rgba(167,139,250,.32),rgba(249,168,212,.32));
+  border:1px solid rgba(255,255,255,.7);
+}
+.about-endorse .end-note{margin-left:auto;font-size:12.5px;color:var(--ink-faint);font-weight:600;}
+
+/* ===== 09 关键数字 ======================================= */
+.num-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:18px;
+}
+.num-card{padding:26px 20px;text-align:center;overflow:hidden;}
+.num-card .num-icon{font-size:30px;margin-bottom:10px;}
+.num-val{
+  font-size:clamp(30px,4vw,42px);font-weight:900;letter-spacing:1px;
+  background:linear-gradient(120deg,#4c1d95,#8b5cf6,#db2777);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:var(--ink);
+  line-height:1.15;
+}
+.num-label{font-size:14px;font-weight:700;color:var(--ink);margin-top:8px;}
+.num-note{font-size:12px;color:var(--ink-faint);margin-top:4px;font-weight:600;}
+
+/* ===== 10 能力标签 ======================================= */
+.skills-box{padding:34px;}
+.skills-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+.skill-item{
+  display:flex;align-items:center;gap:14px;
+  padding:15px 18px;border-radius:18px;
+  background:rgba(255,255,255,.4);
+  border:1px solid rgba(255,255,255,.65);
+  transition:transform .3s ease,background .3s ease,box-shadow .3s ease;
+}
+.skill-item:hover{
+  transform:translateX(6px);
+  background:rgba(255,255,255,.62);
+  box-shadow:0 10px 24px rgba(139,92,246,.18);
+}
+.skill-item .s-ico{
+  width:46px;height:46px;flex:0 0 46px;border-radius:14px;
+  display:grid;place-items:center;font-size:23px;
+  background:linear-gradient(140deg,rgba(167,139,250,.4),rgba(249,168,212,.4));
+  border:1px solid rgba(255,255,255,.75);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+}
+.skill-item h4{font-size:15px;font-weight:800;}
+.skill-item p{font-size:12.5px;color:var(--ink-faint);margin-top:2px;font-weight:600;}
+
+/* ===== 11 履历时间线 ===================================== */
+.timeline{
+  position:relative;max-width:1020px;margin:0 auto;
+  padding:10px 0 6px;
+}
+/* 中央渐变主线 */
+.timeline::before{
+  content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg,var(--violet),var(--pink),var(--cyan));
+  border-radius:3px;
+  opacity:.75;
+}
+.tl-item{
+  position:relative;width:calc(50% - 40px);
+  margin-bottom:38px;
+}
+/* 左右交替排布 */
+.tl-item:nth-child(odd){margin-right:auto;text-align:right;}
+.tl-item:nth-child(even){margin-left:auto;text-align:left;}
+.tl-card{padding:24px 26px;text-align:left;}
+/* 节点圆点（坐在中线上，带脉冲光环） */
+.tl-dot{
+  position:absolute;top:30px;width:18px;height:18px;border-radius:50%;
+  background:linear-gradient(140deg,var(--violet-deep),var(--pink-deep));
+  border:3px solid rgba(255,255,255,.92);
+  box-shadow:0 0 0 6px rgba(139,92,246,.18),0 4px 14px rgba(139,92,246,.4);
+  z-index:2;
+}
+.tl-item:nth-child(odd) .tl-dot{right:-49px;}
+.tl-item:nth-child(even) .tl-dot{left:-49px;}
+@keyframes pulseRing{
+  0%{box-shadow:0 0 0 0 rgba(139,92,246,.35),0 4px 14px rgba(139,92,246,.4);}
+  70%{box-shadow:0 0 0 14px rgba(139,92,246,0),0 4px 14px rgba(139,92,246,.4);}
+  100%{box-shadow:0 0 0 0 rgba(139,92,246,0),0 4px 14px rgba(139,92,246,.4);}
+}
+.tl-dot{animation:pulseRing 2.4s ease-out infinite;}
+.tl-stage{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 13px;border-radius:999px;
+  font-size:12px;font-weight:800;letter-spacing:1px;
+  background:linear-gradient(140deg,rgba(167,139,250,.4),rgba(249,168,212,.4));
+  border:1px solid rgba(255,255,255,.75);
+}
+.tl-period{
+  display:block;margin-top:12px;
+  font-size:13px;font-weight:800;letter-spacing:1px;color:var(--violet-deep);
+}
+.tl-card h3{font-size:20px;font-weight:900;margin-top:6px;}
+.tl-card .tl-role{font-size:14px;font-weight:700;color:var(--ink-soft);margin-top:3px;}
+.tl-ach{list-style:none;margin-top:12px;padding:0;}
+.tl-ach li{
+  position:relative;padding-left:20px;
+  font-size:14px;color:var(--ink-soft);margin-bottom:6px;
+}
+.tl-ach li::before{
+  content:"▸";position:absolute;left:0;top:0;
+  color:var(--pink-deep);font-weight:900;
+}
+.tl-metric{
+  display:inline-block;margin-top:12px;
+  padding:8px 15px;border-radius:999px;
+  font-size:13px;font-weight:800;
+  background:rgba(255,255,255,.55);
+  border:1px solid rgba(255,255,255,.8);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+}
+
+/* ===== 12 作品 =========================================== */
+.works-shell{padding:36px;}
+.works-head{
+  display:flex;align-items:center;gap:14px;margin-bottom:24px;
+}
+.works-head .w-ico{
+  width:54px;height:54px;border-radius:16px;flex:0 0 54px;
+  display:grid;place-items:center;font-size:27px;
+  background:linear-gradient(140deg,rgba(167,139,250,.45),rgba(103,232,249,.45));
+  border:1px solid rgba(255,255,255,.8);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 8px 20px rgba(139,92,246,.22);
+}
+.works-head h3{font-size:22px;font-weight:900;}
+.works-head p{font-size:13.5px;color:var(--ink-faint);font-weight:600;}
+.works-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+.work-card{
+  padding:24px;border-radius:20px;
+  background:rgba(255,255,255,.34);
+  border:1px solid rgba(255,255,255,.6);
+  transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease,background .35s ease;
+}
+.work-card:hover{
+  transform:translateY(-8px);
+  background:rgba(255,255,255,.55);
+  box-shadow:0 20px 44px rgba(139,92,246,.24),inset 0 1px 0 rgba(255,255,255,.85);
+}
+.work-card .wc-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.work-card .wc-emoji{font-size:32px;}
+.work-card h4{font-size:17px;font-weight:900;}
+.work-card .wc-role{font-size:12.5px;color:var(--violet-deep);font-weight:800;letter-spacing:.5px;}
+.work-card p{font-size:14px;color:var(--ink-soft);margin-bottom:12px;}
+.wc-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.wc-chips span{
+  padding:4px 11px;border-radius:999px;
+  font-size:11.5px;font-weight:700;color:var(--ink-soft);
+  background:rgba(255,255,255,.55);
+  border:1px solid rgba(255,255,255,.75);
+  font-family:"SF Mono",Consolas,"Courier New",monospace;
+}
+.wc-chips .zh{font-family:var(--font);}
+
+/* ===== 13 三年纲领 ======================================= */
+.plan-steps{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:18px;align-items:stretch;
+}
+.plan-step{padding:28px 26px;display:flex;flex-direction:column;}
+.plan-step .p-year{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:15px;font-weight:900;letter-spacing:2px;
+  padding:6px 15px;border-radius:999px;align-self:flex-start;
+  background:linear-gradient(140deg,rgba(167,139,250,.4),rgba(249,168,212,.4));
+  border:1px solid rgba(255,255,255,.75);
+}
+.plan-step:nth-child(1) .p-year{background:linear-gradient(140deg,rgba(103,232,249,.45),rgba(167,139,250,.45));}
+.plan-step:nth-child(3) .p-year{background:linear-gradient(140deg,rgba(249,168,212,.5),rgba(251,207,232,.5));}
+.plan-step .p-big{
+  margin-top:14px;font-size:34px;font-weight:900;line-height:1.2;
+  background:linear-gradient(120deg,#4c1d95,#8b5cf6,#db2777);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:var(--ink);
+}
+.plan-step .p-sub{font-size:13px;font-weight:800;color:var(--ink-soft);margin-top:4px;}
+.plan-step ul{margin-top:14px;padding:0;list-style:none;flex:1;}
+.plan-step ul li{
+  position:relative;padding-left:18px;
+  font-size:13.5px;color:var(--ink-soft);margin-bottom:8px;
+}
+.plan-step ul li::before{content:"✦";position:absolute;left:0;top:0;color:var(--violet-deep);font-size:12px;}
+.plan-step .p-tag{
+  margin-top:14px;padding:9px 14px;border-radius:14px;
+  font-size:12.5px;font-weight:700;color:var(--ink);
+  background:rgba(255,255,255,.45);
+  border:1px solid rgba(255,255,255,.7);
+}
+.plan-arrow{
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;color:var(--pink-deep);
+  text-shadow:0 2px 10px rgba(236,72,153,.4);
+}
+/* 心法 */
+.creed-box{margin-top:26px;padding:30px;}
+.creed-box h3{font-size:18px;font-weight:900;text-align:center;margin-bottom:20px;}
+.creed-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+.creed-item{text-align:center;padding:18px 12px;border-radius:18px;}
+.creed-item .c-emoji{font-size:28px;display:block;margin-bottom:8px;}
+.creed-item .c-main{font-size:15px;font-weight:900;}
+.creed-item .c-note{font-size:12px;color:var(--ink-faint);margin-top:5px;font-weight:600;}
+
+/* ===== 14 联系 =========================================== */
+.contact-card{
+  max-width:820px;margin:0 auto;padding:44px 40px;
+  text-align:center;
+}
+.contact-card h3{font-size:clamp(24px,3.6vw,34px);font-weight:900;margin-bottom:8px;}
+.contact-card .c-sub{color:var(--ink-faint);font-size:15px;margin-bottom:28px;}
+.contact-status{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 18px;border-radius:999px;
+  font-size:13px;font-weight:800;margin-bottom:30px;
+  background:linear-gradient(140deg,rgba(103,232,249,.4),rgba(167,139,250,.4));
+  border:1px solid rgba(255,255,255,.75);
+}
+.contact-status .pulse{
+  width:9px;height:9px;border-radius:50%;
+  background:linear-gradient(120deg,#22c55e,#a3e635);
+  box-shadow:0 0 0 0 rgba(34,197,94,.5);
+  animation:pulseRing 2s ease-out infinite;
+}
+.contact-rows{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:18px;margin-bottom:28px;
+}
+.contact-row{
+  padding:22px 20px;border-radius:20px;
+  background:rgba(255,255,255,.4);
+  border:1px solid rgba(255,255,255,.65);
+  transition:transform .3s ease,box-shadow .3s ease;
+}
+.contact-row:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(139,92,246,.2);}
+.contact-row .cr-label{font-size:12.5px;font-weight:800;letter-spacing:1px;color:var(--ink-faint);margin-bottom:6px;}
+.contact-row .cr-value{
+  font-size:clamp(18px,2.8vw,24px);font-weight:900;letter-spacing:.5px;
+  word-break:break-all;
+}
+.contact-row .cr-value a:hover{color:var(--violet-deep);}
+.copy-btn{
+  margin-top:12px;display:inline-flex;align-items:center;gap:7px;
+  padding:8px 18px;border-radius:999px;
+  font-size:13px;font-weight:800;
+  background:rgba(255,255,255,.6);
+  border:1px solid rgba(255,255,255,.85);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+  transition:transform .25s ease,background .25s ease,box-shadow .25s ease;
+}
+.copy-btn:hover{
+  transform:translateY(-2px);
+  background:linear-gradient(120deg,#6d28d9,#be185d);
+  color:#fff;
+  box-shadow:0 8px 20px rgba(236,72,153,.35);
+}
+.contact-note{font-size:13px;color:var(--ink-faint);font-weight:600;}
+
+/* ===== 15 页脚 =========================================== */
+.footer{padding:0 22px 40px;}
+.footer-inner{
+  max-width:var(--wrap);margin:0 auto;
+  padding:22px 26px;border-radius:20px;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
+}
+.footer-inner .f-brand{font-size:14px;font-weight:800;}
+.footer-inner .f-brand em{font-style:normal;color:var(--violet-deep);}
+.footer-inner .f-links a{
+  font-size:13.5px;font-weight:700;color:var(--ink-soft);
+  padding:6px 12px;border-radius:999px;
+  transition:background .25s ease,color .25s ease;
+}
+.footer-inner .f-links a:hover{background:rgba(255,255,255,.6);color:var(--ink);}
+.footer-inner .f-links a b{color:var(--pink-deep);}
+.footer-inner .f-mark{font-size:11.5px;color:var(--ink-faint);font-weight:700;letter-spacing:1px;}
+
+/* ===== 16 回顶按钮 & Toast =============================== */
+#topBtn{
+  position:fixed;right:26px;bottom:26px;z-index:250;
+  width:50px;height:50px;border-radius:16px;
+  display:grid;place-items:center;font-size:20px;
+  background:linear-gradient(150deg,rgba(255,255,255,.7),rgba(255,255,255,.4));
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+  border:1px solid var(--stroke);
+  box-shadow:var(--shadow-soft),inset 0 1px 0 rgba(255,255,255,.85);
+  opacity:0;transform:translateY(18px);pointer-events:none;
+  transition:opacity .35s ease,transform .35s ease;
+}
+#topBtn.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+#topBtn:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover);}
+#toast{
+  position:fixed;left:50%;bottom:34px;z-index:400;
+  transform:translate(-50%,80px);
+  opacity:0;pointer-events:none;
+  padding:13px 24px;border-radius:999px;
+  font-size:14px;font-weight:800;color:#fff;
+  background:linear-gradient(120deg,#4c1d95,#8b5cf6,#db2777);
+  box-shadow:0 14px 34px rgba(124,58,237,.45),inset 0 1px 0 rgba(255,255,255,.35);
+  transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .4s ease;
+  white-space:nowrap;
+}
+#toast.show{transform:translate(-50%,0);opacity:1;}
+
+/* ===== 17 响应式 ========================================= */
+/* 平板：3列→2列、时间线仍双栏但收紧 */
+@media (max-width:1024px){
+  .about-grid{grid-template-columns:1fr;gap:26px;}
+  .about-avatar{display:flex;align-items:center;gap:20px;text-align:left;}
+  .avatar-ring{flex:0 0 130px;width:130px;height:130px;margin:0;}
+  .avatar-tags{justify-content:flex-start;}
+  .num-grid{grid-template-columns:repeat(2,1fr);}
+  .creed-grid{grid-template-columns:repeat(2,1fr);}
+}
+/* 手机：一律单列 */
+@media (max-width:768px){
+  section{padding:72px 16px;}
+  .nav{flex-wrap:wrap;border-radius:22px;}
+  .nav-logo{flex:1;}
+  .nav-burger{display:grid;}
+  .nav-links{
+    position:absolute;top:calc(100% + 12px);left:0;right:0;
+    flex-direction:column;align-items:stretch;gap:4px;
+    padding:12px;border-radius:22px;
+    background:linear-gradient(160deg,rgba(255,255,255,.82),rgba(255,255,255,.55));
+    -webkit-backdrop-filter:blur(24px);
+    backdrop-filter:blur(24px);
+    border:1px solid var(--stroke);
+    box-shadow:var(--shadow-hover);
+    opacity:0;transform:translateY(-10px);pointer-events:none;
+    transition:opacity .3s ease,transform .3s ease;
+  }
+  .nav.open .nav-links{opacity:1;transform:translateY(0);pointer-events:auto;}
+  .nav-links a{padding:12px 16px;font-size:15px;}
+  .nav-cta{display:none;}
+  .hero{min-height:auto;padding-top:96px;}
+  .hero-glass{padding:20px 18px;}
+  .skills-grid{grid-template-columns:1fr;}
+  .timeline::before{left:17px;}
+  .tl-item{width:100%;margin-left:0 !important;margin-right:0 !important;text-align:left !important;padding-left:52px;}
+  .tl-item .tl-dot{left:9px !important;right:auto !important;}
+  .works-grid{grid-template-columns:1fr;}
+  .plan-steps{grid-template-columns:1fr;gap:0;}
+  .plan-arrow{transform:rotate(90deg);padding:4px 0;}
+  .contact-rows{grid-template-columns:1fr;}
+  .creed-grid{grid-template-columns:1fr 1fr;}
+  .footer-inner{flex-direction:column;text-align:center;}
+}
+@media (max-width:480px){
+  .num-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .creed-grid{grid-template-columns:1fr;}
+  .about-avatar{flex-direction:column;text-align:center;}
+  .avatar-tags{justify-content:center;}
+  .contact-card{padding:32px 22px;}
+  .hero-meta .chip{font-size:12.5px;padding:7px 12px;}
+}
+
+/* ===== 18 无障碍：尊重减少动态偏好 ======================= */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  .reveal{opacity:1;transform:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== 背景光斑场景 ==================== -->
+<div class="bg-scene" id="bgScene" aria-hidden="true">
+  <div class="blob-wrap blob-1" data-depth="1"><div class="blob"></div></div>
+  <div class="blob-wrap blob-2" data-depth="1.8"><div class="blob"></div></div>
+  <div class="blob-wrap blob-3" data-depth="1.3"><div class="blob"></div></div>
+  <div class="blob-wrap blob-4" data-depth="2.4"><div class="blob"></div></div>
+</div>
+
+<!-- ==================== 滚动进度条 ======================= -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ==================== 玻璃导航 ========================= -->
+<div class="nav-wrap">
+  <nav class="nav" id="nav" aria-label="主导航">
+    <a class="nav-logo" href="#top" aria-label="回到顶部">
+      <span class="logo-emoji">🧊</span>
+      <span>邵汉青<small>07 · GLASSMORPHISM 玻璃拟态</small></span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#about">关于</a>
+      <a href="#numbers">数字</a>
+      <a href="#skills">技能</a>
+      <a href="#timeline">履历</a>
+      <a href="#works">作品</a>
+      <a href="#plan">纲领</a>
+      <a href="#contact">联系</a>
+    </div>
+    <a class="nav-cta" href="#contact">聊聊合作 ↗</a>
+    <button class="nav-burger" id="navBurger" aria-label="打开菜单" aria-expanded="false">☰</button>
+  </nav>
+</div>
+
+<main id="top">
+
+  <!-- ==================== HERO =========================== -->
+  <header class="hero">
+    <span class="hero-badge glass reveal"><span class="dot"></span>07 / 10 · GLASSMORPHISM · 毛玻璃美学</span>
+    <h1 class="reveal" data-delay="60">邵汉青</h1>
+    <div class="hero-sub-en reveal" data-delay="120">ENGINEERING SALES × AI PRACTITIONER</div>
+    <div class="hero-glass glass reveal" data-delay="180">
+      <p>10年工程机械大客户销售 <span class="hl">×</span> AI 重度实践者</p>
+      <p class="hero-quote">—— 一句话人设：「既懂销售，又懂AI」</p>
+    </div>
+    <div class="hero-meta reveal" data-delay="240">
+      <span class="chip glass">📍 河南郑州 · 可出差</span>
+      <span class="chip glass">🎂 32 岁</span>
+      <span class="chip glass">💍 已婚</span>
+      <span class="chip glass">🏗️ 太原重工 · 工程起重机分公司</span>
+    </div>
+    <div class="hero-ctas reveal" data-delay="300">
+      <a class="btn btn-primary" href="#contact">📮 联系汉青</a>
+      <a class="btn btn-ghost glass" href="#timeline">📜 看履历</a>
+    </div>
+    <div class="scroll-cue reveal" data-delay="380">
+      <div class="wheel"><i></i></div>
+      <span>SCROLL</span>
+    </div>
+  </header>
+
+  <!-- ==================== 01 关于 ========================= -->
+  <section id="about">
+    <div class="sec-inner">
+      <header class="sec-head reveal">
+        <span class="sec-chip glass">01 · ABOUT 关于</span>
+        <h2>认识汉青</h2>
+        <p class="sec-sub">十年一线重工大客户销售，把 AI 变成随身武器——卖得动设备，也用得来大模型。</p>
+        <div class="sec-divider"></div>
+      </header>
+
+      <div class="glass lift about-card reveal">
+        <div class="about-grid">
+          <!-- 头像区 -->
+          <div class="about-avatar">
+            <div class="avatar-ring">
+              <div class="avatar-core" aria-hidden="true">👨‍💼</div>
+            </div>
+            <h3>邵汉青</h3>
+            <div class="role">业务经理 / 大客户销售</div>
+            <div class="avatar-tags">
+              <span>🦾 懂销售</span>
+              <span>🤖 用 AI</span>
+            </div>
+          </div>
+          <!-- 简介区 -->
+          <div class="about-bio">
+            <h3>既懂销售，又懂AI</h3>
+            <p>
+              10 年工程机械大客户销售 × AI 重度实践者。从旋挖钻机、履带吊，到空压机、高空作业平台，
+              始终站在<strong>大客户一线</strong>：冷启动过粤东、河南、湖北多片空白市场，
+              客户从 0 做到 180+，独立完成 35 份标书，扛过应收账款催收，也拿下过 1.2 亿意向价值的市场盘子。
+            </p>
+            <p>
+              与此同时，把 AI 深度嵌入自己的销售工作流：在 WorkBuddy 上自建 8 个定制技能，
+              把客户线索采集、热力作战图、标书 PPT、行业简报这些<strong>重复的事全部自动化</strong>，
+              用工具武装自己，一个人也能打出一个小团队的效果。
+            </p>
+            <p>
+              现职<strong>太原重工 · 工程起重机分公司</strong>业务经理/大客户销售，
+              负责高空作业平台（剪叉 4-14m / 臂式 16-60m）的湖北市场开发与经营。
+            </p>
+            <div class="bio-quote">
+              🎯 座右铭：「既懂销售，又懂AI」——专业干练，直奔结果。
+            </div>
+          </div>
+          <!-- 档案区 -->
+          <aside class="about-profile">
+            <div class="profile-tile">
+              <h4>🎓 学历轨迹</h4>
+              <div class="edu-row"><span>本科 · 黄淮学院</span><b>汽车服务工程</b><time>2015-2017</time></div>
+              <div class="edu-row"><span>大专 · 鹤壁职业技术学院</span><b>汽车检测</b><time>2012-2015</time></div>
+            </div>
+            <div class="profile-tile">
+              <h4>💼 职业档案</h4>
+              <p>10 年重工大客户销售 × AI 重度实践者<br>现职太原重工 · 工程起重机分公司业务经理/大客户销售</p>
+              <p style="margin-top:6px;">战绩：<b>意向价值 1.2 亿 · 已完成订单 1500 万</b></p>
+            </div>
+            <div class="profile-tile">
+              <h4>🧭 学习原则</h4>
+              <p>结果导向 → 先模仿后创造 → 重复的事自动化 → 小步快跑</p>
+            </div>
+            <div class="profile-tile">
+              <h4>💬 沟通风格</h4>
+              <p>专业干练、直奔结果；见客户先说结论，再给依据，最后给下一步。</p>
+            </div>
+          </aside>
+        </div>
+        <!-- 公司背书 -->
+        <div class="about-endorse">
+          <span class="end-tag">🏢 太原重工 · 76 年底蕴</span>
+          <span class="end-tag">📈 A股 600169</span>
+          <span class="end-tag">💰 2025 营收约 103.79 亿</span>
+          <span class="end-note">背靠大国企平台 · 高空作业平台新战场</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 02 关键数字 ===================== -->
+  <section id="numbers">
+    <div class="sec-inner">
+      <header class="sec-head reveal">
+        <span class="sec-chip glass">02 · NUMBERS 关键数字</span>
+        <h2>业绩不靠嘴，全靠数</h2>
+        <p class="sec-sub">每一段履历都能拿出可量化的结果——以下是汉青最引以为傲的 10 组数字。</p>
+        <div class="sec-divider"></div>
+      </header>
+
+      <div class="num-grid">
+        <div class="num-card glass lift reveal">
+          <div class="num-icon">🏭</div>
+          <div class="num-val"><span class="num" data-count="10" data-suffix="年">10年</span></div>
+          <div class="num-label">重工大客户销售</div>
+          <div class="num-note">旋挖钻机 → 高机，一线到底</div>
+        </div>
+        <div class="num-card glass lift reveal" data-delay="60">
+          <div class="num-icon">🗺️</div>
+          <div class="num-val"><span class="num" data-count="180" data-suffix="+">180+</span></div>
+          <div class="num-label">客户开发（三一 0→180）</div>
+          <div class="num-note">河南区域独立从零破局</div>
+        </div>
+        <div class="num-card glass lift reveal" data-delay="120">
+          <div class="num-icon">📑</div>
+          <div class="num-val"><span class="num" data-count="35" data-suffix=" 份">35 份</span></div>
+          <div class="num-label">独立完成标书</div>
+          <div class="num-note">复盛期间一手包办</div>
+        </div>
+        <div class="num-card glass lift reveal" data-delay="180">
+          <div class="num-icon">🎯</div>
+          <div class="num-val"><span class="num" data-count="1.2" data-decimals="1" data-suffix="亿">1.2亿</span></div>
+          <div class="num-label">意向价值（太重湖北）</div>
+          <div class="num-note">新市场 2 个月跑出的盘子</div>
+        </div>
+        <div class="num-card glass lift reveal">
+          <div class="num-icon">💸</div>
+          <div class="num-val"><span class="num" data-count="1500" data-suffix="万">1500万</span></div>
+          <div class="num-label">已完成订单（太重湖北）</div>
+          <div class="num-note">意向正在快速转合同</div>
+        </div>
+        <div class="num-card glass lift reveal" data-delay="60">
+          <div class="num-icon">🤝</div>
+          <div class="num-val"><span class="num" data-count="1" data-suffix="亿">1亿</span></div>
+          <div class="num-label">协助意向订单</div>
+          <div class="num-note">太重湖北 · 协同推进</div>
+        </div>
+        <div class="num-card glass lift reveal" data-delay="120">
+          <div class="num-icon">🧩</div>
+          <div class="num-val"><span class="num" data-count="1400" data-suffix="万">1400万</span></div>
+          <div class="num-label">协助完成订单</div>
+          <div class="num-note">太重湖北 · 协同落地</div>
+        </div>
+        <div class="num-card glass lift reveal" data-delay="60">
+          <div class="num-icon">📇</div>
+          <div class="num-val"><span class="num" data-count="113" data-suffix="条">113条</span></div>
+          <div class="num-label">湖北客户线索拓展</div>
+          <div class="num-note">其中新增 74 条</div>
+        </div>
+        <div class="num-card glass lift reveal" data-delay="120">
+          <div class="num-icon">📋</div>
+          <div class="num-val"><span class="num" data-count="92" data-suffix="条">92条</span></div>
+          <div class="num-label">空压机报备意向</div>
+          <div class="num-note">复盛 · 河南区域</div>
+        </div>
+        <div class="num-card glass lift reveal" data-delay="180">
+          <div class="num-icon">🤖</div>
+          <div class="num-val"><span class="num" data-count="8" data-suffix="个">8个</span></div>
+          <div class="num-label">AI 定制技能</div>
+          <div class="num-note">WorkBuddy 自建技能库</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 03 能力标签 ===================== -->
+  <section id="skills">
+    <div class="sec-inner">
+      <header class="sec-head reveal">
+        <span class="sec-chip glass">03 · SKILLS 能力标签</span>
+        <h2>8 项核心能力</h2>
+        <p class="sec-sub">从打单到回款、从线下到线上，覆盖大客户销售全价值链。</p>
+        <div class="sec-divider"></div>
+      </header>
+
+      <div class="glass skills-box reveal">
+        <div class="skills-grid">
+          <div class="skill-item">
+            <span class="s-ico">🤝</span>
+            <div><h4>大客户经营</h4><p>决策链渗透、关键人经营、长期关系深耕</p></div>
+          </div>
+          <div class="skill-item">
+            <span class="s-ico">🗺️</span>
+            <div><h4>区域 0→1 开拓</h4><p>粤东/河南/湖北三地冷启动实战</p></div>
+          </div>
+          <div class="skill-item">
+            <span class="s-ico">📑</span>
+            <div><h4>招投标 / 标书</h4><p>35 份独立标书、19 项投标协助经验</p></div>
+          </div>
+          <div class="skill-item">
+            <span class="s-ico">💰</span>
+            <div><h4>融资租赁方案设计</h4><p>厂商金融组合打法，帮客户算清账</p></div>
+          </div>
+          <div class="skill-item">
+            <span class="s-ico">🛡️</span>
+            <div><h4>应收账款风控</h4><p>主导催收与风险评估，守住现金流</p></div>
+          </div>
+          <div class="skill-item">
+            <span class="s-ico">🔁</span>
+            <div><h4>客户成功 / 续约</h4><p>设备全生命周期服务，复购与转介绍经营</p></div>
+          </div>
+          <div class="skill-item">
+            <span class="s-ico">🤖</span>
+            <div><h4>AI 提效</h4><p>WorkBuddy 8 个定制技能，重复的事自动化</p></div>
+          </div>
+          <div class="skill-item">
+            <span class="s-ico">📊</span>
+            <div><h4>可量化业绩</h4><p>每段履历都有数字背书，成绩单说话</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 04 职业履历 ===================== -->
+  <section id="timeline">
+    <div class="sec-inner">
+      <header class="sec-head reveal">
+        <span class="sec-chip glass">04 · CAREER 职业履历</span>
+        <h2>十年重工，一步一个脚印</h2>
+        <p class="sec-sub">从粤东到河南再到湖北，五段经历，五个台阶——每一段都留下可量化的战绩。</p>
+        <div class="sec-divider"></div>
+      </header>
+
+      <div class="timeline">
+        <!-- 节点 1：宇通重工 -->
+        <div class="tl-item reveal">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="glass lift tl-card">
+            <span class="tl-stage">🚜 起步期 · 宇通重工</span>
+            <span class="tl-period">2017.10 — 2021.03</span>
+            <h3>宇通重工</h3>
+            <div class="tl-role">旋挖钻机 / 履带吊 · 粤东区域销售</div>
+            <ul class="tl-ach">
+              <li>目标客户从 40 家拓展到 132 家</li>
+              <li>年业绩 600-1000 万，稳定放量</li>
+              <li>同批 60+ 新人中最早转正</li>
+            </ul>
+            <span class="tl-metric">📈 客户 40 → 132 家</span>
+          </div>
+        </div>
+        <!-- 节点 2：三一重工 -->
+        <div class="tl-item reveal">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="glass lift tl-card">
+            <span class="tl-stage">📈 爆发期 · 三一重工</span>
+            <span class="tl-period">2021.04 — 2023.06</span>
+            <h3>三一重工</h3>
+            <div class="tl-role">旋挖钻机 · 河南区域销售</div>
+            <ul class="tl-ach">
+              <li>独立开发市场，客户从 0 做到 180 家</li>
+              <li>年均销售 1500 万</li>
+              <li>真正打过硬仗：空白市场冷启动</li>
+            </ul>
+            <span class="tl-metric">🚀 客户 0 → 180 家</span>
+          </div>
+        </div>
+        <!-- 节点 3：中联重科 -->
+        <div class="tl-item reveal">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="glass lift tl-card">
+            <span class="tl-stage">🛡️ 风控期 · 中联重科</span>
+            <span class="tl-period">2023.07 — 2024.10</span>
+            <h3>中联重科</h3>
+            <div class="tl-role">旋挖钻机 · 河南区域销售</div>
+            <ul class="tl-ach">
+              <li>完善客户信息 112 条，夯实数据底盘</li>
+              <li>主导应收账款催收与风险评估</li>
+              <li>学会在行业下行期守住现金流</li>
+            </ul>
+            <span class="tl-metric">🗂️ 客户信息 112 条</span>
+          </div>
+        </div>
+        <!-- 节点 4：复盛实业 -->
+        <div class="tl-item reveal">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="glass lift tl-card">
+            <span class="tl-stage">🔄 转型期 · 复盛实业（上海）</span>
+            <span class="tl-period">2025.05 — 2025.12</span>
+            <h3>复盛实业（上海）</h3>
+            <div class="tl-role">空压机 · 河南区域销售</div>
+            <ul class="tl-ach">
+              <li>报备意向 92 条</li>
+              <li>独立完成标书 35 份</li>
+              <li>协助投标 19 项</li>
+            </ul>
+            <span class="tl-metric">📄 标书 ×35 · 投标 ×19</span>
+          </div>
+        </div>
+        <!-- 节点 5：太原重工 -->
+        <div class="tl-item reveal">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="glass lift tl-card">
+            <span class="tl-stage">🏔️ 新高点 · 太原重工</span>
+            <span class="tl-period">2025.12 — 至今</span>
+            <h3>太原重工 · 工程起重机分公司</h3>
+            <div class="tl-role">高空作业平台（剪叉 4-14m / 臂式 16-60m）· 湖北市场</div>
+            <ul class="tl-ach">
+              <li>拓展客户 113 条、新增 74 条</li>
+              <li>意向价值 1.2 亿</li>
+              <li>已完成订单 1500 万</li>
+              <li>协助意向订单 1 亿</li>
+              <li>协助完成订单 1400 万</li>
+            </ul>
+            <span class="tl-metric">🎯 意向 1.2 亿 · 已完成订单 1500 万 · 协助意向 1 亿</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 05 作品 ========================= -->
+  <section id="works">
+    <div class="sec-inner">
+      <header class="sec-head reveal">
+        <span class="sec-chip glass">05 · WORKS 作品</span>
+        <h2>4 个代表作：把工具武装到牙齿</h2>
+        <p class="sec-sub">资料库、技能库、工作台、获客助手——全是真实落地、天天在用的单文件工具。</p>
+        <div class="sec-divider"></div>
+      </header>
+
+      <div class="glass works-shell reveal">
+        <div class="works-head">
+          <span class="w-ico">🧰</span>
+          <div>
+            <h3>汉青的数字化销售工具箱</h3>
+            <p>单人作战 · 全栈自建 · 100% 真实使用中</p>
+          </div>
+        </div>
+
+        <div class="works-grid">
+          <!-- 作品 1：高机销售资料库 -->
+          <div class="work-card">
+            <div class="wc-top">
+              <span class="wc-emoji">🗂️</span>
+              <div>
+                <h4>高机销售资料库</h4>
+                <span class="wc-role">湖北市场开发工具箱</span>
+              </div>
+            </div>
+            <p>按 6 类归档：产品推介 / 市场开发 / 融资租赁 / 客户运营 / 行业资讯，1000+ 销售资料随取随用，湖北市场开发的标准弹药库。</p>
+            <div class="wc-chips">
+              <span>1000+ 资料</span><span>6 类归档</span><span class="zh">单文件管理</span>
+            </div>
+          </div>
+          <!-- 作品 2：AI 技能库 -->
+          <div class="work-card">
+            <div class="wc-top">
+              <span class="wc-emoji">🤖</span>
+              <div>
+                <h4>AI 技能库</h4>
+                <span class="wc-role">WorkBuddy 8 个定制技能</span>
+              </div>
+            </div>
+            <p>从线索采集到作战图、从标书 PPT 到行业简报，一条 AI 流水线覆盖销售全流程，重复的事全部自动化。</p>
+            <div class="wc-chips">
+              <span>market-dev-kit</span><span>amap-poi-collector</span>
+              <span>customer-geo-viz</span><span>sales-lead-workbook</span>
+              <span>sales-pitch-ppt</span><span>wechat-addfriend</span>
+              <span>secure-html-deploy</span><span>industry-briefing</span>
+            </div>
+          </div>
+          <!-- 作品 3：汉青职业工作台 -->
+          <div class="work-card">
+            <div class="wc-top">
+              <span class="wc-emoji">🧠</span>
+              <div>
+                <h4>汉青职业工作台</h4>
+                <span class="wc-role">Career Workbench</span>
+              </div>
+            </div>
+            <p>单文件 HTML 效率应用——6 大模块：学习 / 积累 / 记录 / 提高 / 事项安排 / 自我进化；localStorage 持久化 + JSON 导入导出；jsdom 功能自检 10 项全 PASS。</p>
+            <div class="wc-chips">
+              <span class="zh">学习</span><span class="zh">积累</span><span class="zh">记录</span>
+              <span class="zh">提高</span><span class="zh">事项安排</span><span class="zh">自我进化</span><span class="zh">localStorage</span>
+            </div>
+          </div>
+          <!-- 作品 4：微信获客助手 -->
+          <div class="work-card">
+            <div class="wc-top">
+              <span class="wc-emoji">📱</span>
+              <div>
+                <h4>微信获客助手</h4>
+                <span class="wc-role">WeChat Lead Tool</span>
+              </div>
+            </div>
+            <p>状态机 + CSV 备份 + 加密三合一，按「每日 25–30 条客户触达」的节奏稳定执行，让获客动作不再靠记忆、不再断档。</p>
+            <div class="wc-chips">
+              <span>state-machine</span><span>CSV 备份</span>
+              <span class="zh">加密</span><span class="zh">每日 25–30 条客户触达</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 06 三年纲领 ===================== -->
+  <section id="plan">
+    <div class="sec-inner">
+      <header class="sec-head reveal">
+        <span class="sec-chip glass">06 · PLAN 三年纲领</span>
+        <h2>2026-2028 · 三年行动纲领</h2>
+        <p class="sec-sub">动身求职 → 定盘业绩 → 上阶带团队，三步走，步步有打法。</p>
+        <div class="sec-divider"></div>
+      </header>
+
+      <div class="plan-steps">
+        <!-- 2026 -->
+        <div class="plan-step glass lift reveal">
+          <span class="p-year">STEP 1 · 2026</span>
+          <div class="p-big">动身求职</div>
+          <div class="p-sub">聚焦发力 · 10月下旬-11月中旬签约窗口</div>
+          <ul>
+            <li>主攻：工业互联网 SaaS 行业销售/客户成功（树根互联、徐工汉云、卡奥斯、腾讯云工业、华为云）</li>
+            <li>保底：融资租赁客户经理（远东宏信、平安租赁、厂商金融）</li>
+            <li>近选：高机头部厂销售管理岗（临工 / 星邦 / 鼎力）</li>
+          </ul>
+          <div class="p-tag">🗓️ 8-11 月集中发力 · 目标窗口 10 月下旬-11 月中旬</div>
+        </div>
+        <div class="plan-arrow reveal">→</div>
+        <!-- 2027 -->
+        <div class="plan-step glass lift reveal" data-delay="80">
+          <span class="p-year">STEP 2 · 2027</span>
+          <div class="p-big">定盘</div>
+          <div class="p-sub">名分落实 · 业绩年</div>
+          <ul>
+            <li>职位与平台落定，把「名分」坐实</li>
+            <li>全年聚焦业绩兑现，用数字立住位置</li>
+            <li>把 AI 工作流复制给团队，放大效率</li>
+          </ul>
+          <div class="p-tag">🎯 心无旁骛 · 业绩说话</div>
+        </div>
+        <div class="plan-arrow reveal">→</div>
+        <!-- 2028 -->
+        <div class="plan-step glass lift reveal" data-delay="160">
+          <span class="p-year">STEP 3 · 2028</span>
+          <div class="p-big">上阶</div>
+          <div class="p-sub">争取带团队</div>
+          <ul>
+            <li>从「超级个体」走向「团队操盘手」</li>
+            <li>沉淀打法：把个人能力变成可复制的方法论</li>
+            <li>用体系化产出证明管理价值</li>
+          </ul>
+          <div class="p-tag">👥 带出能打的队伍</div>
+        </div>
+      </div>
+
+      <!-- 心法 -->
+      <div class="glass creed-box reveal">
+        <h3>💎 四句心法</h3>
+        <div class="creed-grid">
+          <div class="creed-item glass lift">
+            <span class="c-emoji">🚪</span>
+            <div class="c-main">内推 ＞ 海投</div>
+            <div class="c-note">走门路，不走量</div>
+          </div>
+          <div class="creed-item glass lift" data-delay="60">
+            <span class="c-emoji">📦</span>
+            <div class="c-main">卖方案不卖力气</div>
+            <div class="c-note">价值感先于价格</div>
+          </div>
+          <div class="creed-item glass lift" data-delay="120">
+            <span class="c-emoji">🤜</span>
+            <div class="c-main">攻坚大单必组队</div>
+            <div class="c-note">一个人拿不下就组局</div>
+          </div>
+          <div class="creed-item glass lift" data-delay="180">
+            <span class="c-emoji">🏔️</span>
+            <div class="c-main">赚大钱之前先站上大平台</div>
+            <div class="c-note">平台决定天花板</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 07 联系 ========================= -->
+  <section id="contact">
+    <div class="sec-inner">
+      <header class="sec-head reveal">
+        <span class="sec-chip glass">07 · CONTACT 联系</span>
+        <h2>聊聊合作机会</h2>
+        <p class="sec-sub">无论是招人、卖设备、谈代理，还是想看看 AI 怎么武装销售——直接找我。</p>
+        <div class="sec-divider"></div>
+      </header>
+
+      <div class="glass contact-card reveal">
+        <span class="contact-status"><span class="pulse"></span>2026 动身求职 · 目标窗口已开启 · 随时可聊</span>
+        <h3>📮 找到汉青</h3>
+        <p class="c-sub">base 河南郑州 · 可出差 · 响应快，加了就能聊正事。</p>
+
+        <div class="contact-rows">
+          <div class="contact-row">
+            <div class="cr-label">📞 电话</div>
+            <div class="cr-value"><a href="tel:17772118785">177-7211-8785</a></div>
+            <button class="copy-btn" data-copy="177-7211-8785" data-msg="✅ 电话已复制到剪贴板">📋 复制电话</button>
+          </div>
+          <div class="contact-row">
+            <div class="cr-label">✉️ 邮箱</div>
+            <div class="cr-value"><a href="mailto:1820688914@qq.com">1820688914@qq.com</a></div>
+            <button class="copy-btn" data-copy="1820688914@qq.com" data-msg="✅ 邮箱已复制到剪贴板">📋 复制邮箱</button>
+          </div>
+        </div>
+
+        <p class="contact-note">📬 邮件请注明来意；微信同手机号，添加请备注「网站来访」。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 页脚 ============================ -->
+  <footer class="footer">
+    <div class="footer-inner glass">
+      <div class="f-brand">© 2026 <em>邵汉青</em> · 个人网站合集</div>
+      <div class="f-links">
+        <a href="index.html">🏠 <b>返回总览</b></a>
+        <a href="#top">回到顶部 ↑</a>
+        <a href="#contact">联系我</a>
+      </div>
+      <div class="f-mark">07 / 10 · GLASSMORPHISM</div>
+    </div>
+  </footer>
+
+</main>
+
+<!-- ==================== 回顶按钮 & Toast ================== -->
+<button id="topBtn" aria-label="回到顶部">↑</button>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   07 · 玻璃拟态 — 交互脚本（原生 JS，零依赖）
+   ------------------------------------------------------------
+   01 工具函数
+   02 背景光斑鼠标视差（轻量 mousemove + rAF）
+   03 滚动进度条 / 导航状态 / 回顶按钮
+   04 移动端汉堡菜单
+   05 滚动渐入 IntersectionObserver
+   06 关键数字滚动动画
+   07 复制按钮 + Toast
+   ============================================================ */
+
+(function () {
+  'use strict';
+
+  /* ---- 01 工具函数 ---- */
+  var reduceMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function onReady(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  /* ---- 02 背景光斑鼠标视差 ----
+     鼠标移动时，光斑按 data-depth 深度反向轻微位移；
+     用 lerp 缓动 + requestAnimationFrame 保持轻量流畅。 */
+  function initParallax() {
+    var scene = document.getElementById('bgScene');
+    if (!scene || reduceMotion) return;
+    var blobs = scene.querySelectorAll('.blob-wrap');
+    var mx = 0, my = 0;   /* 目标值（-0.5 ~ 0.5） */
+    var cx = 0, cy = 0;   /* 当前缓动值 */
+    var ticking = false;
+
+    function onMouseMove(e) {
+      mx = e.clientX / window.innerWidth - 0.5;
+      my = e.clientY / window.innerHeight - 0.5;
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(step);
+      }
+    }
+
+    function step() {
+      /* 缓动趋近目标（0.05 系数），避免生硬跟随 */
+      cx += (mx - cx) * 0.05;
+      cy += (my - cy) * 0.05;
+      blobs.forEach(function (b) {
+        var depth = parseFloat(b.getAttribute('data-depth') || '1');
+        var dx = -cx * 46 * depth;
+        var dy = -cy * 34 * depth;
+        b.style.transform = 'translate3d(' + dx.toFixed(2) + 'px,' + dy.toFixed(2) + 'px,0)';
+      });
+      ticking = false;
+    }
+
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+  }
+
+  /* ---- 03 滚动联动：进度条 / 导航阴影 / 回顶按钮 ---- */
+  function initScrollUI() {
+    var bar = document.getElementById('progressBar');
+    var nav = document.getElementById('nav');
+    var topBtn = document.getElementById('topBtn');
+    if (!bar || !nav || !topBtn) return;
+
+    function onScroll() {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+      bar.style.width = pct.toFixed(2) + '%';
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+      topBtn.classList.toggle('show', window.scrollY > 560);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    topBtn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+  }
+
+  /* ---- 04 移动端汉堡菜单 ---- */
+  function initBurger() {
+    var burger = document.getElementById('navBurger');
+    var nav = document.getElementById('nav');
+    if (!burger || !nav) return;
+
+    burger.addEventListener('click', function () {
+      var open = nav.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      burger.textContent = open ? '✕' : '☰';
+    });
+
+    /* 点击菜单项后自动收起 */
+    nav.querySelectorAll('.nav-links a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        nav.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+        burger.textContent = '☰';
+      });
+    });
+
+    /* 点击页面其他区域收起 */
+    document.addEventListener('click', function (e) {
+      if (!nav.contains(e.target)) {
+        nav.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+        burger.textContent = '☰';
+      }
+    });
+  }
+
+  /* ---- 05 滚动渐入（IntersectionObserver） ---- */
+  function initReveal() {
+    var items = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+      /* 降级：直接全部显示 */
+      items.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          var el = en.target;
+          /* 支持 data-delay 错峰渐入 */
+          var delay = parseInt(el.getAttribute('data-delay') || '0', 10);
+          if (delay > 0) {
+            el.style.transitionDelay = delay + 'ms';
+          }
+          el.classList.add('in');
+          io.unobserve(el);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    items.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ---- 06 关键数字滚动动画（进入视口后 count-up） ---- */
+  function initCountUp() {
+    var nums = document.querySelectorAll('.num');
+    if (!nums.length) return;
+
+    function animate(el) {
+      var target = parseFloat(el.getAttribute('data-count') || '0');
+      var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+      var suffix = el.getAttribute('data-suffix') || '';
+      var prefix = el.getAttribute('data-prefix') || '';
+      var dur = 1500;
+      var t0 = null;
+
+      function tick(ts) {
+        if (t0 === null) t0 = ts;
+        var p = Math.min((ts - t0) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);   /* easeOutCubic */
+        var val = target * eased;
+        el.textContent = prefix + val.toFixed(decimals) + suffix;
+        if (p < 1 && !reduceMotion) {
+          requestAnimationFrame(tick);
+        } else {
+          el.textContent = prefix + target.toFixed(decimals) + suffix;
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            animate(en.target);
+            io.unobserve(en.target);
+          }
+        });
+      }, { threshold: 0.4 });
+      nums.forEach(function (el) { io.observe(el); });
+    } else {
+      nums.forEach(animate);
+    }
+  }
+
+  /* ---- 07 复制按钮 + Toast ---- */
+  function initCopy() {
+    var toast = document.getElementById('toast');
+    var toastTimer = null;
+    var btns = document.querySelectorAll('.copy-btn');
+
+    function showToast(msg) {
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    /* 兜底复制：兼容 file:// 等无 Clipboard API 场景 */
+    function legacyCopy(text, done) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-9999px';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        done();
+      } catch (err) {
+        /* 复制失败也不打断交互 */
+      }
+      document.body.removeChild(ta);
+    }
+
+    btns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var text = btn.getAttribute('data-copy') || '';
+        var msg = btn.getAttribute('data-msg') || '已复制';
+        var done = function () { showToast(msg); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done).catch(function () {
+            legacyCopy(text, done);
+          });
+        } else {
+          legacyCopy(text, done);
+        }
+      });
+    });
+  }
+
+  /* ---- 启动 ---- */
+  onReady(function () {
+    initParallax();
+    initScrollUI();
+    initBurger();
+    initReveal();
+    initCountUp();
+    initCopy();
+  });
+})();
+</script>
+</body>
+</html>

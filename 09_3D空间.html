@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="邵汉青 · 10年工程机械大客户销售 × AI重度实践者 —— 09 CUBE3D 3D空间个人站点（纯CSS 3D）">
+<meta name="author" content="邵汉青">
+<title>CUBE3D · 邵汉青 · 3D空间 · 个人网站合集 09</title>
+<style>
+/* ==========================================================================
+   [S1] 全局设计令牌
+   —— 深空主题: #0b0e1a → #1a1030 垂直渐变; 霓虹青/紫/金三色点缀
+   —— 主容器 perspective:1200px; 字体全部使用系统字体栈（零外部依赖）
+   ========================================================================== */
+:root {
+  /* 色板 */
+  --bg0: #0b0e1a;            /* 深空顶部 */
+  --bg1: #1a1030;            /* 深空底部（紫） */
+  --ink:  #e9edff;           /* 主文字 */
+  --ink2: #c3cbf2;           /* 次级文字 */
+  --dim:  #98a1c7;           /* 弱化文字 */
+  --faint:#8d97c0;           /* 最弱文字（≥4.5:1） */
+
+  --cy:   #54e8ff;           /* 霓虹青 */
+  --vi:   #a78bfa;           /* 霓虹紫 */
+  --go:   #ffd166;           /* 星光金 */
+  --ok:   #5eead4;           /* 成功绿 */
+  --rose: #ff8fb2;           /* 点缀粉 */
+
+  /* 面板 */
+  --panel:  rgba(15, 19, 44, 0.66);
+  --panel2: rgba(26, 21, 58, 0.55);
+  --edge:   rgba(122, 150, 255, 0.22);
+  --edge2:  rgba(84, 232, 255, 0.38);
+
+  /* 3D 舞台 */
+  --persp: 1200px;           /* 主容器透视距离（设计规格固定值） */
+
+  /* 字体栈 */
+  --font:  "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont,
+           "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono:  ui-monospace, SFMono-Regular, Menlo, Consolas,
+           "Liberation Mono", "Courier New", monospace;
+}
+
+/* ==========================================================================
+   [S2] Reset 与基础
+   ========================================================================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--bg0) 0%, #101327 45%, var(--bg1) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow-x: hidden;        /* 3D 旋转产生的横向溢出在此裁掉（旧浏览器回退） */
+  overflow-x: clip;          /* 现代浏览器：裁切但不触发 3D 扁平化（Safari 兼容关键） */
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: rgba(84, 232, 255, 0.35); color: #fff; }
+
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+/* 自定义滚动条（深空风格） */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #0b0e1a; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(84,232,255,.5), rgba(167,139,250,.5));
+  border-radius: 6px;
+  border: 2px solid #0b0e1a;
+}
+
+/* ==========================================================================
+   [S3] 星空背景（fixed 三层: 星云 + 星点）
+   —— 星点由 JS 批量生成（零外部资源），此处只负责容器与星云
+   ========================================================================== */
+.space-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.5;
+  will-change: transform;
+}
+.neb-a { /* 青色星云 */
+  width: 46vw; height: 46vw;
+  left: -12vw; top: -14vw;
+  background: radial-gradient(circle, rgba(84,232,255,.28) 0%, transparent 70%);
+  animation: driftA 26s ease-in-out infinite alternate;
+}
+.neb-b { /* 紫色星云 */
+  width: 52vw; height: 52vw;
+  right: -16vw; bottom: -12vw;
+  background: radial-gradient(circle, rgba(167,139,250,.30) 0%, transparent 70%);
+  animation: driftB 32s ease-in-out infinite alternate;
+}
+@keyframes driftA {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(6vw, 4vh, 0) scale(1.15); }
+}
+@keyframes driftB {
+  from { transform: translate3d(0, 0, 0) scale(1.1); }
+  to   { transform: translate3d(-5vw, -5vh, 0) scale(1); }
+}
+
+.stars { position: absolute; inset: 0; }
+.stars i {                     /* 普通星点（JS 生成） */
+  position: absolute;
+  border-radius: 50%;
+  background: #dbe6ff;
+  animation: twinkle 4s ease-in-out infinite;
+}
+.stars i.big {                 /* 大星：带光晕 */
+  background: var(--cy);
+  box-shadow: 0 0 6px 1px rgba(84, 232, 255, 0.8),
+              0 0 14px 3px rgba(84, 232, 255, 0.35);
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50%      { opacity: 1;    transform: scale(1.15); }
+}
+
+/* ==========================================================================
+   [S4] 浮动装饰：3D 立方体（6 面 div）与 3D 圆环
+   —— 纯 CSS 旋转动画，position:fixed 悬浮于舞台后方
+   ========================================================================== */
+.deco {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ---------- 立方体 ---------- */
+.cube {
+  --s: 56px;                 /* 边长 */
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  transform-style: preserve-3d;
+  animation: spinCube var(--dur, 20s) linear infinite;
+  opacity: 0.9;
+}
+.cube i {                    /* 六个面 */
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(84, 232, 255, 0.40);
+  background: rgba(30, 50, 110, 0.12);
+  box-shadow: inset 0 0 18px rgba(84, 232, 255, 0.12);
+}
+.cube i:nth-child(1) { transform: translateZ(calc(var(--s) / 2)); }
+.cube i:nth-child(2) { transform: rotateY(180deg)  translateZ(calc(var(--s) / 2)); }
+.cube i:nth-child(3) { transform: rotateY(90deg)   translateZ(calc(var(--s) / 2)); }
+.cube i:nth-child(4) { transform: rotateY(-90deg)  translateZ(calc(var(--s) / 2)); }
+.cube i:nth-child(5) { transform: rotateX(90deg)   translateZ(calc(var(--s) / 2)); }
+.cube i:nth-child(6) { transform: rotateX(-90deg)  translateZ(calc(var(--s) / 2)); }
+
+@keyframes spinCube {
+  0%   { transform: rotateX(0deg)    rotateY(0deg)    rotateZ(0deg); }
+  100% { transform: rotateX(360deg)  rotateY(360deg)  rotateZ(20deg); }
+}
+
+.cube.c1 { --s: 64px; --dur: 22s; top: 14%;   left: 6%;   animation-direction: normal; }
+.cube.c2 { --s: 40px; --dur: 15s; top: 58%;   left: 4%;   animation-direction: reverse; }
+.cube.c3 { --s: 30px; --dur: 12s; top: 78%;   right: 7%;  animation-direction: alternate; }
+.cube.c3 i { border-color: rgba(167, 139, 250, 0.45); }
+
+/* 立方体的上下浮动（外包一层） */
+.cube-float { animation: floatY 7s ease-in-out infinite alternate; }
+.cube-float.f1 { animation-duration: 8s; }
+.cube-float.f2 { animation-duration: 6s; animation-delay: -2s; }
+.cube-float.f3 { animation-duration: 9s; animation-delay: -4s; }
+@keyframes floatY {
+  from { transform: translateY(-14px); }
+  to   { transform: translateY(14px); }
+}
+
+/* ---------- 3D 圆环（倾斜自转，视觉上是立体环） ---------- */
+.ring {
+  --r: 120px;
+  position: absolute;
+  width: var(--r);
+  height: var(--r);
+  border-radius: 50%;
+  border: 2px solid rgba(167, 139, 250, 0.30);
+  border-top-color: rgba(84, 232, 255, 0.85);
+  border-bottom-color: rgba(255, 209, 102, 0.6);
+  transform-style: preserve-3d;
+  animation: spinRing var(--dur, 18s) linear infinite;
+}
+.ring::after {              /* 内圈，形成双环立体感 */
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  border: 1px dashed rgba(84, 232, 255, 0.35);
+}
+@keyframes spinRing {
+  0%   { transform: rotateX(74deg) rotateZ(0deg); }
+  100% { transform: rotateX(74deg) rotateZ(360deg); }
+}
+.ring.r1 { --r: 150px; --dur: 26s; top: 8%;   right: 9%;  animation-direction: reverse; }
+.ring.r2 { --r: 96px;  --dur: 18s; bottom: 16%; left: 10%; }
+.ring.r3 { --r: 130px; --dur: 21s; top: 42%;  right: 3%;  animation-direction: alternate; }
+
+/* ==========================================================================
+   [S5] 侧边浮动导航点 + 视角 HUD
+   ========================================================================== */
+.ndots {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ndot {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(233, 237, 255, 0.45);
+  background: rgba(11, 14, 26, 0.6);
+  transition: all 0.3s ease;
+}
+.ndot span {                 /* 悬浮文字提示 */
+  position: absolute;
+  right: 26px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--ink2);
+  background: rgba(11, 14, 26, 0.85);
+  border: 1px solid var(--edge);
+  border-radius: 20px;
+  padding: 3px 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.ndot:hover span { opacity: 1; }
+.ndot:hover,
+.ndot.on {
+  background: var(--cy);
+  border-color: var(--cy);
+  box-shadow: 0 0 10px rgba(84, 232, 255, 0.8);
+  transform: scale(1.3);
+}
+
+.hud {                       /* 左下角视角读数（桌面可见） */
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 30;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--dim);
+  background: rgba(11, 14, 26, 0.7);
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+  padding: 6px 12px;
+  line-height: 1.6;
+  pointer-events: none;
+}
+.hud b { color: var(--cy); font-weight: 400; }
+
+/* ==========================================================================
+   [S6] 3D 舞台（perspective + preserve-3d）
+   —— JS 同时驱动: 鼠标旋转视差 / 滚动 Z 隧道（translateZ）
+   ========================================================================== */
+.stage {
+  position: relative;
+  z-index: 2;
+  perspective: var(--persp);       /* 设计规格: 1200px */
+  transform-style: preserve-3d;
+}
+
+/* 每个 section 是一个独立的 Z 层：
+   —— data-z 由 JS 读取作为基础深度，滚动时再叠加“隧道推进量”
+   —— 层内卡片再用 translateZ 二次分层，形成多层深度 */
+.layer {
+  position: relative;
+  transform-style: preserve-3d;
+  padding: 56px clamp(16px, 6vw, 64px);
+  max-width: 1240px;
+  margin: 0 auto;
+  scroll-margin-top: 20px;
+}
+.layer.slim { padding-top: 40px; padding-bottom: 40px; }
+
+/* ==========================================================================
+   [S7] 通用板块头（SECTOR 编号 + 大标题 + 副题）
+   ========================================================================== */
+.shead { margin-bottom: 34px; }
+.sno {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: var(--cy);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+.shead h2 {
+  font-size: clamp(26px, 4vw, 40px);
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--ink);
+}
+.sdesc { color: var(--dim); margin-top: 8px; font-size: 15px; }
+.shead::after {              /* 霓虹分隔线 */
+  content: "";
+  display: block;
+  width: 64px;
+  height: 2px;
+  margin-top: 14px;
+  background: linear-gradient(90deg, var(--cy), var(--vi), transparent);
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   [S8] Hero 中央卡（多层 Z 平面堆叠 + 3D 立体字标题）
+   ========================================================================== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 84px;
+  padding-bottom: 84px;
+}
+.hero-panel {
+  position: relative;
+  width: min(880px, 100%);
+  transform-style: preserve-3d;
+  background: linear-gradient(160deg, var(--panel) 0%, var(--panel2) 100%);
+  border: 1px solid var(--edge);
+  border-radius: 22px;
+  padding: clamp(30px, 6vw, 64px);
+  text-align: center;
+  box-shadow:
+    0 30px 80px rgba(3, 6, 20, 0.6),
+    0 0 60px rgba(84, 232, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.hero-panel::before {        /* 渐变描边发光 */
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 22px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(84,232,255,.6), rgba(167,139,250,.4), rgba(255,209,102,.35));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* —— 平面分层: 每个 .plane 用 translateZ 悬停在面板前方不同深度 —— */
+.plane { transform-style: preserve-3d; }
+.p0 { transform: translateZ(18px); }
+.p1 { transform: translateZ(64px); }
+.p2 { transform: translateZ(46px); }
+.p3 { transform: translateZ(34px); }
+.p4 { transform: translateZ(52px); }
+.p5 { transform: translateZ(80px); }
+.p6 { transform: translateZ(26px); }
+
+/* 入场动画（每个平面错峰升起）：
+   仅位移、不隐藏内容——任何浏览器/动画异常下首屏文字都可见；
+   backwards 填充：动画结束后回到 .p0-.p6 各自的 translateZ 深度 */
+@keyframes rise {
+  from { transform: translateY(26px); }
+  to   { transform: translateY(0); }
+}
+.plane {
+  animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 130ms);
+}
+
+.kicker {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 5px;
+  color: var(--cy);
+  text-transform: uppercase;
+}
+.kicker b { color: var(--go); }
+
+/* —— 3D 立体字: 多层 text-shadow 向下挤压出厚度 —— */
+.title-3d {
+  font-size: clamp(64px, 14vw, 148px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 8px;
+  margin: 14px 0 6px;
+  background: linear-gradient(180deg, #ffffff 0%, #c9ecff 38%, var(--cy) 62%, var(--vi) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow:
+    1px 1px 0 #12345c, 2px 2px 0 #0e2a4c, 3px 3px 0 #0b2140,
+    4px 4px 0 #091b36, 5px 5px 0 #07172d, 6px 6px 0 #051325,
+    7px 7px 0 #040f1f, 8px 8px 0 #030c19, 9px 9px 0 #020915,
+    10px 10px 0 #010610, 11px 11px 0 #01040b, 12px 12px 0 #000307,
+    0 0 34px rgba(84, 232, 255, 0.35);
+  transform: rotateX(14deg);
+  transform-origin: 50% 60%;
+}
+.hero-sub {
+  font-size: clamp(15px, 2.2vw, 19px);
+  color: var(--ink2);
+  letter-spacing: 1px;
+}
+.hero-sub b {
+  color: var(--cy);
+  background: rgba(84, 232, 255, 0.12);
+  border: 1px solid rgba(84, 232, 255, 0.35);
+  border-radius: 30px;
+  padding: 2px 14px;
+  font-weight: 600;
+}
+.hero-meta {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  color: var(--dim);
+  font-size: 13px;
+}
+.hero-meta span {
+  border: 1px solid var(--edge);
+  background: rgba(11, 14, 26, 0.5);
+  border-radius: 20px;
+  padding: 4px 14px;
+}
+.hero-cta {
+  margin-top: 28px;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-cta a {
+  display: inline-block;
+  padding: 12px 30px;
+  border-radius: 40px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+}
+.cta-cy {
+  color: #04121a;
+  background: linear-gradient(135deg, var(--cy), #8ff7ff);
+  box-shadow: 0 8px 26px rgba(84, 232, 255, 0.35);
+}
+.cta-cy:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(84, 232, 255, 0.5); }
+.cta-ghost {
+  color: var(--ink2);
+  border: 1px solid var(--edge2);
+  background: rgba(11, 14, 26, 0.4);
+}
+.cta-ghost:hover { color: var(--cy); border-color: var(--cy); transform: translateY(-3px); }
+
+/* Hero 侧边小牌（右侧职务 / 左侧产品） */
+.hero-tag, .hero-side {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--dim);
+  border: 1px dashed var(--edge2);
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: rgba(11, 14, 26, 0.55);
+  text-align: left;
+  line-height: 1.8;
+  max-width: 180px;
+}
+.hero-tag  { right: -44px; }
+.hero-side { left: -44px;  text-align: right; }
+.hero-tag b, .hero-side b { color: var(--cy); font-weight: 600; display: block; }
+
+/* 滚动提示 */
+.scroll-hint {
+  margin-top: 34px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--faint);
+  animation: hintBounce 2s ease-in-out infinite;
+}
+@keyframes hintBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50%      { transform: translateY(8px); opacity: 1; }
+}
+
+/* ==========================================================================
+   [S9] 关于（人物小传）
+   ========================================================================== */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 22px;
+  transform-style: preserve-3d;
+}
+.about-card {
+  background: linear-gradient(160deg, var(--panel), var(--panel2));
+  border: 1px solid var(--edge);
+  border-radius: 18px;
+  padding: 26px 28px;
+  transform: translateZ(var(--dz, 0px));
+  transition: transform 0.5s ease;
+}
+.about-card:hover { transform: translateZ(calc(var(--dz, 0px) + 46px)); }
+.about-card h3 {
+  font-size: 17px;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+.about-card h3::before { content: "◆ "; color: var(--cy); font-size: 12px; }
+.about-card p { color: var(--ink2); font-size: 14.5px; margin-bottom: 10px; }
+.about-card p:last-child { margin-bottom: 0; }
+.about-card .hl { color: var(--cy); font-weight: 600; }
+.about-card .hlv { color: var(--vi); font-weight: 600; }
+
+.quote {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--vi);
+  background: rgba(167, 139, 250, 0.08);
+  border-radius: 0 10px 10px 0;
+  font-size: 14px;
+  color: var(--ink2);
+  font-style: italic;
+}
+.quote b { color: var(--go); font-style: normal; }
+
+/* 学习原则 4 步流水线 */
+.learn-chain {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 22px;
+  transform-style: preserve-3d;
+}
+.learn-step {
+  background: rgba(11, 14, 26, 0.55);
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  transform: translateZ(var(--dz, 0px));
+  transition: transform 0.4s ease;
+}
+.learn-step:hover { transform: translateZ(calc(var(--dz, 0px) + 34px)); }
+.learn-step .ls-no {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--cy);
+  letter-spacing: 2px;
+}
+.learn-step .ls-txt { font-size: 14px; color: var(--ink2); margin-top: 6px; font-weight: 600; }
+.learn-step .ls-arrow {
+  display: block;
+  font-size: 18px;
+  color: var(--vi);
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   [S10] 关键数字（10 张数据卡，错落 Z 深度）
+   ========================================================================== */
+.num-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+  transform-style: preserve-3d;
+}
+.num-card {
+  background: linear-gradient(165deg, var(--panel), var(--panel2));
+  border: 1px solid var(--edge);
+  border-radius: 18px;
+  padding: 24px 20px;
+  text-align: center;
+  transform: translateZ(var(--dz, 0px));
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+.num-card:hover {
+  transform: translateZ(calc(var(--dz, 0px) + 60px));
+  box-shadow: 0 24px 60px rgba(3, 6, 20, 0.55), 0 0 30px rgba(84, 232, 255, 0.12);
+}
+.num-card .num {
+  font-size: clamp(30px, 3.6vw, 44px);
+  font-weight: 900;
+  line-height: 1.1;
+  background: linear-gradient(180deg, #fff 0%, var(--cy) 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.num-card .num .u { font-size: 0.55em; -webkit-text-fill-color: var(--go); color: var(--go); margin-left: 2px; }
+.num-card .lbl { color: var(--dim); font-size: 13px; margin-top: 8px; }
+.num-card .note { color: var(--faint); font-size: 11.5px; margin-top: 4px; }
+
+/* ==========================================================================
+   [S11] 能力标签（8 枚 3D 芯片）
+   ========================================================================== */
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  transform-style: preserve-3d;
+}
+.skill-chip {
+  background: rgba(11, 14, 26, 0.6);
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+  padding: 16px 18px;
+  transform: translateZ(var(--dz, 0px));
+  transition: transform 0.4s ease, border-color 0.4s ease;
+}
+.skill-chip:hover {
+  transform: translateZ(calc(var(--dz, 0px) + 44px));
+  border-color: var(--edge2);
+}
+.skill-chip .sk {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+  letter-spacing: 1px;
+}
+.skill-chip .sk::before { content: "▣ "; color: var(--cy); font-size: 12px; }
+.skill-chip .skd { color: var(--faint); font-size: 12.5px; margin-top: 6px; line-height: 1.6; }
+
+/* ==========================================================================
+   [S12] 职业履历时间线（5 段，从早到晚，左右交错 + Z 错位）
+   ========================================================================== */
+.tl { position: relative; transform-style: preserve-3d; }
+.tl::before {                 /* 中央时间轴线 */
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, transparent, var(--cy) 12%, var(--vi) 88%, transparent);
+  box-shadow: 0 0 12px rgba(84, 232, 255, 0.4);
+}
+.tl-entry {
+  position: relative;
+  width: 50%;
+  padding: 0 34px 40px;
+  transform: translateZ(var(--dz, 0px));
+}
+.tl-entry:nth-child(odd)  { left: 0; text-align: right; }
+.tl-entry:nth-child(even) { left: 50%; text-align: left; }
+.tl-dot {                    /* 轴线上的节点 */
+  position: absolute;
+  top: 26px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bg0);
+  border: 3px solid var(--cy);
+  box-shadow: 0 0 12px rgba(84, 232, 255, 0.8);
+}
+.tl-entry:nth-child(odd)  .tl-dot { right: -7px; }
+.tl-entry:nth-child(even) .tl-dot { left: -7px; }
+.tl-card {
+  display: inline-block;
+  text-align: left;
+  width: 100%;
+  background: linear-gradient(160deg, var(--panel), var(--panel2));
+  border: 1px solid var(--edge);
+  border-radius: 16px;
+  padding: 20px 22px;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.tl-card:hover {
+  transform: translateZ(30px);
+  box-shadow: 0 20px 50px rgba(3, 6, 20, 0.5), 0 0 26px rgba(167, 139, 250, 0.14);
+}
+.tl-period {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--go);
+  border: 1px solid rgba(255, 209, 102, 0.35);
+  border-radius: 20px;
+  padding: 2px 12px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.tl-card h3 { font-size: 19px; letter-spacing: 1px; color: var(--ink); }
+.tl-role { color: var(--cy); font-size: 13px; margin: 4px 0 10px; letter-spacing: 1px; }
+.tl-card ul li {
+  position: relative;
+  color: var(--ink2);
+  font-size: 13.5px;
+  padding-left: 16px;
+  margin-bottom: 4px;
+}
+.tl-card ul li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--vi);
+}
+.tl-tag {                    /* 履历期间小标签（最新职级） */
+  display: inline-block;
+  font-size: 11px;
+  color: #04121a;
+  background: var(--ok);
+  border-radius: 12px;
+  padding: 1px 10px;
+  margin-left: 8px;
+  vertical-align: 2px;
+  letter-spacing: 1px;
+}
+
+/* ==========================================================================
+   [S13] 作品：4 张 3D 翻转卡（正面标题 → rotateY 180° 背面详情）
+   ========================================================================== */
+.works-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  transform-style: preserve-3d;
+}
+.flip {
+  perspective: 1100px;
+  height: 330px;
+  transform: translateZ(var(--dz, 0px));
+  cursor: pointer;
+  outline: none;
+}
+.flip:focus-visible { border-radius: 16px; box-shadow: 0 0 0 3px rgba(84, 232, 255, 0.6); }
+.flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.75s cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+.flip:hover .flip-inner,
+.flip.flipped .flip-inner { transform: rotateY(180deg); }
+.flip-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  border: 1px solid var(--edge);
+}
+.flip-front {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background:
+    radial-gradient(120% 90% at 80% 10%, rgba(84,232,255,0.16), transparent 55%),
+    radial-gradient(120% 90% at 10% 90%, rgba(167,139,250,0.18), transparent 55%),
+    linear-gradient(165deg, var(--panel), var(--panel2));
+  text-align: center;
+  padding: 24px;
+}
+.flip-front .w-no {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: var(--cy);
+}
+.flip-front .w-emoji { font-size: 52px; filter: drop-shadow(0 8px 16px rgba(84,232,255,.3)); }
+.flip-front h3 { font-size: 21px; letter-spacing: 2px; color: var(--ink); }
+.flip-front .w-sub { color: var(--dim); font-size: 12.5px; }
+.flip-front .w-hint {
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--go);
+  border: 1px dashed rgba(255, 209, 102, 0.4);
+  border-radius: 20px;
+  padding: 3px 14px;
+  transition: opacity 0.3s ease;
+}
+.flip:hover .w-hint, .flip.flipped .w-hint { opacity: 0; }
+.flip-back {
+  transform: rotateY(180deg);
+  background:
+    radial-gradient(120% 90% at 15% 10%, rgba(167,139,250,0.2), transparent 55%),
+    linear-gradient(165deg, #151a3a, #1b1438);
+  padding: 22px 24px;
+  overflow-y: auto;
+}
+.flip-back h4 {
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: var(--cy);
+  margin-bottom: 10px;
+}
+.flip-back h4::before { content: "◤ "; }
+.flip-back p { color: var(--ink2); font-size: 13px; margin-bottom: 8px; }
+.flip-back ul li {
+  position: relative;
+  color: var(--ink2);
+  font-size: 12.5px;
+  padding-left: 14px;
+  margin-bottom: 5px;
+  line-height: 1.55;
+}
+.flip-back ul li::before { content: "·"; position: absolute; left: 2px; color: var(--go); font-weight: 700; }
+.flip-back .w-note {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+  border-top: 1px dashed var(--edge);
+  padding-top: 8px;
+}
+
+/* ==========================================================================
+   [S14] 三年纲领 2026-2028（三柱 + 心法）
+   ========================================================================== */
+.plan-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1fr;
+  gap: 20px;
+  transform-style: preserve-3d;
+}
+.plan-col {
+  background: linear-gradient(170deg, var(--panel), var(--panel2));
+  border: 1px solid var(--edge);
+  border-radius: 18px;
+  padding: 24px 22px;
+  transform: translateZ(var(--dz, 0px));
+  transition: transform 0.4s ease;
+}
+.plan-col:hover { transform: translateZ(calc(var(--dz, 0px) + 40px)); }
+.plan-year {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--go);
+}
+.plan-col h3 { font-size: 22px; margin: 4px 0 12px; letter-spacing: 2px; color: var(--ink); }
+.plan-col .p-lead { color: var(--cy); font-size: 14px; margin-bottom: 12px; }
+.plan-col .p-lead::before { content: "› "; }
+.plan-col ul li {
+  position: relative;
+  color: var(--ink2);
+  font-size: 13px;
+  padding-left: 16px;
+  margin-bottom: 7px;
+  line-height: 1.6;
+}
+.plan-col ul li::before { content: "◆"; position: absolute; left: 0; font-size: 9px; top: 5px; color: var(--vi); }
+.plan-col ul li b { color: var(--ink); font-weight: 600; }
+.plan-col .p-window {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #04121a;
+  background: linear-gradient(135deg, var(--go), #ffe08a);
+  border-radius: 16px;
+  padding: 3px 12px;
+  letter-spacing: 1px;
+}
+
+.mind {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  transform-style: preserve-3d;
+}
+.mind-chip {
+  background: rgba(11, 14, 26, 0.6);
+  border: 1px solid var(--edge);
+  border-radius: 40px;
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink2);
+  letter-spacing: 1px;
+  transform: translateZ(var(--dz, 0px));
+  transition: transform 0.4s ease;
+}
+.mind-chip:hover { transform: translateZ(calc(var(--dz, 0px) + 34px)); color: var(--cy); }
+.mind-chip em { font-style: normal; color: var(--go); }
+
+/* ==========================================================================
+   [S15] 联系 + 公司背书
+   ========================================================================== */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  transform-style: preserve-3d;
+}
+.contact-card {
+  display: block;
+  background: linear-gradient(165deg, var(--panel), var(--panel2));
+  border: 1px solid var(--edge);
+  border-radius: 18px;
+  padding: 26px 24px;
+  text-align: center;
+  transform: translateZ(var(--dz, 0px));
+  transition: transform 0.4s ease, border-color 0.4s ease;
+}
+.contact-card:hover { transform: translateZ(calc(var(--dz, 0px) + 46px)); border-color: var(--edge2); }
+.contact-card .cc-icon { font-size: 30px; display: block; }
+.contact-card .cc-label {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--faint);
+  text-transform: uppercase;
+}
+.contact-card .cc-value {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(17px, 2.4vw, 22px);
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--cy);
+  word-break: break-all;
+}
+.contact-card .cc-note { display: block; margin-top: 8px; font-size: 12px; color: var(--faint); }
+
+.backing {
+  margin-top: 22px;
+  background: linear-gradient(90deg, rgba(84,232,255,.07), rgba(167,139,250,.07), rgba(84,232,255,.07));
+  border: 1px dashed var(--edge2);
+  border-radius: 14px;
+  padding: 14px 20px;
+  font-size: 13px;
+  color: var(--dim);
+  text-align: center;
+  transform: translateZ(12px);
+}
+.backing b { color: var(--go); font-weight: 600; }
+
+/* ==========================================================================
+   [S16] 页脚
+   ========================================================================== */
+.foot {
+  text-align: center;
+  padding-top: 40px;
+  padding-bottom: 70px;
+  color: var(--faint);
+  font-size: 13px;
+}
+.foot a {
+  color: var(--cy);
+  border-bottom: 1px dashed var(--cy);
+  padding-bottom: 1px;
+  transition: color 0.3s ease;
+}
+.foot a:hover { color: var(--go); border-color: var(--go); }
+.foot .foot-sub {
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+.foot .cube-mini {           /* 页脚小立方体 */
+  display: inline-block;
+  width: 14px; height: 14px;
+  background: linear-gradient(135deg, var(--cy), var(--vi));
+  transform: rotate(18deg) skewX(-8deg);
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: -2px;
+}
+
+/* ==========================================================================
+   [S17] 响应式：窄屏减弱 3D（减小旋转/深度，保证可读）
+   ========================================================================== */
+@media (max-width: 768px) {
+  .hud { display: none; }
+  .ndots { right: 10px; gap: 9px; }
+  .ndot { width: 10px; height: 10px; }
+  .ndot span { display: none; }        /* 手机只留点，避免遮挡 */
+
+  .layer { padding: 40px 16px; }
+
+  .hero { min-height: 92vh; padding-top: 56px; padding-bottom: 56px; }
+  .hero-panel { padding: 30px 18px; }
+  .hero-tag, .hero-side { display: none; }  /* 侧牌在窄屏隐藏 */
+  .title-3d {                              /* 立体字减弱 */
+    letter-spacing: 3px;
+    text-shadow:
+      1px 1px 0 #12345c, 2px 2px 0 #0e2a4c, 3px 3px 0 #0b2140,
+      4px 4px 0 #091b36, 5px 5px 0 #07172d, 6px 6px 0 #051325,
+      0 0 26px rgba(84, 232, 255, 0.3);
+  }
+
+  .about-grid,
+  .contact-grid { grid-template-columns: 1fr; }
+  .num-grid { grid-template-columns: repeat(2, 1fr); }
+  .skill-grid { grid-template-columns: repeat(2, 1fr); }
+  .works-grid { grid-template-columns: 1fr; }
+  .plan-grid { grid-template-columns: 1fr; }
+  .learn-chain { grid-template-columns: repeat(2, 1fr); }
+  .mind { grid-template-columns: repeat(2, 1fr); }
+  .flip { height: 300px; }
+
+  .tl::before { left: 16px; transform: none; }
+  .tl-entry {
+    width: 100%;
+    left: 0 !important;
+    text-align: left !important;
+    padding: 0 0 34px 44px;
+  }
+  .tl-entry:nth-child(odd)  .tl-dot,
+  .tl-entry:nth-child(even) .tl-dot { left: 9px; right: auto; }
+}
+
+@media (max-width: 420px) {
+  .num-grid, .skill-grid, .learn-chain, .mind { grid-template-columns: 1fr; }
+  .hero-cta a { width: 100%; text-align: center; }
+}
+
+/* ==========================================================================
+   [S18] 无障碍：减少动态效果偏好
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 星空背景（fixed，星点由 JS 生成） ===== -->
+<div class="space-bg" aria-hidden="true">
+  <div class="nebula neb-a"></div>
+  <div class="nebula neb-b"></div>
+  <div class="stars" id="stars"></div>
+</div>
+
+<!-- ===== 浮动 3D 装饰：立方体 ×3 / 圆环 ×3 ===== -->
+<div class="deco" aria-hidden="true">
+  <div class="cube-float f1"><div class="cube c1"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+  <div class="cube-float f2"><div class="cube c2"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+  <div class="cube-float f3"><div class="cube c3"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+  <div class="ring r1"></div>
+  <div class="ring r2"></div>
+  <div class="ring r3"></div>
+</div>
+
+<!-- ===== 侧边浮动导航点（点击平滑滚动） ===== -->
+<nav class="ndots" aria-label="章节导航">
+  <a class="ndot on" href="#sec-hero"    data-target="#sec-hero"    aria-label="首页"><span>首页</span></a>
+  <a class="ndot"     href="#sec-about"  data-target="#sec-about"   aria-label="关于"><span>关于</span></a>
+  <a class="ndot"     href="#sec-nums"   data-target="#sec-nums"    aria-label="关键数字"><span>关键数字</span></a>
+  <a class="ndot"     href="#sec-skills" data-target="#sec-skills"  aria-label="能力标签"><span>能力标签</span></a>
+  <a class="ndot"     href="#sec-tl"     data-target="#sec-tl"      aria-label="职业履历"><span>职业履历</span></a>
+  <a class="ndot"     href="#sec-works"  data-target="#sec-works"   aria-label="作品"><span>作品</span></a>
+  <a class="ndot"     href="#sec-plan"   data-target="#sec-plan"    aria-label="三年纲领"><span>三年纲领</span></a>
+  <a class="ndot"     href="#sec-contact" data-target="#sec-contact" aria-label="联系"><span>联系</span></a>
+</nav>
+
+<!-- ===== 视角 HUD（桌面端小读数） ===== -->
+<div class="hud" id="hud" aria-hidden="true">
+  <span>09 · CUBE3D <b>空间站</b></span><br>
+  <span id="hudXY">X 0.0° · Y 0.0°</span><br>
+  <span>DEPTH <b id="hudZ">Z 0px</b></span>
+</div>
+
+<!-- ================================================================
+     3D 舞台：所有内容分层渲染在 perspective 空间中
+     data-z = 该层的基础深度（负值越深越远），滚动时 JS 叠加隧道推进
+     ================================================================ -->
+<main class="stage" id="stage">
+
+  <!-- ============ 01 · Hero 中央卡 ============ -->
+  <section class="layer hero" id="sec-hero" data-z="0">
+    <div class="hero-panel">
+      <div class="plane p0" style="--i:0">
+        <span class="kicker">SITE 09 · <b>CUBE3D</b> · 3D SPACE</span>
+      </div>
+      <h1 class="title-3d plane p1" style="--i:1">邵汉青</h1>
+      <p class="hero-sub plane p2" style="--i:2">
+        10年工程机械大客户销售 × AI重度实践者 —— <b>既懂销售，又懂AI</b>
+      </p>
+      <div class="hero-meta plane p3" style="--i:3">
+        <span>📍 河南郑州 · 可出差</span>
+        <span>🎂 32岁 · 已婚</span>
+        <span>🚀 现职 太原重工 · 工程起重机分公司</span>
+      </div>
+      <div class="hero-cta plane p4" style="--i:4">
+        <a class="cta-cy" href="#sec-nums">查看关键数字</a>
+        <a class="cta-ghost" href="#sec-contact">联系我</a>
+      </div>
+      <div class="scroll-hint plane p5" style="--i:5">SCROLL · 进入隧道 ▼</div>
+      <div class="hero-tag plane p6" style="--i:6">
+        <b>业务经理 / 大客户销售</b>
+        太原重工 · 工程起重机分公司
+      </div>
+      <div class="hero-side plane p6" style="--i:6">
+        <b>高空作业平台</b>
+        剪叉 4-14m · 臂式 16-60m
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 · 关于 ============ -->
+  <section class="layer" id="sec-about" data-z="-130">
+    <header class="shead">
+      <span class="sno">SECTOR 01 · ABOUT</span>
+      <h2>关于</h2>
+      <p class="sdesc">10年重工大客户销售 × AI重度实践者 —— 人物小传</p>
+    </header>
+
+    <div class="about-grid">
+      <div class="about-card" style="--dz:-30px">
+        <h3>人物速写</h3>
+        <p><span class="hl">汉青</span>，32岁，base 河南郑州（可出差），已婚。</p>
+        <p>10年工程机械大客户销售 × AI重度实践者，一句话人设——<span class="hlv">「既懂销售，又懂AI」</span>。</p>
+        <p>现职 <span class="hl">太原重工 · 工程起重机分公司</span> 业务经理/大客户销售，负责高空作业平台（剪叉 4-14m / 臂式 16-60m）湖北市场。</p>
+        <p>履历横跨宇通重工、三一重工、中联重科、复盛实业，深耕旋挖钻机、履带吊、空压机与高空作业平台，从粤东、河南到湖北，连续完成区域 0→1 开拓。</p>
+        <div class="quote">
+          座右铭：<b>「既懂销售，又懂AI」</b><br>
+          定位：<b>10年重工大客户销售 × AI重度实践者</b>
+        </div>
+      </div>
+
+      <div class="about-card" style="--dz:-80px">
+        <h3>教育 & 底色</h3>
+        <p><span class="hl">本科</span> · 黄淮学院 · 汽车服务工程（2015-2017）</p>
+        <p><span class="hlv">大专</span> · 鹤壁职业技术学院 · 汽车检测（2012-2015）</p>
+        <p style="margin-top:14px;color:var(--dim);font-size:13px">业绩底色（可量化的真实细节）：</p>
+        <p style="font-family:var(--mono);font-size:13px;color:var(--ink2)">
+          三一河南 客户 0→180 家 · 年均销售 1500 万<br>
+          太重湖北 意向价值 1.2 亿 · 已完成订单 1500 万 · 协助意向订单 1亿 · 协助完成订单 1400万
+        </p>
+        <p style="margin-top:14px;color:var(--dim);font-size:13px">沟通风格：<span class="hl">专业干练、直奔结果</span></p>
+      </div>
+    </div>
+
+    <!-- 学习原则流水线 -->
+    <div class="learn-chain">
+      <div class="learn-step" style="--dz:-20px">
+        <span class="ls-no">STEP 01</span>
+        <span class="ls-txt">结果导向</span>
+        <span class="ls-arrow">→</span>
+      </div>
+      <div class="learn-step" style="--dz:-60px">
+        <span class="ls-no">STEP 02</span>
+        <span class="ls-txt">先模仿后创造</span>
+        <span class="ls-arrow">→</span>
+      </div>
+      <div class="learn-step" style="--dz:-40px">
+        <span class="ls-no">STEP 03</span>
+        <span class="ls-txt">重复的事自动化</span>
+        <span class="ls-arrow">→</span>
+      </div>
+      <div class="learn-step" style="--dz:-80px">
+        <span class="ls-no">STEP 04</span>
+        <span class="ls-txt">小步快跑</span>
+        <span class="ls-arrow">✦</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 · 关键数字 ============ -->
+  <section class="layer" id="sec-nums" data-z="-170">
+    <header class="shead">
+      <span class="sno">SECTOR 02 · KEY NUMBERS</span>
+      <h2>关键数字</h2>
+      <p class="sdesc">用可量化的业绩说话 —— 每一个数字背后都是真实交付</p>
+    </header>
+
+    <div class="num-grid">
+      <div class="num-card" style="--dz:0px">
+        <div class="num">10<span class="u">年</span></div>
+        <div class="lbl">重工大客户销售</div>
+        <div class="note">旋挖钻机 / 履带吊 / 空压机 / 高机</div>
+      </div>
+      <div class="num-card" style="--dz:-45px">
+        <div class="num">180<span class="u">+</span></div>
+        <div class="lbl">客户开发</div>
+        <div class="note">三一河南 0→180 家</div>
+      </div>
+      <div class="num-card" style="--dz:-20px">
+        <div class="num">35<span class="u">份</span></div>
+        <div class="lbl">独立标书</div>
+        <div class="note">复盛实业期间 · 协助投标19项</div>
+      </div>
+      <div class="num-card" style="--dz:-70px">
+        <div class="num">1.2<span class="u">亿</span></div>
+        <div class="lbl">意向价值</div>
+        <div class="note">太重 · 湖北市场</div>
+      </div>
+      <div class="num-card" style="--dz:-30px">
+        <div class="num">1500<span class="u">万</span></div>
+        <div class="lbl">已完成订单</div>
+        <div class="note">太重 · 湖北市场</div>
+      </div>
+      <div class="num-card" style="--dz:-45px">
+        <div class="num">1<span class="u">亿</span></div>
+        <div class="lbl">协助意向订单</div>
+        <div class="note">太重 · 湖北市场</div>
+      </div>
+      <div class="num-card" style="--dz:-65px">
+        <div class="num">1400<span class="u">万</span></div>
+        <div class="lbl">协助完成订单</div>
+        <div class="note">太重 · 湖北市场</div>
+      </div>
+      <div class="num-card" style="--dz:-60px">
+        <div class="num">113<span class="u">条</span></div>
+        <div class="lbl">湖北客户线索</div>
+        <div class="note">其中新增 74 条</div>
+      </div>
+      <div class="num-card" style="--dz:-15px">
+        <div class="num">92<span class="u">条</span></div>
+        <div class="lbl">空压机报备意向</div>
+        <div class="note">复盛实业 · 河南区域</div>
+      </div>
+      <div class="num-card" style="--dz:-55px">
+        <div class="num">8<span class="u">个</span></div>
+        <div class="lbl">AI定制技能</div>
+        <div class="note">WorkBuddy 自建技能库</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 · 能力标签 ============ -->
+  <section class="layer" id="sec-skills" data-z="-110">
+    <header class="shead">
+      <span class="sno">SECTOR 03 · SKILLS</span>
+      <h2>能力标签</h2>
+      <p class="sdesc">8 项核心能力 —— 从大客户经营到 AI 提效，全部可量化验证</p>
+    </header>
+
+    <div class="skill-grid">
+      <div class="skill-chip" style="--dz:0px">
+        <div class="sk">大客户经营</div>
+        <div class="skd">重工大客户全生命周期经营：开发、方案、融资、催收、续约一条龙</div>
+      </div>
+      <div class="skill-chip" style="--dz:-40px">
+        <div class="sk">区域0→1开拓</div>
+        <div class="skd">粤东 40→132 家、三一河南 0→180 家、太重湖北 113 条线索</div>
+      </div>
+      <div class="skill-chip" style="--dz:-25px">
+        <div class="sk">招投标/标书</div>
+        <div class="skd">独立完成标书 35 份，协助投标 19 项，熟稔流程与时间窗口</div>
+      </div>
+      <div class="skill-chip" style="--dz:-65px">
+        <div class="sk">融资租赁方案设计</div>
+        <div class="skd">高机与旋挖融资方案设计，对接厂商金融与租赁公司</div>
+      </div>
+      <div class="skill-chip" style="--dz:-30px">
+        <div class="sk">应收账款风控</div>
+        <div class="skd">主导应收账款催收与风险评估，完善客户信息 112 条</div>
+      </div>
+      <div class="skill-chip" style="--dz:-55px">
+        <div class="sk">客户成功/续约</div>
+        <div class="skd">老客户经营与复购，把一次性订单做成长期合作关系</div>
+      </div>
+      <div class="skill-chip" style="--dz:-10px">
+        <div class="sk">AI提效</div>
+        <div class="skd">WorkBuddy 自建 8 个定制技能，覆盖线索采集、推介、简报全流程</div>
+      </div>
+      <div class="skill-chip" style="--dz:-50px">
+        <div class="sk">可量化业绩</div>
+        <div class="skd">习惯用数字交付：客户数、标书数、意向额、落单额都有据可查</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 · 职业履历时间线（5 段，从早到晚） ============ -->
+  <section class="layer" id="sec-tl" data-z="-230">
+    <header class="shead">
+      <span class="sno">SECTOR 04 · CAREER TIMELINE</span>
+      <h2>职业履历</h2>
+      <p class="sdesc">5 段履历 · 从早到晚 —— 每一站都留下可量化的战绩</p>
+    </header>
+
+    <div class="tl">
+
+      <!-- 01 宇通重工（最早） -->
+      <div class="tl-entry" style="--dz:-30px">
+        <span class="tl-dot"></span>
+        <div class="tl-card">
+          <span class="tl-period">2017.10 — 2021.03</span>
+          <h3>宇通重工</h3>
+          <p class="tl-role">旋挖钻机 / 履带吊 · 粤东区域</p>
+          <ul>
+            <li>目标客户 40 → 132 家</li>
+            <li>年业绩 600 - 1000 万</li>
+            <li>同批 60+ 新人中最早转正</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 02 三一重工 -->
+      <div class="tl-entry" style="--dz:-80px">
+        <span class="tl-dot"></span>
+        <div class="tl-card">
+          <span class="tl-period">2021.04 — 2023.06</span>
+          <h3>三一重工</h3>
+          <p class="tl-role">旋挖钻机 · 河南区域</p>
+          <ul>
+            <li>独立开发市场，客户 0 → 180 家</li>
+            <li>年均销售 1500 万</li>
+            <li>区域从空白到站稳脚跟</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 03 中联重科 -->
+      <div class="tl-entry" style="--dz:-40px">
+        <span class="tl-dot"></span>
+        <div class="tl-card">
+          <span class="tl-period">2023.07 — 2024.10</span>
+          <h3>中联重科</h3>
+          <p class="tl-role">旋挖钻机 · 河南区域</p>
+          <ul>
+            <li>完善客户信息 112 条</li>
+            <li>主导应收账款催收与风险评估</li>
+            <li>夯实客户资产与回款质量</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 04 复盛实业 -->
+      <div class="tl-entry" style="--dz:-90px">
+        <span class="tl-dot"></span>
+        <div class="tl-card">
+          <span class="tl-period">2025.05 — 2025.12</span>
+          <h3>复盛实业（上海）</h3>
+          <p class="tl-role">空压机 · 河南区域</p>
+          <ul>
+            <li>报备意向 92 条</li>
+            <li>独立完成标书 35 份</li>
+            <li>协助投标 19 项</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 05 太原重工（最新） -->
+      <div class="tl-entry" style="--dz:-50px">
+        <span class="tl-dot"></span>
+        <div class="tl-card">
+          <span class="tl-period">2025.12 — 至今<span class="tl-tag">NOW</span></span>
+          <h3>太原重工 · 工程起重机分公司</h3>
+          <p class="tl-role">高空作业平台 · 湖北市场</p>
+          <ul>
+            <li>拓展客户 113 条、新增 74 条</li>
+            <li>意向价值 1.2 亿</li>
+            <li>已完成订单 1500 万</li>
+            <li>协助意向订单 1亿</li>
+            <li>协助完成订单 1400万</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 06 · 作品（4 张 3D 翻转卡） ============ -->
+  <section class="layer" id="sec-works" data-z="-150">
+    <header class="shead">
+      <span class="sno">SECTOR 05 · PROJECTS</span>
+      <h2>作品</h2>
+      <p class="sdesc">4 个代表作 —— 悬停或点击卡片，翻面查看详情</p>
+    </header>
+
+    <div class="works-grid">
+
+      <!-- 作品 01 -->
+      <div class="flip" style="--dz:0px" role="button" tabindex="0" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <span class="w-no">PROJECT 01</span>
+            <span class="w-emoji">📚</span>
+            <h3>高机销售资料库</h3>
+            <span class="w-sub">湖北市场开发工具箱</span>
+            <span class="w-hint">HOVER / CLICK 翻面</span>
+          </div>
+          <div class="flip-face flip-back">
+            <h4>高机销售资料库</h4>
+            <p>湖北市场开发的成套销售武器库，6 大类归档、1000+ 销售资料。</p>
+            <ul>
+              <li>产品推介：高机剪叉/臂式资料包</li>
+              <li>市场开发：区域作战地图与方法</li>
+              <li>融资租赁：方案模板与话术</li>
+              <li>客户运营：跟进 SOP 与话术库</li>
+              <li>行业资讯：政策、招采、竞品情报</li>
+            </ul>
+            <div class="w-note">单文件 HTML · 离线可用 · 持续更新</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 作品 02 -->
+      <div class="flip" style="--dz:-60px" role="button" tabindex="0" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <span class="w-no">PROJECT 02</span>
+            <span class="w-emoji">🤖</span>
+            <h3>AI技能库</h3>
+            <span class="w-sub">WorkBuddy 8 个定制技能</span>
+            <span class="w-hint">HOVER / CLICK 翻面</span>
+          </div>
+          <div class="flip-face flip-back">
+            <h4>AI技能库 · WorkBuddy 自建</h4>
+            <p>把销售全流程交给 AI 武装：8 个定制技能。</p>
+            <ul>
+              <li>market-dev-kit —— 区域开发总入口</li>
+              <li>amap-poi-collector —— 高德客户线索采集</li>
+              <li>customer-geo-viz —— 客户热力作战图</li>
+              <li>sales-lead-workbook —— 销售执行体系</li>
+              <li>sales-pitch-ppt —— 高转化14页推介PPT</li>
+              <li>wechat-addfriend —— 微信获客助手</li>
+              <li>secure-html-deploy —— 加密部署</li>
+              <li>industry-briefing —— 行业简报流水线（每月5日自动）</li>
+            </ul>
+            <div class="w-note">AI 重度实践者的第一生产力</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 作品 03 -->
+      <div class="flip" style="--dz:-40px" role="button" tabindex="0" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <span class="w-no">PROJECT 03</span>
+            <span class="w-emoji">🧭</span>
+            <h3>汉青职业工作台</h3>
+            <span class="w-sub">Career Workbench · 个人效率系统</span>
+            <span class="w-hint">HOVER / CLICK 翻面</span>
+          </div>
+          <div class="flip-face flip-back">
+            <h4>汉青职业工作台 · Career Workbench</h4>
+            <p>单文件 HTML 效率应用——6 大模块：学习 / 积累 / 记录 / 提高 / 事项安排 / 自我进化；localStorage 持久化 + JSON 导入导出；jsdom 功能自检 10 项全 PASS。</p>
+            <ul>
+              <li>6 大模块一体化：学习 / 积累 / 记录 / 提高 / 事项安排 / 自我进化</li>
+              <li>localStorage 持久化，数据不丢失</li>
+              <li>JSON 导入导出，随时备份迁移</li>
+              <li>jsdom 功能自检 10 项全 PASS</li>
+            </ul>
+            <div class="w-note">单文件 HTML 效率应用 · 6 大模块 · 自我进化</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 作品 04 -->
+      <div class="flip" style="--dz:-80px" role="button" tabindex="0" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <span class="w-no">PROJECT 04</span>
+            <span class="w-emoji">📲</span>
+            <h3>微信获客助手</h3>
+            <span class="w-sub">状态机 + CSV + 加密</span>
+            <span class="w-hint">HOVER / CLICK 翻面</span>
+          </div>
+          <div class="flip-face flip-back">
+            <h4>微信获客助手</h4>
+            <p>单文件获客工具：状态机驱动 + CSV 备份 + 加密保护。</p>
+            <ul>
+              <li>状态机：跟踪每条线索的触达阶段</li>
+              <li>CSV 备份：数据本地持久化，不丢失</li>
+              <li>加密：敏感客户信息加密存储</li>
+              <li>SOP：每日 25–30 条客户触达节奏，稳定执行</li>
+              <li>与 AI技能库 wechat-addfriend 联动</li>
+            </ul>
+            <div class="w-note">把重复的事自动化 —— 学习原则第 3 条</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 07 · 三年纲领 2026-2028 ============ -->
+  <section class="layer" id="sec-plan" data-z="-200">
+    <header class="shead">
+      <span class="sno">SECTOR 06 · MASTER PLAN</span>
+      <h2>三年行动纲领 2026-2028</h2>
+      <p class="sdesc">动身 → 定盘 → 上阶 —— 三步走战略</p>
+    </header>
+
+    <div class="plan-grid">
+
+      <!-- 2026 动身求职 -->
+      <div class="plan-col" style="--dz:0px">
+        <span class="plan-year">YEAR 01</span>
+        <h3>2026 · 动身求职</h3>
+        <p class="p-lead">8-11月发力，10月下旬-11月中旬签约窗口</p>
+        <span class="p-window">签约窗口：10月下旬 — 11月中旬</span>
+        <ul style="margin-top:12px">
+          <li><b>主攻：</b>工业互联网 SaaS 行业销售 / 客户成功 —— 树根互联、徐工汉云、卡奥斯、腾讯云工业、华为云</li>
+          <li><b>保底：</b>融资租赁客户经理 —— 远东宏信、平安租赁、厂商金融</li>
+          <li><b>近选：</b>高机头部厂销售管理岗 —— 临工 / 星邦 / 鼎力</li>
+        </ul>
+      </div>
+
+      <!-- 2027 定盘 -->
+      <div class="plan-col" style="--dz:-60px">
+        <span class="plan-year">YEAR 02</span>
+        <h3>2027 · 定盘</h3>
+        <p class="p-lead">名分落实，业绩年</p>
+        <ul>
+          <li>在 2026 年确定的平台上把名分坐实</li>
+          <li>用可量化业绩证明自己：客户数、订单额、续约率</li>
+          <li>把 AI 技能库全面迁移到新业务场景</li>
+          <li>把「卖方案不卖力气」落到日常打法</li>
+        </ul>
+      </div>
+
+      <!-- 2028 上阶 -->
+      <div class="plan-col" style="--dz:-35px">
+        <span class="plan-year">YEAR 03</span>
+        <h3>2028 · 上阶</h3>
+        <p class="p-lead">争取带团队</p>
+        <ul>
+          <li>从单兵作战到带队作战</li>
+          <li>带人、带区域、带业绩指标</li>
+          <li>把个人方法论沉淀为团队 SOP</li>
+          <li>「攻坚大单必组队」—— 打大仗的底气</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 心法 -->
+    <div class="mind">
+      <div class="mind-chip" style="--dz:0px"><em>内推</em> ＞ 海投</div>
+      <div class="mind-chip" style="--dz:-30px">卖<em>方案</em>不卖力气</div>
+      <div class="mind-chip" style="--dz:-15px">攻坚大单<em>必组队</em></div>
+      <div class="mind-chip" style="--dz:-45px">赚大钱之前<em>先站上大平台</em></div>
+    </div>
+  </section>
+
+  <!-- ============ 08 · 联系 ============ -->
+  <section class="layer" id="sec-contact" data-z="-130">
+    <header class="shead">
+      <span class="sno">SECTOR 07 · CONTACT</span>
+      <h2>联系方式</h2>
+      <p class="sdesc">求职 / 合作 / 交流 —— 欢迎直接联系</p>
+    </header>
+
+    <div class="contact-grid">
+      <a class="contact-card" style="--dz:0px" href="tel:17772118785">
+        <span class="cc-icon">📞</span>
+        <span class="cc-label">Phone</span>
+        <span class="cc-value">177-7211-8785</span>
+        <span class="cc-note">工作时间随时可接，亦可微信同号</span>
+      </a>
+      <a class="contact-card" style="--dz:-50px" href="mailto:1820688914@qq.com">
+        <span class="cc-icon">✉️</span>
+        <span class="cc-label">Email</span>
+        <span class="cc-value">1820688914@qq.com</span>
+        <span class="cc-note">简历投递 / 商务合作请发邮件</span>
+      </a>
+      <div class="contact-card" style="--dz:-25px">
+        <span class="cc-icon">📍</span>
+        <span class="cc-label">Base</span>
+        <span class="cc-value">河南郑州 · 可出差</span>
+        <span class="cc-note">32岁 · 已婚 · 随时出发</span>
+      </div>
+    </div>
+
+    <div class="backing">
+      <b>公司背书：</b>太原重工 76年底蕴 · A股 600169 · 2025 营收约 103.79 亿
+      —— 湖北市场已斩获：意向价值 1.2 亿 / 已完成订单 1500 万 / 协助意向订单 1亿 / 协助完成订单 1400万
+    </div>
+  </section>
+
+  <!-- ============ 09 · 页脚 ============ -->
+  <footer class="layer foot" data-z="-60">
+    <p><span class="cube-mini"></span>© 2026 邵汉青 · 个人网站合集 · <a href="index.html">返回总览</a></p>
+    <p class="foot-sub">09 · CUBE3D — 单文件自包含 · 零外部依赖 · 双击即可运行</p>
+  </footer>
+
+</main>
+
+<script>
+/* ==========================================================================
+   [J1] 09 · CUBE3D 交互引擎
+   —— 1) 生成星空  2) 鼠标视差(缓动)  3) 滚动Z隧道  4) 卡片翻转
+   —— 5) 导航点激活/平滑滚动  6) HUD读数  7) 响应式减弱3D
+   零外部依赖，file:// 双击直接运行。
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  /* ---------- [J2] 环境判定：窄屏 / 触摸 / 减少动态 ---------- */
+  var mqNarrow = window.matchMedia('(max-width: 768px)');
+  var mqTouch  = window.matchMedia('(hover: none)');
+  var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var isNarrow  = mqNarrow.matches;
+  var reduceOK  = mqReduce.matches;
+
+  /* 旋转幅度：桌面正常 / 窄屏减弱 / 减少动态则归零 */
+  var ROT_X = reduceOK ? 0 : (isNarrow ? 2.4 : 6);
+  var ROT_Y = reduceOK ? 0 : (isNarrow ? 3.2 : 9);
+  /* 隧道推进量：桌面强 / 窄屏弱 / 减少动态归零 */
+  var TUNNEL = reduceOK ? 0 : (isNarrow ? 90 : 240);
+
+  /* ---------- [J3] 生成星空 ---------- */
+  var starsEl = document.getElementById('stars');
+  var frag = document.createDocumentFragment();
+  var starCount = isNarrow ? 70 : 120;
+  for (var i = 0; i < starCount; i++) {
+    var s = document.createElement('i');
+    var size = (Math.random() * 1.8 + 0.6).toFixed(2);
+    var st = 'left:' + (Math.random() * 100).toFixed(2) + '%;' +
+             'top:'  + (Math.random() * 100).toFixed(2) + '%;' +
+             'width:' + size + 'px;' +
+             'height:' + size + 'px;' +
+             'animation-delay:' + (-Math.random() * 6).toFixed(2) + 's;' +
+             'animation-duration:' + (3 + Math.random() * 5).toFixed(2) + 's;';
+    if (Math.random() < 0.12) { s.className = 'big'; st += 'width:3px;height:3px;'; }
+    s.style.cssText = st;
+    frag.appendChild(s);
+  }
+  starsEl.appendChild(frag);
+
+  /* ---------- [J4] 鼠标 / 触摸 视差目标 ---------- */
+  var stage  = document.getElementById('stage');
+  var hudXY  = document.getElementById('hudXY');
+  var hudZ   = document.getElementById('hudZ');
+  var tRX = 0, tRY = 0;   /* 目标角度 */
+  var cRX = 0, cRY = 0;   /* 当前角度（缓动逼近） */
+  var maxZ  = 0;          /* 当前最接近视点的深度 */
+
+  function setTarget(nx, ny) {
+    tRY = nx * ROT_Y;     /* 横向移动 → rotateY */
+    tRX = ny * ROT_X;     /* 纵向移动 → rotateX */
+  }
+
+  window.addEventListener('mousemove', function (e) {
+    var nx = (e.clientX / window.innerWidth) * 2 - 1;
+    var ny = (e.clientY / window.innerHeight) * 2 - 1;
+    setTarget(nx, ny);
+  }, { passive: true });
+
+  window.addEventListener('touchmove', function (e) {
+    if (!e.touches.length) return;
+    var t = e.touches[0];
+    var nx = (t.clientX / window.innerWidth) * 2 - 1;
+    var ny = (t.clientY / window.innerHeight) * 2 - 1;
+    setTarget(nx * 0.4, ny * 0.4);   /* 触摸端减弱 3D */
+  }, { passive: true });
+
+  /* ---------- [J5] 滚动 Z 隧道 ----------
+     每个 .layer 读取 data-z 作为基础深度；
+     当其接近视口中央时，translateZ 增大（向视点推进），形成隧道感。 */
+  var layers = Array.prototype.slice.call(document.querySelectorAll('.layer'));
+  var ticking = false;
+
+  function tunnel() {
+    var vh   = window.innerHeight;
+    var half = vh / 2;
+    var span = vh * 1.35;             /* 影响半径 */
+    maxZ = 0;
+    layers.forEach(function (l) {
+      var base = parseFloat(l.getAttribute('data-z')) || 0;
+      var r = l.getBoundingClientRect();
+      var c = r.top + r.height / 2;   /* 该层中心在视口内的位置 */
+      var dist = Math.abs(c - half);
+      var t = Math.max(0, 1 - dist / span);
+      var z = base + t * TUNNEL;
+      if (z > maxZ) maxZ = z;
+      l.style.transform = 'translate3d(0, 0, ' + z.toFixed(1) + 'px)';
+    });
+  }
+
+  /* 透视原点跟随视口中心：
+     默认 perspective-origin 是 #stage（整页）的中心——文档中间，
+     首屏层 translateZ 后会被投影推到视口上方之外（第一页看不见）。
+     改为以「视口中心」为灭点，隧道缩放始终围绕当前屏幕中心。 */
+  function updatePerspOrigin() {
+    stage.style.perspectiveOrigin = '50% ' + (window.innerHeight / 2 + window.scrollY) + 'px';
+  }
+  window.addEventListener('scroll', updatePerspOrigin, { passive: true });
+  window.addEventListener('resize', updatePerspOrigin);
+  updatePerspOrigin();
+
+  window.addEventListener('scroll', function () {
+    if (!ticking) {
+      ticking = true;
+      window.requestAnimationFrame(function () {
+        tunnel();
+        navActive();
+        ticking = false;
+      });
+    }
+  }, { passive: true });
+
+  /* ---------- [J6] 导航点：激活高亮 + 点击平滑滚动 ---------- */
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.ndot'));
+
+  function navActive() {
+    var half = window.innerHeight / 2;
+    var cur = 0;
+    layers.forEach(function (l, idx) {
+      var r = l.getBoundingClientRect();
+      if (r.top <= half) cur = idx;
+    });
+    dots.forEach(function (d, idx) {
+      d.classList.toggle('on', idx === cur);
+    });
+  }
+
+  dots.forEach(function (d) {
+    d.addEventListener('click', function (e) {
+      e.preventDefault();
+      var target = document.querySelector(d.getAttribute('data-target'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  /* ---------- [J7] 3D 翻转卡：点击/键盘切换（悬停由 CSS 处理） ---------- */
+  var flips = Array.prototype.slice.call(document.querySelectorAll('.flip'));
+  flips.forEach(function (f) {
+    f.addEventListener('click', function () {
+      var on = f.classList.toggle('flipped');
+      f.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    f.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        var on = f.classList.toggle('flipped');
+        f.setAttribute('aria-pressed', on ? 'true' : 'false');
+      }
+    });
+  });
+
+  /* 触摸设备：悬停不可用，首击即翻面（上面 click 已覆盖） */
+  if (mqTouch.matches) {
+    document.body.classList.add('touch-device');
+  }
+
+  /* ---------- [J8] 主循环：视差缓动 + 舞台旋转 + HUD 读数 ---------- */
+  function raf() {
+    cRX += (tRX - cRX) * 0.07;   /* 缓动系数 0.07，平滑跟随 */
+    cRY += (tRY - cRY) * 0.07;
+    stage.style.transform =
+      'rotateX(' + cRX.toFixed(2) + 'deg) rotateY(' + cRY.toFixed(2) + 'deg)';
+    if (hudXY) {
+      hudXY.textContent = 'X ' + cRX.toFixed(1) + '° · Y ' + cRY.toFixed(1) + '°';
+    }
+    if (hudZ) {
+      hudZ.textContent = 'Z ' + maxZ.toFixed(0) + 'px';
+    }
+    window.requestAnimationFrame(raf);
+  }
+
+  /* ---------- [J9] 窗口尺寸变化时重新判定窄屏 ---------- */
+  mqNarrow.addEventListener('change', function (ev) {
+    isNarrow = ev.matches;
+    ROT_X = reduceOK ? 0 : (isNarrow ? 2.4 : 6);
+    ROT_Y = reduceOK ? 0 : (isNarrow ? 3.2 : 9);
+    TUNNEL = reduceOK ? 0 : (isNarrow ? 90 : 240);
+  });
+
+  /* ---------- [J10] 启动 ---------- */
+  tunnel();
+  navActive();
+  window.requestAnimationFrame(raf);
+})();
+</script>
+</body>
+</html>

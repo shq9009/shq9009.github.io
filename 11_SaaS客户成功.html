@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>邵汉青 · SaaS 客户成功｜工业互联网行业销售 · 求职定制版</title>
+<meta name="description" content="邵汉青——既懂销售，又懂AI：10年重工ToB大客户经营 + 8个AI定制技能 + 可量化业绩。求职：工业互联网/云SaaS 行业销售经理 / 客户成功经理（工业制造·云与AI方向）。">
+<script>document.documentElement.className += ' js';</script>
+<noscript><style>html.js .reveal{opacity:1!important;transform:none!important}html.js .dash{animation:none!important}</style></noscript>
+<style>
+/* ============================================================
+   11 · SaaS 客户成功（求职定制版）
+   设计语言：B端 SaaS 产品官网风 —— 白/浅灰底 · 品牌蓝→紫渐变 ·
+            圆角卡片 · 模块化分区 · 转化导向
+   零依赖 / 单文件 / 响应式 / file:// 双击可运行
+   ============================================================ */
+
+/* ---------- 01 · 设计令牌 ---------- */
+:root{
+  --bg:#f8fafc;            /* 页面底色：浅灰 */
+  --bg-2:#f1f5f9;          /* 次级区块底色 */
+  --card:#ffffff;          /* 卡片底色 */
+  --ink:#0f172a;           /* 主文字：近黑蓝 */
+  --ink-2:#3f4c63;         /* 次级文字 */
+  --ink-3:#5b6b84;         /* 弱化文字（≥4.5:1） */
+  --line:#e2e8f0;          /* 分隔线 */
+  --blue:#2563eb;          /* 品牌蓝 */
+  --blue-d:#1d4ed8;        /* 深蓝 */
+  --purple:#7c3aed;        /* 品牌紫 */
+  --grad:linear-gradient(135deg,#2563eb 0%,#7c3aed 100%);   /* 主渐变 */
+  --grad-soft:linear-gradient(135deg,rgba(37,99,235,.09) 0%,rgba(124,58,237,.09) 100%);
+  --navy:#0f172a;          /* 信任条 / 页脚深底 */
+  --radius:16px;
+  --radius-sm:10px;
+  --shadow:0 1px 2px rgba(15,23,42,.05),0 10px 30px rgba(15,23,42,.07);
+  --shadow-lg:0 24px 60px rgba(37,99,235,.16),0 6px 16px rgba(15,23,42,.06);
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+}
+
+/* ---------- 02 · 基础 / 重置 ---------- */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:82px;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;                    /* 基准字号 ≥14px */
+  line-height:1.7;                   /* 行高 ≥1.6 */
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+ul,ol{list-style:none}
+button{font-family:inherit;cursor:pointer}
+img{max-width:100%;display:block}
+::selection{background:rgba(124,58,237,.18)}
+.container{max-width:1160px;margin:0 auto;padding:0 24px}
+.section{padding:76px 0 90px;position:relative}
+.section.alt{background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+section[id]{scroll-margin-top:82px}
+
+/* ---------- 03 · 区块标题 ---------- */
+.sec-head{max-width:760px;margin:0 auto 46px;text-align:center}
+.kicker{
+  display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:3px;
+  color:var(--blue);font-weight:700;text-transform:uppercase;margin-bottom:12px;
+}
+.sec-head h2{
+  font-size:clamp(26px,3.6vw,38px);font-weight:800;line-height:1.25;letter-spacing:-.5px;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.sec-head p{color:var(--ink-2);font-size:15.5px;margin-top:14px}
+.sec-head .cn{color:var(--ink-2);font-size:13px;font-family:var(--mono);margin-top:6px;display:block}
+
+/* ---------- 04 · 顶部信任背书条 ---------- */
+.trustbar{background:var(--navy);color:#cbd5e1;font-size:13px}
+.trustbar .container{display:flex;align-items:center;gap:18px;padding-top:9px;padding-bottom:9px;flex-wrap:wrap}
+.trustbar .tb-left{display:flex;align-items:center;gap:10px;font-weight:600;color:#e2e8f0}
+.trustbar .tb-left i{font-style:normal;width:20px;height:20px;border-radius:6px;background:var(--grad);color:#fff;font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.trustbar .tb-right{margin-left:auto;display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px}
+.trustbar .tb-right b{color:#fff;font-weight:700}
+.trustbar a{color:#93c5fd}
+
+/* ---------- 05 · 导航栏 ---------- */
+.nav{
+  position:sticky;top:0;z-index:60;
+  background:rgba(255,255,255,.9);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+  transition:box-shadow .25s ease;
+}
+.nav.scrolled{box-shadow:0 6px 24px rgba(15,23,42,.08)}
+.nav .container{display:flex;align-items:center;gap:16px;padding-top:0;padding-bottom:0;height:64px}
+.brand{display:flex;align-items:center;gap:11px;flex:none}
+.brand .logo{
+  width:38px;height:38px;border-radius:11px;background:var(--grad);color:#fff;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-weight:800;font-size:13px;letter-spacing:.5px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 12px rgba(37,99,235,.35);
+}
+.brand .bt{line-height:1.25}
+.brand .bt b{display:block;font-size:15.5px;font-weight:800;letter-spacing:.3px}
+.brand .bt small{display:block;font-size:10.5px;color:var(--ink-3);letter-spacing:1.5px;font-family:var(--mono)}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:auto;flex-wrap:nowrap}
+.nav-links a{
+  display:block;padding:7px 11px;border-radius:8px;color:var(--ink-2);font-size:14px;font-weight:600;
+  transition:color .15s ease,background .15s ease;
+}
+.nav-links a:hover{color:var(--blue);background:rgba(37,99,235,.07);text-decoration:none}
+.nav-links a.active{color:var(--blue);background:rgba(37,99,235,.1)}
+.nav-cta{
+  margin-left:10px;flex:none;background:var(--grad);color:#fff;font-weight:700;font-size:14px;
+  padding:9px 18px;border-radius:999px;transition:transform .15s ease,box-shadow .15s ease;
+  box-shadow:0 4px 14px rgba(37,99,235,.3);
+}
+.m-only{display:none}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(37,99,235,.4);text-decoration:none;color:#fff}
+.burger{display:none;margin-left:auto;flex:none;width:42px;height:42px;border:1px solid var(--line);border-radius:10px;background:#fff;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.burger span{display:block;width:18px;height:2px;border-radius:2px;background:var(--ink);transition:transform .2s ease,opacity .2s ease}
+.burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* ---------- 06 · Hero ---------- */
+.hero{position:relative;overflow:hidden;background:
+  radial-gradient(720px 420px at 88% -10%,rgba(124,58,237,.12),transparent 60%),
+  radial-gradient(640px 420px at -6% 30%,rgba(37,99,235,.12),transparent 60%),
+  var(--bg);
+  padding:64px 0 70px;
+}
+.hero .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.hero .kicker{
+  background:var(--grad-soft);border:1px solid rgba(37,99,235,.2);color:var(--blue);
+  padding:6px 14px;border-radius:999px;font-size:12px;letter-spacing:2px;margin-bottom:20px;
+}
+.hero h1{
+  font-size:clamp(30px,4.6vw,54px);font-weight:800;line-height:1.18;letter-spacing:-1px;
+  background:linear-gradient(120deg,#1d4ed8 10%,#2563eb 45%,#7c3aed 95%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero .sub{color:var(--ink-2);font-size:17px;line-height:1.75;margin:20px 0 8px;max-width:560px}
+.hero .sub b{color:var(--ink)}
+.hero .acts{display:flex;gap:14px;margin-top:26px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;border:0;border-radius:12px;
+  font-size:15px;font-weight:700;padding:13px 26px;transition:transform .15s ease,box-shadow .15s ease;
+}
+.btn.primary{background:var(--grad);color:#fff;box-shadow:0 6px 20px rgba(37,99,235,.35)}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(37,99,235,.45);text-decoration:none;color:#fff}
+.btn.ghost{background:#fff;color:var(--blue);border:1.5px solid rgba(37,99,235,.35)}
+.btn.ghost:hover{background:rgba(37,99,235,.06);transform:translateY(-2px);text-decoration:none}
+.hero .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);
+  border-radius:999px;padding:6px 14px;font-size:13px;color:var(--ink-2);font-weight:600;
+  box-shadow:0 1px 2px rgba(15,23,42,.04);
+}
+.chip i{font-style:normal;color:var(--blue);font-family:var(--mono);font-weight:800;font-size:13px}
+
+/* ---- Hero 右侧：纯 CSS 看板拟物 ---- */
+.hero-visual{position:relative}
+.dash{
+  background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;
+  box-shadow:var(--shadow-lg);transform:rotate(0deg);
+}
+.dash-bar{display:flex;align-items:center;gap:6px;padding:11px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fdfeff,#f1f5f9)}
+.dash-bar i{width:10px;height:10px;border-radius:50%;background:#cbd5e1}
+.dash-bar i:nth-child(1){background:#f87171}
+.dash-bar i:nth-child(2){background:#fbbf24}
+.dash-bar i:nth-child(3){background:#34d399}
+.dash-bar .t{margin-left:8px;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.5px}
+.dash-bar .t b{color:var(--blue)}
+.dash-grid{display:grid;grid-template-columns:132px 1fr;min-height:238px}
+.dash-side{background:var(--bg);border-right:1px solid var(--line);padding:14px 10px;display:flex;flex-direction:column;gap:9px}
+.dash-side .sv{height:24px;border-radius:6px;background:#e2e8f0}
+.dash-side .sv.on{background:var(--grad);box-shadow:0 2px 8px rgba(37,99,235,.4)}
+.dash-side .sv.w40{width:72%}
+.dash-side .sv.w60{width:88%}
+.dash-main{padding:14px;display:flex;flex-direction:column;gap:12px}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.kpi .num{font-family:var(--mono);font-weight:800;font-size:21px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.kpi .lab{font-size:11px;color:var(--ink-3);margin-top:2px}
+.pipe{display:flex;align-items:center;gap:5px}
+.pipe .step{
+  flex:1;text-align:center;font-size:10px;color:var(--ink-3);font-weight:600;
+  background:var(--grad-soft);border:1px solid rgba(37,99,235,.18);border-radius:8px;padding:6px 2px;white-space:nowrap;
+}
+.pipe .step.on{background:var(--grad);color:#fff;border-color:transparent}
+.pipe .arr{color:var(--blue);font-weight:800;font-size:12px;flex:none}
+.chart{display:flex;align-items:flex-end;gap:7px;height:64px;padding:0 2px}
+.chart i{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(180deg,#2563eb,#7c3aed);opacity:.85;min-width:0}
+.float-chip{
+  position:absolute;background:#fff;border:1px solid var(--line);border-radius:12px;
+  padding:10px 14px;box-shadow:0 10px 30px rgba(15,23,42,.12);display:flex;align-items:center;gap:9px;
+}
+.float-chip .ic{width:34px;height:34px;border-radius:9px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+.float-chip b{display:block;font-size:15px;font-family:var(--mono);line-height:1.2}
+.float-chip small{display:block;font-size:11px;color:var(--ink-3)}
+.float-chip.f1{top:-18px;right:-10px}
+.float-chip.f2{bottom:-20px;left:-14px}
+.platform-strip{margin-top:44px;border-top:1px solid var(--line);padding-top:22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.platform-strip .ps-lab{font-size:12px;color:var(--ink-3);font-family:var(--mono);letter-spacing:2px}
+.platform-strip .ps{display:flex;gap:10px;flex-wrap:wrap}
+.platform-strip .ps span{
+  background:#fff;border:1px solid var(--line);border-radius:8px;padding:5px 13px;
+  font-size:13px;font-weight:700;color:var(--ink-2);letter-spacing:.5px;
+}
+
+/* ---------- 07 · 求职意向 ---------- */
+.role-card{
+  background:linear-gradient(135deg,#fff,var(--bg));border:1px solid var(--line);border-radius:20px;
+  padding:34px;box-shadow:var(--shadow);display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;
+}
+.role-card .tag{
+  width:112px;height:112px;border-radius:20px;background:var(--grad);color:#fff;flex:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  font-family:var(--mono);box-shadow:0 10px 26px rgba(37,99,235,.35);
+}
+.role-card .tag b{font-size:26px;line-height:1}
+.role-card .tag small{font-size:11px;letter-spacing:2px;opacity:.85}
+.role-card h3{font-size:22px;font-weight:800;line-height:1.4}
+.role-card h3 em{font-style:normal;background:var(--grad-soft);color:var(--blue-d);border-radius:6px;padding:1px 8px}
+.role-card p{color:var(--ink-2);font-size:14.5px;margin-top:10px}
+.role-card .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.target-box{display:flex;flex-direction:column;gap:14px;margin-top:26px;flex-wrap:wrap}
+.target-row{display:flex;align-items:flex-start;gap:14px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 22px;box-shadow:var(--shadow)}
+.target-row .ic{width:42px;height:42px;border-radius:12px;background:var(--grad-soft);border:1px solid rgba(37,99,235,.18);display:flex;align-items:center;justify-content:center;font-size:19px;flex:none}
+.target-row .tx b{display:block;font-size:15.5px;font-weight:800;margin-bottom:4px}
+.target-row .tx span{color:var(--ink-2);font-size:14px}
+.target-row .tx p{color:var(--ink-3);font-size:13.5px;margin-top:5px}
+.company-tags{margin-top:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.company-tags .ct-lab{font-size:13px;font-weight:800;color:var(--ink-2)}
+.company-tags .ct{
+  background:#fff;border:1.5px dashed rgba(37,99,235,.45);color:var(--blue-d);border-radius:999px;
+  padding:7px 16px;font-size:14px;font-weight:700;
+}
+.company-tags .ct.more{border-style:solid;border-color:var(--line);color:var(--ink-3);font-weight:600;background:var(--bg-2)}
+
+/* ---------- 08 · 关于我 ---------- */
+.about-grid{display:grid;grid-template-columns:340px 1fr;gap:30px;align-items:stretch}
+.portrait{
+  background:linear-gradient(160deg,#1d4ed8,#7c3aed 120%);border-radius:20px;color:#fff;
+  padding:34px 30px;display:flex;flex-direction:column;gap:16px;position:relative;overflow:hidden;
+}
+.portrait::after{content:"";position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.12);top:-70px;right:-70px}
+.portrait .av{
+  width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.5);
+  display:flex;align-items:center;justify-content:center;font-size:40px;backdrop-filter:blur(4px);
+  overflow:hidden;padding:0;
+}
+.portrait .av img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.portrait h3{font-size:22px;font-weight:800;line-height:1.35}
+.portrait .slogan{font-size:14px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:10px;padding:10px 14px;line-height:1.6}
+.portrait .facts{display:flex;flex-direction:column;gap:8px;font-size:13.5px}
+.portrait .facts div{display:flex;gap:9px;align-items:baseline}
+.portrait .facts .k{font-family:var(--mono);font-size:11px;color:#c7d2fe;flex:none;width:44px;letter-spacing:1px}
+.about-body{display:flex;flex-direction:column;gap:22px}
+.quote-card{
+  background:var(--grad-soft);border-left:4px solid var(--blue);border-radius:0 16px 16px 0;
+  padding:20px 24px;font-size:17px;font-weight:700;color:var(--ink);line-height:1.7;
+}
+.quote-card small{display:block;font-weight:500;color:var(--ink-3);font-size:13px;margin-top:6px}
+.about-body .intro{color:var(--ink-2);font-size:15.5px}
+.about-body .intro b{color:var(--blue-d)}
+.about-body .intro p+p{margin-top:12px}
+.fact-chips{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.fact-chips .fc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.fact-chips .fc b{display:block;font-size:14px;font-weight:800}
+.fact-chips .fc span{font-size:12.5px;color:var(--ink-3);line-height:1.6;display:block;margin-top:3px}
+
+/* ---------- 09 · 为什么是我（核心卖点三支柱） ---------- */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.pillar{
+  background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px 26px;
+  box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.pillar:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.pillar .no{
+  position:absolute;top:14px;right:18px;font-family:var(--mono);font-weight:800;font-size:13px;
+  background:var(--grad-soft);color:var(--blue);border-radius:999px;padding:3px 11px;
+}
+.pillar .pic{width:56px;height:56px;border-radius:15px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 8px 18px rgba(37,99,235,.35)}
+.pillar h3{font-size:19px;font-weight:800;line-height:1.4}
+.pillar p{color:var(--ink-2);font-size:14.5px;flex:1}
+.pillar .ev{
+  display:flex;gap:8px;flex-wrap:wrap;border-top:1px dashed var(--line);padding-top:13px;
+}
+.pillar .ev span{background:var(--bg-2);border:1px solid var(--line);border-radius:7px;font-size:12px;color:var(--ink-2);font-weight:700;padding:4px 10px;font-family:var(--mono)}
+.knowhow{
+  margin-top:26px;background:var(--navy);border-radius:18px;color:#e2e8f0;padding:24px 30px;
+  display:flex;gap:20px;align-items:center;flex-wrap:wrap;
+}
+.knowhow .kh-ic{width:48px;height:48px;border-radius:13px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.knowhow b{color:#fff;font-size:15.5px;display:block;margin-bottom:3px}
+.knowhow p{font-size:13.5px;color:#cbd5e1;max-width:760px;line-height:1.7}
+
+/* ---------- 10 · 关键数据（数字滚动） ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.stat{
+  background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 18px;text-align:center;
+  box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.stat::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--grad)}
+.stat .num{
+  display:block;font-family:var(--mono);font-weight:800;font-size:clamp(30px,3.4vw,42px);line-height:1.1;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.stat .lab{display:block;margin-top:8px;font-size:14px;color:var(--ink-2);font-weight:700}
+.stat .sub{display:block;margin-top:3px;font-size:12px;color:var(--ink-3)}
+
+/* ---------- 11 · 能力矩阵 ---------- */
+.skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.skill{
+  background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow);
+  display:flex;gap:18px;align-items:flex-start;
+}
+.skill .sic{width:48px;height:48px;border-radius:13px;background:var(--grad-soft);border:1px solid rgba(37,99,235,.18);display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.skill .stx{flex:1;min-width:0}
+.skill .stx h4{font-size:16.5px;font-weight:800;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.skill .stx h4 .no{font-family:var(--mono);font-size:11px;color:var(--blue);background:var(--grad-soft);border-radius:6px;padding:2px 8px;font-weight:700}
+.skill .stx p{color:var(--ink-2);font-size:13.5px;margin-top:6px;line-height:1.7}
+.dots{display:flex;gap:5px;margin-top:10px}
+.dots i{width:11px;height:11px;border-radius:50%;background:#e2e8f0}
+.dots i.on{background:var(--grad)}
+.dots span{font-size:11px;color:var(--ink-3);margin-left:6px;font-family:var(--mono)}
+.skill .ev{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.skill .ev span{font-size:11.5px;background:var(--bg-2);border:1px solid var(--line);border-radius:6px;padding:3px 9px;color:var(--ink-2);font-weight:600;font-family:var(--mono)}
+
+/* ---------- 12 · 客户成功案例（履历改写） ---------- */
+.timeline{position:relative;padding-left:34px}
+.timeline::before{content:"";position:absolute;left:9px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,#2563eb,#7c3aed);border-radius:2px;opacity:.35}
+.tl-item{position:relative;margin-bottom:22px}
+.tl-item:last-child{margin-bottom:0}
+.tl-item .dot{
+  position:absolute;left:-34px;top:30px;width:20px;height:20px;border-radius:50%;
+  background:#fff;border:4px solid var(--blue);box-shadow:0 0 0 5px rgba(37,99,235,.12);
+}
+.case{
+  background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 26px;box-shadow:var(--shadow);
+}
+.case .row1{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.case .per{font-family:var(--mono);font-size:12.5px;font-weight:800;color:var(--blue);background:var(--grad-soft);border:1px solid rgba(37,99,235,.2);border-radius:7px;padding:4px 11px}
+.case .co{font-size:16px;font-weight:800}
+.case .mk{font-size:12.5px;color:var(--ink-3);background:var(--bg-2);border:1px solid var(--line);border-radius:999px;padding:3px 11px}
+.case .role{margin-left:auto;font-size:12.5px;font-weight:800;color:var(--purple);background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.22);border-radius:999px;padding:4px 12px;white-space:nowrap}
+.case h4{font-size:17px;font-weight:800;margin-top:13px;line-height:1.45}
+.case ul{margin-top:11px;display:flex;flex-direction:column;gap:7px}
+.case ul li{color:var(--ink-2);font-size:14px;padding-left:22px;position:relative}
+.case ul li::before{content:"✓";position:absolute;left:0;top:0;color:var(--blue);font-weight:800}
+.case ul li b{color:var(--blue-d);font-family:var(--mono)}
+
+/* ---------- 13 · AI 工作流流水线 ---------- */
+.flowbar{
+  display:flex;align-items:center;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:26px;
+  scrollbar-width:thin;
+}
+.flowbar .fb-step{
+  flex:none;display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);
+  border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700;color:var(--ink-2);
+  box-shadow:0 2px 8px rgba(15,23,42,.05);white-space:nowrap;
+}
+.flowbar .fb-step i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--grad);color:#fff;font-size:11px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono)}
+.flowbar .fb-step.on{background:var(--grad);color:#fff;border-color:transparent}
+.flowbar .fb-arr{color:var(--blue);font-weight:800;flex:none;font-size:14px}
+.ai-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.ai-card{
+  background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 18px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:10px;position:relative;
+}
+.ai-card .idx{
+  position:absolute;top:12px;right:14px;font-family:var(--mono);font-size:11px;font-weight:800;
+  color:var(--ink-3);background:var(--bg-2);border-radius:6px;padding:2px 8px;
+}
+.ai-card .name{font-family:var(--mono);font-size:13px;font-weight:800;color:var(--blue-d);word-break:break-all}
+.ai-card .cn{font-size:15px;font-weight:800;line-height:1.4}
+.ai-card p{font-size:12.5px;color:var(--ink-3);line-height:1.65;flex:1}
+.ai-card .tag2{font-size:11px;background:var(--grad-soft);color:var(--blue-d);border-radius:6px;padding:3px 8px;align-self:flex-start;font-weight:700}
+.pipe-note{
+  margin-top:24px;background:#fff;border:1.5px dashed rgba(124,58,237,.5);border-radius:16px;
+  padding:18px 24px;font-size:14.5px;color:var(--ink-2);display:flex;gap:14px;align-items:center;
+}
+.pipe-note .pn-ic{font-size:24px;flex:none}
+.pipe-note b{color:var(--blue-d)}
+
+/* ---------- 14 · 作品 ---------- */
+.work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.work{
+  background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:14px;transition:transform .2s ease,box-shadow .2s ease;
+}
+.work:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.work .wtop{display:flex;align-items:center;gap:14px}
+.work .wic{width:54px;height:54px;border-radius:15px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;box-shadow:0 8px 18px rgba(37,99,235,.32);flex:none}
+.work .wtop h3{font-size:17.5px;font-weight:800;line-height:1.4}
+.work .wtop small{display:block;font-size:11.5px;color:var(--ink-3);font-family:var(--mono);letter-spacing:1px;margin-top:2px}
+.work p{color:var(--ink-2);font-size:14px;flex:1}
+.work .wtags{display:flex;gap:8px;flex-wrap:wrap;border-top:1px dashed var(--line);padding-top:13px}
+.work .wtags span{background:var(--bg-2);border:1px solid var(--line);border-radius:7px;font-size:12px;color:var(--ink-2);font-weight:600;padding:4px 10px}
+.work .wtags span b{color:var(--blue-d)}
+
+/* ---------- 15 · 解决方案 Tab ---------- */
+.tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:30px}
+.tab-btn{
+  background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:10px 22px;
+  font-size:14.5px;font-weight:700;color:var(--ink-2);transition:all .18s ease;
+}
+.tab-btn:hover{border-color:rgba(37,99,235,.5);color:var(--blue)}
+.tab-btn.active{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 6px 18px rgba(37,99,235,.35)}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:tabIn .35s ease}
+@keyframes tabIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tab-card{
+  background:#fff;border:1px solid var(--line);border-radius:20px;padding:34px 38px;box-shadow:var(--shadow);
+  display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center;
+}
+.tab-card .tpic{
+  width:132px;height:132px;border-radius:24px;background:var(--grad);color:#fff;flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:52px;box-shadow:0 14px 30px rgba(37,99,235,.35);
+}
+.tab-card h3{font-size:21px;font-weight:800;line-height:1.4}
+.tab-card h3 em{font-style:normal;color:var(--blue)}
+.tab-card .tdesc{color:var(--ink-2);font-size:14.5px;margin-top:9px;line-height:1.75}
+.tab-card ul{margin-top:15px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tab-card ul li{
+  background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--ink-2);
+}
+.tab-card ul li b{display:block;color:var(--ink);font-size:14px;margin-bottom:3px}
+.tab-card .tev{
+  margin-top:18px;font-size:12.5px;color:var(--ink-3);background:var(--grad-soft);border:1px dashed rgba(37,99,235,.4);
+  border-radius:10px;padding:9px 14px;display:inline-block;
+}
+.tab-card .tev b{color:var(--blue-d);font-family:var(--mono)}
+
+/* ---------- 16 · 三年纲领 ---------- */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.plan{
+  background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px 24px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;
+}
+.plan::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--grad)}
+.plan .yr{font-family:var(--mono);font-weight:800;font-size:34px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:1px}
+.plan .stage{display:inline-block;font-size:12px;font-weight:800;color:var(--purple);background:rgba(124,58,237,.09);border:1px solid rgba(124,58,237,.25);border-radius:999px;padding:3px 12px;margin:10px 0 12px}
+.plan h3{font-size:17px;font-weight:800}
+.plan p{color:var(--ink-2);font-size:14px;margin-top:8px;line-height:1.7}
+.plan .kv{display:flex;flex-direction:column;gap:5px;margin-top:13px;font-size:13px;color:var(--ink-3)}
+.mindset{
+  margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 28px;
+  box-shadow:var(--shadow);display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+}
+.mindset .ms-lab{font-size:13px;font-weight:800;color:var(--ink-3);font-family:var(--mono);letter-spacing:2px;flex:none}
+.mindset .ms{display:flex;gap:10px;flex-wrap:wrap;flex:1}
+.mindset .ms span{
+  background:var(--grad-soft);border:1px solid rgba(37,99,235,.25);color:var(--blue-d);border-radius:999px;
+  padding:8px 18px;font-size:14px;font-weight:700;
+}
+
+/* ---------- 17 · 联系方式 ---------- */
+.contact-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:stretch}
+.contact-main{
+  background:linear-gradient(150deg,#1d4ed8,#7c3aed 130%);border-radius:22px;color:#fff;padding:40px 38px;
+  position:relative;overflow:hidden;
+}
+.contact-main::after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.1);top:-90px;right:-70px}
+.contact-main h3{font-size:24px;font-weight:800;line-height:1.4;position:relative;z-index:1}
+.contact-main p{font-size:14.5px;color:#dbeafe;margin-top:12px;max-width:440px;position:relative;z-index:1}
+.contact-lines{display:flex;flex-direction:column;gap:12px;margin-top:26px;position:relative;z-index:1}
+.contact-line{
+  display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+  border-radius:14px;padding:14px 18px;backdrop-filter:blur(4px);
+}
+.contact-line .cic{width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.contact-line .ctxt small{display:block;font-size:11.5px;color:#c7d2fe;letter-spacing:1px;font-family:var(--mono)}
+.contact-line .ctxt b{font-size:16px;font-family:var(--mono);letter-spacing:.5px}
+.contact-line .copy{
+  margin-left:auto;background:#fff;color:var(--blue-d);border:0;border-radius:9px;font-size:12.5px;
+  font-weight:800;padding:8px 14px;transition:transform .15s ease;
+}
+.contact-line .copy:hover{transform:translateY(-1px)}
+.contact-side{display:flex;flex-direction:column;gap:16px}
+.contact-side .cs-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow);flex:1}
+.contact-side .cs-card b{font-size:15px;font-weight:800;display:flex;align-items:center;gap:9px}
+.contact-side .cs-card p{font-size:13.5px;color:var(--ink-2);margin-top:7px;line-height:1.7}
+.contact-side .cs-card .cs-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.contact-side .cs-card .cs-tags span{background:var(--bg-2);border:1px solid var(--line);border-radius:7px;font-size:12px;color:var(--ink-2);font-weight:600;padding:4px 10px}
+
+/* ---------- 18 · 页脚 ---------- */
+footer{background:var(--navy);color:#94a3b8;padding:34px 0;font-size:13.5px}
+footer .container{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+footer .f-main{color:#e2e8f0;font-size:14px;font-weight:600}
+footer .f-main a{color:#93c5fd;font-weight:800}
+footer .f-meta{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-family:var(--mono);font-size:12px}
+footer .f-meta span{display:inline-flex;gap:6px;align-items:center}
+footer .f-note{font-size:12px}
+
+/* ---------- 19 · 返回顶部 / Toast ---------- */
+#backTop{
+  position:fixed;right:26px;bottom:26px;width:48px;height:48px;border-radius:14px;border:0;
+  background:var(--grad);color:#fff;font-size:20px;box-shadow:0 8px 22px rgba(37,99,235,.45);
+  opacity:0;visibility:hidden;transform:translateY(12px);transition:all .25s ease;z-index:70;
+}
+#backTop.show{opacity:1;visibility:visible;transform:none}
+#toast{
+  position:fixed;left:50%;bottom:34px;transform:translate(-50%,16px);background:var(--navy);color:#fff;
+  font-size:14px;font-weight:700;border-radius:999px;padding:12px 24px;box-shadow:0 10px 30px rgba(15,23,42,.35);
+  opacity:0;visibility:hidden;transition:all .3s ease;z-index:80;white-space:nowrap;
+}
+#toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+
+/* ---------- 20 · 滚动渐入（JS 门控：默认可见，noscript 兜底） ---------- */
+html.js .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+html.js .reveal.in{opacity:1;transform:none}
+html.js .reveal.d1{transition-delay:.08s}
+html.js .reveal.d2{transition-delay:.16s}
+html.js .reveal.d3{transition-delay:.24s}
+
+/* ---------- 21 · 无障碍 / 减弱动效 ---------- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  html.js .reveal{opacity:1;transform:none;transition:none}
+  .tab-panel.active{animation:none}
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+
+/* ---------- 22 · 响应式 ≤768px ---------- */
+@media (max-width:900px){
+  .skill-grid{grid-template-columns:1fr}
+  .ai-grid{grid-template-columns:repeat(2,1fr)}
+  .pillars{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .work-grid{grid-template-columns:1fr}
+  .plan-grid{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .tab-card{grid-template-columns:1fr;padding:26px}
+  .tab-card .tpic{width:96px;height:96px;font-size:40px;border-radius:18px}
+  .tab-card ul{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr}
+  .role-card{grid-template-columns:1fr;padding:24px}
+  .role-card .tag{width:88px;height:88px;font-size:20px}
+  .fact-chips{grid-template-columns:1fr}
+}
+@media (max-width:768px){
+  body{font-size:15px}
+  .section{padding:56px 0 64px}
+  .container{padding:0 18px}
+  .nav-links{
+    display:none;position:absolute;top:64px;left:0;right:0;background:#fff;
+    flex-direction:column;align-items:stretch;padding:12px 18px 20px;border-bottom:1px solid var(--line);
+    box-shadow:0 16px 30px rgba(15,23,42,.1);gap:4px;
+  }
+  .nav-links.open{display:flex}
+  .nav-links a{padding:12px 12px;font-size:15px}
+  .nav-links .m-only{display:block;margin-top:8px;text-align:center;background:var(--grad);color:#fff;border-radius:12px;font-weight:800}
+  .nav-links .m-only:hover{color:#fff;text-decoration:none}
+  .nav-cta{display:none}
+  .burger{display:flex}
+  .trustbar .tb-right{width:100%;margin-left:0}
+  .hero{padding:44px 0 56px}
+  .hero .grid{grid-template-columns:1fr;gap:42px}
+  .hero h1{font-size:clamp(28px,7.4vw,40px)}
+  .float-chip.f1{right:4px}
+  .float-chip.f2{left:4px}
+  .dash-grid{grid-template-columns:1fr}
+  .dash-side{display:none}
+  .stats{gap:12px}
+  .timeline{padding-left:28px}
+  .tl-item .dot{left:-28px;width:18px;height:18px}
+  .case{padding:20px 18px}
+  .case .role{margin-left:0;width:100%}
+  .flowbar{margin-bottom:20px}
+  .company-tags{gap:8px}
+  .tabs{gap:8px}
+  .tab-btn{padding:9px 16px;font-size:13.5px}
+  .contact-main{padding:30px 22px}
+  .contact-line{flex-wrap:wrap;gap:10px}
+  .contact-line .copy{margin-left:0}
+  #backTop{right:16px;bottom:16px;width:44px;height:44px}
+}
+@media (max-width:520px){
+  .stats{grid-template-columns:1fr 1fr;gap:10px}
+  .stat{padding:20px 12px}
+  .ai-grid{grid-template-columns:1fr}
+  .flowbar .fb-step{padding:7px 13px;font-size:12.5px}
+  .hero .acts .btn{width:100%;justify-content:center}
+  .sec-head{margin-bottom:32px}
+  .trustbar{font-size:12px}
+  .trustbar .tb-left i{display:none}
+}
+</style>
+</head>
+<body id="top">
+
+<!-- ================= 顶部信任背书条 ================= -->
+<div class="trustbar">
+  <div class="container">
+    <div class="tb-left"><i>HQ</i><span>现职：太原重工 · 工程起重机分公司 业务经理 / 大客户销售（高空作业平台）</span></div>
+    <div class="tb-right">
+      <span>太重 <b>76 年底蕴</b></span>
+      <span>A股 <b>600169</b></span>
+      <span>2025 营收约 <b>103.79 亿</b></span>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 导航栏 ================= -->
+<header class="nav" id="siteNav">
+  <div class="container">
+    <div class="brand">
+      <div class="logo">HQ</div>
+      <div class="bt"><b>邵汉青 · 客户成功</b><small>HANQING · CUSTOMER SUCCESS</small></div>
+    </div>
+    <nav class="nav-links" id="navLinks" aria-label="主导航">
+      <a href="#target">求职意向</a>
+      <a href="#why">为什么是我</a>
+      <a href="#data">关键数据</a>
+      <a href="#matrix">能力矩阵</a>
+      <a href="#cases">客户成功案例</a>
+      <a href="#works">作品</a>
+      <a href="#plan">三年纲领</a>
+      <a href="#contact">联系</a>
+      <a class="m-only" href="#contact">📩 联系我</a>
+    </nav>
+    <a class="nav-cta" href="#contact">联系我</a>
+    <button class="burger" id="burger" aria-label="打开菜单" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ================= Hero ================= -->
+<section class="hero">
+  <div class="container">
+    <div class="grid">
+      <div class="hero-text">
+        <span class="kicker reveal">INDUSTRIAL INTERNET × CLOUD SaaS · 求职定制版</span>
+        <h1 class="reveal d1">把 10 年 B 端销售经验，<br>变成你的客户成功</h1>
+        <p class="sub reveal d1">既懂销售，又懂 <b>AI</b>——<b>工业互联网行业销售 × 客户成功</b>。10 年重工 ToB 大客户经营 + 8 个 AI 定制技能 + 可量化业绩，正是工业制造云平台最需要的「懂客户、懂业务、懂数字化」的人。</p>
+        <div class="acts reveal d2">
+          <a class="btn primary" href="#matrix">查看能力矩阵</a>
+          <a class="btn ghost" href="#contact">联系我</a>
+        </div>
+        <div class="chips reveal d2">
+          <span class="chip"><i>10</i> 年 ToB 经营</span>
+          <span class="chip"><i>0→180</i> 客户开发</span>
+          <span class="chip"><i>35</i> 份独立标书</span>
+          <span class="chip"><i>1.2 亿</i> 意向价值</span>
+          <span class="chip"><i>8</i> 个 AI 技能</span>
+        </div>
+      </div>
+      <div class="hero-visual reveal d2" aria-hidden="true">
+        <!-- 纯 CSS 客户成功看板拟物 -->
+        <div class="float-chip f1"><div class="ic">💰</div><div><b>1500 万</b><small>已完成订单</small></div></div>
+        <div class="float-chip f2"><div class="ic">📍</div><div><b>113 条</b><small>湖北客户线索</small></div></div>
+        <div class="dash">
+          <div class="dash-bar"><i></i><i></i><i></i><span class="t">CS DASHBOARD · <b>客户成功看板</b> · 汉青自制</span></div>
+          <div class="dash-grid">
+            <div class="dash-side">
+              <div class="sv on"></div><div class="sv w60"></div><div class="sv w40"></div>
+              <div class="sv w60"></div><div class="sv w40"></div><div class="sv w60"></div>
+            </div>
+            <div class="dash-main">
+              <div class="kpi-row">
+                <div class="kpi"><div class="num">1.2亿</div><div class="lab">意向价值</div></div>
+                <div class="kpi"><div class="num">180家</div><div class="lab">客户开发</div></div>
+                <div class="kpi"><div class="num">8个</div><div class="lab">AI 技能</div></div>
+              </div>
+              <div class="pipe">
+                <div class="step">线索采集</div><span class="arr">→</span>
+                <div class="step">热力作战图</div><span class="arr">→</span>
+                <div class="step on">执行体系</div><span class="arr">→</span>
+                <div class="step">14页PPT</div><span class="arr">→</span>
+                <div class="step">行业简报</div>
+              </div>
+              <div class="chart">
+                <i style="height:38%"></i><i style="height:52%"></i><i style="height:44%"></i>
+                <i style="height:70%"></i><i style="height:62%"></i><i style="height:86%"></i>
+                <i style="height:78%"></i><i style="height:100%"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="platform-strip reveal d3">
+      <span class="ps-lab">曾服务平台</span>
+      <div class="ps">
+        <span>宇通重工</span><span>三一重工</span><span>中联重科</span>
+        <span>复盛实业（上海）</span><span>太原重工</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 01 求职意向 ================= -->
+<section class="section" id="target">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="kicker">01 · JOB TARGET</span>
+      <h2>求职意向：工业互联网 / 云 SaaS 行业销售 · 客户成功</h2>
+      <p>投递方向锁定工业制造数字化平台——用制造业 10 年实战 + AI 落地能力，直接为云平台客户创造可量化价值。</p>
+    </div>
+
+    <div class="role-card reveal">
+      <div class="tag"><b>CS</b><small>CUSTOMER SUCCESS</small></div>
+      <div>
+        <h3>目标岗位：行业销售经理 / <em>客户成功经理</em>（工业制造 · 云与AI方向）</h3>
+        <p>覆盖「打单」与「经营」两端：既能作为行业销售攻坚制造业大客户，也能作为客户成功经理帮客户把产品用出结果、把续约率做上去。</p>
+        <div class="meta">
+          <span class="chip">📍 base 河南郑州</span>
+          <span class="chip">✈️ 可出差</span>
+          <span class="chip">🏭 熟悉制造业客户语言</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="target-box">
+      <div class="target-row reveal">
+        <div class="ic">🎯</div>
+        <div class="tx">
+          <b>我能带来什么</b>
+          <span>不是「换个行业重新学」的新人，而是自带客户资产与方法论的行业老兵——到岗即可讲客户语言、跑客户现场、带 AI 工具落地。</span>
+        </div>
+      </div>
+      <div class="target-row reveal d1">
+        <div class="ic">📦</div>
+        <div class="tx">
+          <b>目标企业</b>
+          <span>工业互联网平台与云服务厂商，优先有制造业基因、重视行业 Know-how 的团队。</span>
+          <p>树根互联 · 徐工汉云 · 卡奥斯 · 腾讯云工业 · 华为云 · 同类工业互联网平台</p>
+        </div>
+      </div>
+      <div class="target-row reveal d2">
+        <div class="ic">🤝</div>
+        <div class="tx">
+          <b>适配逻辑</b>
+          <span>工业 SaaS 难的不是技术，是「客户为什么买单、怎么用出效果、怎么续约」——这三件事，我做了 10 年。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="company-tags reveal">
+      <span class="ct-lab">投递方向：</span>
+      <span class="ct">树根互联</span>
+      <span class="ct">徐工汉云</span>
+      <span class="ct">卡奥斯</span>
+      <span class="ct">腾讯云工业</span>
+      <span class="ct">华为云</span>
+      <span class="ct more">+ 工业互联网平台企业</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 关于我 ================= -->
+<section class="section alt" id="about">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="kicker">02 · ABOUT ME</span>
+      <h2>关于我：既懂销售，又懂 AI</h2>
+      <p>一句话人设。十年重工大客户销售老兵，2025 年起把 AI 深度接进销售工作流，把自己活成了「客户成功」的样本。</p>
+    </div>
+    <div class="about-grid">
+      <div class="portrait reveal">
+        <div class="av"><img src="data:image/jpeg;base64,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" alt="邵汉青" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block"></div>
+        <h3>邵汉青（汉青）<br>32 岁 · 已婚</h3>
+        <div class="slogan">「既懂销售，又懂 AI」——卖的不是设备，是客户的成功。</div>
+        <div class="facts">
+          <div><span class="k">BASE</span><span>河南郑州（可出差）</span></div>
+          <div><span class="k">本科</span><span>黄淮学院 · 汽车服务工程（2015–2017）</span></div>
+          <div><span class="k">大专</span><span>鹤壁职业技术学院 · 汽车检测（2012–2015）</span></div>
+          <div><span class="k">现职</span><span>太原重工 · 工程起重机分公司 业务经理 / 大客户销售</span></div>
+        </div>
+      </div>
+      <div class="about-body">
+        <div class="quote-card reveal">「客户成功」不是 SaaS 行业的专利，我在重工行业做了 10 年——帮客户算账、做方案、控风险，让客户赚到钱，生意自然回来。
+          <small>—— 从粤东到河南再到湖北，一路如此</small>
+        </div>
+        <div class="intro reveal d1">
+          <p>现职 <b>太原重工 · 工程起重机分公司</b>，负责高空作业平台大客户销售（剪叉 4–14m / 臂式 16–60m），主攻湖北市场。此前先后任职宇通重工、三一重工、中联重科、复盛实业，从区域销售做到独立开发市场，客户规模从 0 到 180 家。</p>
+          <p>2025 年起，我用 <b>WorkBuddy 自建 8 个 AI 定制技能</b>，把「线索采集 → 热力作战图 → 执行体系 → 14 页推介 PPT → 行业简报」整条销售流水线做成了自动化——这正是客户成功要教客户的事，我先在自己身上跑通。</p>
+        </div>
+        <div class="fact-chips reveal d2">
+          <div class="fc"><b>🧭 行业</b><span>重工 / 工程机械 / 高机租赁 / 空压机</span></div>
+          <div class="fc"><b>🤖 数字化</b><span>AI 技能自建 · 单文件工具开发 · 数据台账</span></div>
+          <div class="fc"><b>🎯 风格</b><span>结果导向 · 方案型销售 · 复盘驱动</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 为什么是我 ================= -->
+<section class="section" id="why">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="kicker">03 · WHY ME</span>
+      <h2>为什么是我：三根支柱，一个结论</h2>
+      <p>把 10 年 ToB 实战、AI 重度实践、可量化结果，折算成工业互联网企业立刻能用的客户成功能力。</p>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal">
+        <span class="no">支柱 01</span>
+        <div class="pic">🏗️</div>
+        <h3>10 年 ToB 大客户经营</h3>
+        <p>从决策链穿透、招投标、商务谈判到回款全流程实战，服务宇通、三一、中联、太重等制造业大平台——工业互联网最难的「客户现场」，是我的主场。</p>
+        <div class="ev"><span>35 份标书</span><span>19 项协助投标</span><span>年业绩峰值 1500 万</span></div>
+      </div>
+      <div class="pillar reveal d1">
+        <span class="no">支柱 02</span>
+        <div class="pic">🤖</div>
+        <h3>AI 重度实践</h3>
+        <p>WorkBuddy 8 个自建技能，跑通「线索采集 → 热力作战图 → 执行体系 → 14 页推介 PPT → 行业简报」全自动销售流水线——客户成功要教客户的事，我先在自己身上做成样板。</p>
+        <div class="ev"><span>8 个定制技能</span><span>流水线自动化</span><span>简报每月 5 日自动</span></div>
+      </div>
+      <div class="pillar reveal d2">
+        <span class="no">支柱 03</span>
+        <div class="pic">📈</div>
+        <h3>可量化结果</h3>
+        <p>1.2 亿意向价值、1500 万已完成订单、0→180 家客户开发、113 条湖北线索、92 条报备意向——每个数字都有台账可查，随时接受尽调。</p>
+        <div class="ev"><span>1.2 亿意向</span><span>1500 万已完成订单</span><span>0→180 客户</span></div>
+      </div>
+    </div>
+    <div class="knowhow reveal">
+      <div class="kh-ic">🏭</div>
+      <div>
+        <b>行业 Know-how：制造业 / 工程机械语言</b>
+        <p>平台商、经销商、施工方、租赁公司、融资租赁、回款周期、招投标规则……这些工业互联网客户天天挂在嘴边的事，我不用翻译就能听懂、就能接话、就能把方案讲到对方心坎里。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 关键数据 ================= -->
+<section class="section alt" id="data">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="kicker">04 · KEY METRICS</span>
+      <h2>关键数字：业绩不说谎</h2>
+      <p>全部来自真实工作台账——这正是客户成功最需要的「数据化经营」底子。</p>
+    </div>
+    <div class="stats">
+      <div class="stat reveal"><span class="num" data-count="10" data-suffix="年">10年</span><span class="lab">重工 ToB 大客户销售</span><span class="sub">宇通 → 三一 → 中联 → 太重</span></div>
+      <div class="stat reveal d1"><span class="num" data-count="180" data-suffix="家">180家</span><span class="lab">客户开发（0→180）</span><span class="sub">三一重工 · 河南独立开发</span></div>
+      <div class="stat reveal d2"><span class="num" data-count="35" data-suffix="份">35份</span><span class="lab">独立完成标书</span><span class="sub">复盛实业 · 协助投标 19 项</span></div>
+      <div class="stat reveal d3"><span class="num" data-count="1.2" data-dec="1" data-suffix="亿">1.2亿</span><span class="lab">意向价值</span><span class="sub">太重 · 湖北市场</span></div>
+      <div class="stat reveal"><span class="num" data-count="1500" data-suffix="万">1500万</span><span class="lab">已完成订单</span><span class="sub">太重 · 高空作业平台</span></div>
+      <div class="stat reveal d1"><span class="num" data-count="1" data-suffix="亿">1亿</span><span class="lab">协助意向订单</span><span class="sub">太重 · 湖北市场 · 协助意向</span></div>
+      <div class="stat reveal d2"><span class="num" data-count="1400" data-suffix="万">1400万</span><span class="lab">协助完成订单</span><span class="sub">太重 · 湖北市场 · 协助完成</span></div>
+      <div class="stat reveal d1"><span class="num" data-count="113" data-suffix="条">113条</span><span class="lab">湖北客户线索</span><span class="sub">拓展 113 · 新增 74</span></div>
+      <div class="stat reveal d2"><span class="num" data-count="92" data-suffix="条">92条</span><span class="lab">空压机报备意向</span><span class="sub">复盛实业 · 河南区域</span></div>
+      <div class="stat reveal d3"><span class="num" data-count="8" data-suffix="个">8个</span><span class="lab">AI 定制技能</span><span class="sub">WorkBuddy · 自建流水线</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 05 能力矩阵 ================= -->
+<section class="section" id="matrix">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="kicker">05 · CAPABILITY MATRIX</span>
+      <h2>能力矩阵：8 项可迁移能力</h2>
+      <p>每项能力都带着真实战绩背书——不是简历上的形容词，是台账里的数字。</p>
+    </div>
+    <div class="skill-grid">
+      <div class="skill reveal">
+        <div class="sic">🤝</div>
+        <div class="stx">
+          <h4><span class="no">01</span>大客户经营</h4>
+          <p>决策链穿透、关键人维护、方案型销售，年业绩峰值 1500 万。</p>
+          <div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><span>深耕</span></div>
+          <div class="ev"><span>峰值 1500 万/年</span><span>40→132 家</span></div>
+        </div>
+      </div>
+      <div class="skill reveal d1">
+        <div class="sic">🔁</div>
+        <div class="stx">
+          <h4><span class="no">02</span>客户成功 / 续约</h4>
+          <p>把续约当北极星：客户健康度运营、复购与转介绍，帮客户算账让他留下。</p>
+          <div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><span>深耕</span></div>
+          <div class="ev"><span>112 条信息完善</span><span>客户资产化</span></div>
+        </div>
+      </div>
+      <div class="skill reveal d2">
+        <div class="sic">📑</div>
+        <div class="stx">
+          <h4><span class="no">03</span>招投标 / 标书</h4>
+          <p>从解读招标文件到独立成稿再到开标复盘，全流程实战。</p>
+          <div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><span>深耕</span></div>
+          <div class="ev"><span>35 份独立标书</span><span>19 项协助投标</span></div>
+        </div>
+      </div>
+      <div class="skill reveal d3">
+        <div class="sic">⚡</div>
+        <div class="stx">
+          <h4><span class="no">04</span>AI 提效</h4>
+          <p>WorkBuddy 自建 8 技能，把重复劳动交给自动化，销售只干高价值的事。</p>
+          <div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><span>深耕</span></div>
+          <div class="ev"><span>8 个定制技能</span><span>流水线自动化</span></div>
+        </div>
+      </div>
+      <div class="skill reveal">
+        <div class="sic">📊</div>
+        <div class="stx">
+          <h4><span class="no">05</span>数据化运营</h4>
+          <p>客户台账、热力作战图、线索分层——用数据驱动每一天的拜访。</p>
+          <div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><span>熟练</span></div>
+          <div class="ev"><span>0→180 台账</span><span>高德线索采集</span></div>
+        </div>
+      </div>
+      <div class="skill reveal d1">
+        <div class="sic">🚀</div>
+        <div class="stx">
+          <h4><span class="no">06</span>区域 0→1 开拓</h4>
+          <p>从零市场冷启动到规模化，三一河南与太重湖北两度验证。</p>
+          <div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><span>深耕</span></div>
+          <div class="ev"><span>0→180 家</span><span>湖北 113 条</span></div>
+        </div>
+      </div>
+      <div class="skill reveal d2">
+        <div class="sic">💳</div>
+        <div class="stx">
+          <h4><span class="no">07</span>融资租赁方案</h4>
+          <p>高机与工程机械的租赁方案设计，帮客户算现金流与回报。</p>
+          <div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><span>熟练</span></div>
+          <div class="ev"><span>1000+ 资料库</span><span>融资租赁归档</span></div>
+        </div>
+      </div>
+      <div class="skill reveal d3">
+        <div class="sic">🛡️</div>
+        <div class="stx">
+          <h4><span class="no">08</span>应收账款风控</h4>
+          <p>主导催收与风险评估，把坏账风险前置到签约环节。</p>
+          <div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><span>熟练</span></div>
+          <div class="ev"><span>主导催收</span><span>风险评估</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 客户成功案例 ================= -->
+<section class="section alt" id="cases">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="kicker">06 · CS CASES</span>
+      <h2>客户成功案例：10 年履历，5 段增长叙事</h2>
+      <p>每段经历 = 客户/市场 + 动作 + 量化结果——就像你给客户写的成功案例。</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <span class="dot"></span>
+        <div class="case">
+          <div class="row1">
+            <span class="per">2017.10 – 2021.03</span>
+            <span class="co">宇通重工</span>
+            <span class="mk">旋挖钻机 / 履带吊 · 粤东区域</span>
+            <span class="role">案例一 · 客户深耕与留存</span>
+          </div>
+          <h4>把「客户清单」做成「客户资产」：目标客户 40 → 132 家</h4>
+          <ul>
+            <li>客户盘点与分层运营，目标客户从 <b>40</b> 家拓展到 <b>132</b> 家</li>
+            <li>年业绩稳定在 <b>600–1000 万</b>，复购与转介绍成为主要增量</li>
+            <li>同批 <b>60+</b> 新人中最早转正，SOP 意识从第一份工作开始建立</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tl-item reveal">
+        <span class="dot"></span>
+        <div class="case">
+          <div class="row1">
+            <span class="per">2021.04 – 2023.06</span>
+            <span class="co">三一重工</span>
+            <span class="mk">旋挖钻机 · 河南区域</span>
+            <span class="role">案例二 · 区域 0→1 冷启动</span>
+          </div>
+          <h4>独立开发一片空白市场：客户 0 → 180 家，年均销售 1500 万</h4>
+          <ul>
+            <li>一人一区域，独立完成市场调研、客户开发与成交闭环</li>
+            <li>客户从 <b>0</b> 到 <b>180</b> 家，年均销售 <b>1500 万</b></li>
+            <li>完整跑通「0→1→规模化」打法，可复制的区域冷启动 SOP</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tl-item reveal">
+        <span class="dot"></span>
+        <div class="case">
+          <div class="row1">
+            <span class="per">2023.07 – 2024.10</span>
+            <span class="co">中联重科</span>
+            <span class="mk">旋挖钻机 · 河南区域</span>
+            <span class="role">案例三 · 客户资产化与风控</span>
+          </div>
+          <h4>把信息变成资产：完善 112 条客户信息，主导回款风控</h4>
+          <ul>
+            <li>完善客户信息 <b>112</b> 条，建成可查询、可跟踪的客户台账</li>
+            <li>主导应收账款催收与风险评估，把坏账风险前置管理</li>
+            <li>客户健康度思维雏形：信息越全，决策越准</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tl-item reveal">
+        <span class="dot"></span>
+        <div class="case">
+          <div class="row1">
+            <span class="per">2025.05 – 2025.12</span>
+            <span class="co">复盛实业（上海）</span>
+            <span class="mk">空压机 · 河南区域</span>
+            <span class="role">案例四 · 商机转化与招投标</span>
+          </div>
+          <h4>把意向变成订单：92 条报备意向，35 份独立标书</h4>
+          <ul>
+            <li>报备意向 <b>92</b> 条，商机漏斗全程可视、逐条跟进</li>
+            <li>独立完成标书 <b>35</b> 份，协助投标 <b>19</b> 项</li>
+            <li>招投标成为可复制的流程能力，而不仅是个人手艺</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tl-item reveal">
+        <span class="dot"></span>
+        <div class="case">
+          <div class="row1">
+            <span class="per">2025.12 – 至今</span>
+            <span class="co">太原重工 · 工程起重机分公司</span>
+            <span class="mk">高空作业平台 · 湖北市场</span>
+            <span class="role">案例五 · 规模化增长（现职）</span>
+          </div>
+          <h4>AI 加持的市场爆发：113 条线索、1.2 亿意向、已完成订单 1500 万</h4>
+          <ul>
+            <li>拓展客户 <b>113</b> 条、新增 <b>74</b> 条，AI 线索采集提效显著</li>
+            <li>意向价值 <b>1.2 亿</b>，已完成订单 <b>1500 万</b>，协助意向订单 <b>1 亿</b>，协助完成订单 <b>1400 万</b></li>
+            <li>行业简报每月 5 日自动生成，市场情报持续喂养销售动作</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 07 AI 工作流流水线 ================= -->
+<section class="section" id="pipeline">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="kicker">07 · AI WORKFLOW PIPELINE</span>
+      <h2>AI 工作流流水线：从线索到简报，一条自运转</h2>
+      <p>WorkBuddy 8 个自建技能组成的全自动销售流水线——这就是我能教给贵司客户的成功实践。</p>
+    </div>
+
+    <div class="flowbar reveal" role="img" aria-label="AI 销售流水线：入口 → 线索采集 → 热力作战图 → 执行体系 → 推介PPT → 获客触达 → 加密部署 → 行业简报">
+      <span class="fb-step on"><i>1</i>区域开发总入口</span><span class="fb-arr">→</span>
+      <span class="fb-step"><i>2</i>高德线索采集</span><span class="fb-arr">→</span>
+      <span class="fb-step"><i>3</i>客户热力作战图</span><span class="fb-arr">→</span>
+      <span class="fb-step"><i>4</i>销售执行体系</span><span class="fb-arr">→</span>
+      <span class="fb-step"><i>5</i>14 页推介 PPT</span><span class="fb-arr">→</span>
+      <span class="fb-step"><i>6</i>微信获客助手</span><span class="fb-arr">→</span>
+      <span class="fb-step"><i>7</i>加密部署</span><span class="fb-arr">→</span>
+      <span class="fb-step"><i>8</i>行业简报（每月5日）</span>
+    </div>
+
+    <div class="ai-grid">
+      <div class="ai-card reveal">
+        <span class="idx">SKILL 01</span>
+        <div class="name">market-dev-kit</div>
+        <div class="cn">区域开发总入口</div>
+        <p>区域作战的指挥中枢，把工具、话术、数据全部串成一套 SOP。</p>
+        <span class="tag2">总入口</span>
+      </div>
+      <div class="ai-card reveal d1">
+        <span class="idx">SKILL 02</span>
+        <div class="name">amap-poi-collector</div>
+        <div class="cn">高德客户线索采集</div>
+        <p>按区域批量采集高德 POI，把地图上的客户变成线索清单。</p>
+        <span class="tag2">线索</span>
+      </div>
+      <div class="ai-card reveal d2">
+        <span class="idx">SKILL 03</span>
+        <div class="name">customer-geo-viz</div>
+        <div class="cn">客户热力作战图</div>
+        <p>客户分布可视化，一眼看清该打哪里、怎么排兵布阵。</p>
+        <span class="tag2">决策</span>
+      </div>
+      <div class="ai-card reveal d3">
+        <span class="idx">SKILL 04</span>
+        <div class="name">sales-lead-workbook</div>
+        <div class="cn">销售执行体系</div>
+        <p>从线索到成交的逐日执行清单，动作标准化、进度可视化。</p>
+        <span class="tag2">执行</span>
+      </div>
+      <div class="ai-card reveal">
+        <span class="idx">SKILL 05</span>
+        <div class="name">sales-pitch-ppt</div>
+        <div class="cn">高转化 14 页推介 PPT</div>
+        <p>把 10 年销售话术产品化成 14 页高转化推介材料。</p>
+        <span class="tag2">转化</span>
+      </div>
+      <div class="ai-card reveal d1">
+        <span class="idx">SKILL 06</span>
+        <div class="name">wechat-addfriend</div>
+        <div class="cn">微信获客助手</div>
+        <p>状态机 + CSV 备份 + 加密的单文件触达工具，每日 25–30 条触达节奏 SOP。</p>
+        <span class="tag2">触达</span>
+      </div>
+      <div class="ai-card reveal d2">
+        <span class="idx">SKILL 07</span>
+        <div class="name">secure-html-deploy</div>
+        <div class="cn">加密部署</div>
+        <p>单文件加密交付，客户资料与工具安全分发、防泄露。</p>
+        <span class="tag2">交付</span>
+      </div>
+      <div class="ai-card reveal d3">
+        <span class="idx">SKILL 08</span>
+        <div class="name">industry-briefing</div>
+        <div class="cn">行业简报流水线</div>
+        <p>每月 5 日自动生成行业简报，市场情报持续喂养销售动作。</p>
+        <span class="tag2">情报</span>
+      </div>
+    </div>
+
+    <div class="pipe-note reveal">
+      <span class="pn-ic">💡</span>
+      <div><b>为什么这正好是「客户成功」？</b> 客户成功 = 教客户把产品用出结果。这套流水线就是我在销售场景里亲自验证的「AI 最佳实践」——到了贵司，我可以原样复制给你们的客户与团队。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 08 作品 ================= -->
+<section class="section alt" id="works">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="kicker">08 · WORKS</span>
+      <h2>作品：不是 PPT，是能跑的工具</h2>
+      <p>四个真实作品，全部单文件、零依赖、离线可用——正如这套个人网站本身。</p>
+    </div>
+    <div class="work-grid">
+      <div class="work reveal">
+        <div class="wtop">
+          <div class="wic">📚</div>
+          <div><h3>高机销售资料库</h3><small>HIGH-ALTITUDE PLATFORM SALES LIBRARY</small></div>
+        </div>
+        <p>湖北市场开发工具箱：产品推介 / 市场开发 / 融资租赁 / 客户运营 / 行业资讯 6 类归档，沉淀 <b>1000+ 份销售资料</b>，随取随用。</p>
+        <div class="wtags"><span>6 类归档</span><span><b>1000+</b> 资料</span><span>市场开发工具箱</span></div>
+      </div>
+      <div class="work reveal d1">
+        <div class="wtop">
+          <div class="wic">🤖</div>
+          <div><h3>AI 技能库 · WorkBuddy</h3><small>8 CUSTOM SKILLS</small></div>
+        </div>
+        <p>8 个自建定制技能，串成从线索采集到行业简报的全自动销售流水线，覆盖开发、线索、决策、执行、转化、触达、交付、情报全链路。</p>
+        <div class="wtags"><span><b>8</b> 个技能</span><span>全链路自动化</span><span>简报每月 5 日</span></div>
+      </div>
+      <div class="work reveal d2">
+        <div class="wtop">
+          <div class="wic">💼</div>
+          <div><h3>汉青职业工作台</h3><small>PERSONAL WORKBENCH</small></div>
+        </div>
+        <p>单文件 HTML 效率应用，6 大模块：学习 / 积累 / 记录 / 提高 / 事项安排 / 自我进化。localStorage 持久化 + JSON 导入导出，数据完全归自己。</p>
+        <div class="wtags"><span><b>6</b> 大模块</span><span>localStorage</span><span>JSON 导入导出</span></div>
+      </div>
+      <div class="work reveal d3">
+        <div class="wtop">
+          <div class="wic">📲</div>
+          <div><h3>微信获客助手</h3><small>WECHAT LEAD ASSISTANT</small></div>
+        </div>
+        <p>状态机 + CSV 备份 + 加密的单文件客户触达工具，内置每日 25–30 条触达节奏 SOP，让获客动作稳定可复制。</p>
+        <div class="wtags"><span>状态机</span><span>CSV 备份</span><span><b>25–30</b> 条/日节奏</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 09 解决方案 Tab ================= -->
+<section class="section" id="solutions">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="kicker">09 · SOLUTIONS</span>
+      <h2>我能为你解决什么</h2>
+      <p>四个解决方案，对应工业互联网企业最常见的四类需求——按需切换，全部有实战背书。</p>
+    </div>
+
+    <div class="tabs reveal" role="tablist" aria-label="解决方案切换">
+      <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab1" id="tabBtn1" data-tab="tab1">客户成功体系</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab2" id="tabBtn2" data-tab="tab2">行业销售攻坚</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab3" id="tabBtn3" data-tab="tab3">AI 提效落地</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab4" id="tabBtn4" data-tab="tab4">区域 0→1 开拓</button>
+    </div>
+
+    <div class="tab-panel active" id="tab1" role="tabpanel" aria-labelledby="tabBtn1">
+      <div class="tab-card reveal in">
+        <div class="tpic">🔁</div>
+        <div>
+          <h3>客户成功体系：把<em>续约率</em>做成北极星指标</h3>
+          <p class="tdesc">用 10 年「帮客户赚钱」的经验，搭建从 onboarding 到续约增购的完整客户成功体系——不是客服，是帮客户拿到结果。</p>
+          <ul>
+            <li><b>客户分层与健康度</b>180 家客户经营经验沉淀为分层模型</li>
+            <li><b>续约与增购预警</b>像盯回款一样盯续约，提前介入</li>
+            <li><b>SOP 与案例库</b>6 类 1000+ 资料，随取随用</li>
+          </ul>
+          <span class="tev">实战背书：中联重科阶段完善客户信息 <b>112 条</b></span>
+        </div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab2" role="tabpanel" aria-labelledby="tabBtn2">
+      <div class="tab-card reveal in">
+        <div class="tpic">⚔️</div>
+        <div>
+          <h3>行业销售攻坚：制造业大客户<em>打单</em>全流程</h3>
+          <p class="tdesc">决策链穿透、招投标、商务谈判、回款——工业互联网最难啃的硬骨头，是我的日常。</p>
+          <ul>
+            <li><b>决策链穿透</b>关键人识别与多层关系经营</li>
+            <li><b>招投标全流程</b>35 份标书、19 项协助投标</li>
+            <li><b>商务谈判与回款</b>主导催收与风险评估</li>
+          </ul>
+          <span class="tev">实战背书：复盛实业阶段报备意向 <b>92 条</b></span>
+        </div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab3" role="tabpanel" aria-labelledby="tabBtn3">
+      <div class="tab-card reveal in">
+        <div class="tpic">🤖</div>
+        <div>
+          <h3>AI 提效落地：把<em>AI 流水线</em>复制给客户与团队</h3>
+          <p class="tdesc">线索采集、热力作战图、推介 PPT、行业简报全自动——客户成功要教客户的事，我已在销售场景亲自跑通。</p>
+          <ul>
+            <li><b>AI 销售流水线</b>8 技能全链路自动化</li>
+            <li><b>先跑通再复制</b>自己就是第一个成功案例</li>
+            <li><b>团队赋能</b>帮销售每天省下重复劳动时间</li>
+          </ul>
+          <span class="tev">实战背书：WorkBuddy <b>8 个</b>自建技能，简报每月 <b>5 日</b>自动</span>
+        </div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab4" role="tabpanel" aria-labelledby="tabBtn4">
+      <div class="tab-card reveal in">
+        <div class="tpic">🚀</div>
+        <div>
+          <h3>区域 0→1 开拓：<em>冷启动</em>到规模化的完整路径</h3>
+          <p class="tdesc">新市场从零起步的 SOP：客户清单、拜访节奏、关键战役、数据复盘——两度验证，可复制。</p>
+          <ul>
+            <li><b>冷启动 SOP</b>目标客户清单与拜访节奏</li>
+            <li><b>0→180 路径</b>三一河南独立开发全纪录</li>
+            <li><b>异地复制</b>湖北 113 条、新增 74 条</li>
+          </ul>
+          <span class="tev">实战背书：太重湖北意向价值 <b>1.2 亿</b>、已完成订单 <b>1500 万</b>、协助意向订单 <b>1 亿</b>、协助完成订单 <b>1400 万</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 10 三年纲领 ================= -->
+<section class="section alt" id="plan">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="kicker">10 · 2026–2028 ROADMAP</span>
+      <h2>三年纲领：动身 → 定盘 → 上阶</h2>
+      <p>每一步都写在明面上——求职不是碰运气，是执行计划。</p>
+    </div>
+    <div class="plan-grid">
+      <div class="plan reveal">
+        <div class="yr">2026</div>
+        <span class="stage">动身求职年</span>
+        <h3>求职：8–11 月全力发力</h3>
+        <p>锁定工业互联网 / 云 SaaS 平台，8–11 月秋金月求职黄金窗口全力出击，用内推与定向投递打开局面。</p>
+        <div class="kv"><span>▶ 行动：定向投递 + 内推 + 作品集展示</span><span>▶ 目标：入职工业互联网 / 云 SaaS 企业</span></div>
+      </div>
+      <div class="plan reveal d1">
+        <div class="yr">2027</div>
+        <span class="stage">定盘名分年</span>
+        <h3>定盘：名分落实</h3>
+        <p>在平台上做出可量化的客户成功结果，坐稳岗位、形成方法论，让「既懂销售又懂 AI」成为团队共识。</p>
+        <div class="kv"><span>▶ 行动：跑通客户成功 SOP 与案例库</span><span>▶ 目标：成为团队可依赖的核心成员</span></div>
+      </div>
+      <div class="plan reveal d2">
+        <div class="yr">2028</div>
+        <span class="stage">上阶带队年</span>
+        <h3>上阶：争取带团队</h3>
+        <p>从客户成功经理走向客户成功负责人，把个人能力复制成团队能力，用别人的杠杆放大自己的结果。</p>
+        <div class="kv"><span>▶ 行动：带教、SOP 沉淀、梯队建设</span><span>▶ 目标：带出第一支客户成功小队</span></div>
+      </div>
+    </div>
+    <div class="mindset reveal">
+      <span class="ms-lab">心法 · MINDSET</span>
+      <div class="ms">
+        <span>内推 ＞ 海投</span>
+        <span>卖方案 不卖力气</span>
+        <span>攻坚大单 必组队</span>
+        <span>赚大钱之前 先站上大平台</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 11 联系 ================= -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="kicker">11 · CONTACT</span>
+      <h2>联系我：聊聊工业互联网 × 制造业客户成功</h2>
+      <p>期待与您对话——无论是岗位机会、内推引荐，还是先聊聊这套 AI 流水线怎么落地。</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-main reveal">
+        <h3>把 10 年制造业实战，<br>变成贵司的客户成功</h3>
+        <p>电话、邮件皆可，微信同号优先回复。资料库、AI 技能库、职业工作台均可当面演示——所见即所得。</p>
+        <div class="contact-lines">
+          <div class="contact-line">
+            <div class="cic">📞</div>
+            <div class="ctxt"><small>PHONE</small><b>177-7211-8785</b></div>
+            <a class="copy" href="tel:177-7211-8785">拨打</a>
+          </div>
+          <div class="contact-line">
+            <div class="cic">✉️</div>
+            <div class="ctxt"><small>EMAIL</small><b>1820688914@qq.com</b></div>
+            <button class="copy" id="copyMail" type="button">复制邮箱</button>
+          </div>
+          <div class="contact-line">
+            <div class="cic">📍</div>
+            <div class="ctxt"><small>BASE</small><b>河南郑州（可出差）</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-side">
+        <div class="cs-card reveal d1">
+          <b>🎯 一句话职向</b>
+          <p>行业销售经理 / 客户成功经理（工业制造 · 云与AI方向）——投递工业互联网 / 云 SaaS 平台。</p>
+        </div>
+        <div class="cs-card reveal d2">
+          <b>🧳 可迁移资产</b>
+          <p>10 年制造业客户关系、5 段增长履历、8 个 AI 技能、1000+ 销售资料库——到岗即用，无需培养期。</p>
+        </div>
+        <div class="cs-card reveal d3">
+          <b>📄 随附材料</b>
+          <p>简历 / 作品集 / 能力矩阵 / AI 流水线演示——本页即可作为第一份「客户成功案例」。</p>
+          <div class="cs-tags"><span>单文件简历</span><span>零依赖</span><span>离线可演示</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 页脚 ================= -->
+<footer>
+  <div class="container">
+    <div class="f-main">© 2026 邵汉青 · 个人网站合集 · <a href="index.html">返回总览</a></div>
+    <div class="f-meta">
+      <span>📞 177-7211-8785</span>
+      <span>✉️ 1820688914@qq.com</span>
+      <span>📍 base 河南郑州</span>
+    </div>
+    <div class="f-note">既懂销售，又懂 AI —— 10 年重工大客户销售 × 8 个 AI 定制技能 · 单文件 · 零依赖 · 离线可用</div>
+  </div>
+</footer>
+
+<button id="backTop" type="button" aria-label="返回顶部">↑</button>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   11 · SaaS 客户成功 —— 交互脚本
+   全部原生 JS，零依赖；file:// 双击可运行
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- 01 · 移动端菜单 ---------- */
+  var burger = document.getElementById('burger');
+  var navLinks = document.getElementById('navLinks');
+  var navCta = document.querySelector('.nav-cta');
+  if (burger && navLinks) {
+    burger.addEventListener('click', function () {
+      var open = navLinks.classList.toggle('open');
+      burger.classList.toggle('open', open);
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      burger.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
+    });
+    // 点击链接后收起菜单
+    navLinks.addEventListener('click', function (e) {
+      if (e.target.tagName === 'A') {
+        navLinks.classList.remove('open');
+        burger.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+      }
+    });
+    if (navCta) {
+      navCta.addEventListener('click', function () {
+        navLinks.classList.remove('open');
+        burger.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+      });
+    }
+  }
+
+  /* ---------- 02 · 导航栏滚动态 + 返回顶部 ---------- */
+  var siteNav = document.getElementById('siteNav');
+  var backTop = document.getElementById('backTop');
+  function onScrollState() {
+    var y = window.pageYOffset || document.documentElement.scrollTop;
+    if (siteNav) siteNav.classList.toggle('scrolled', y > 8);
+    if (backTop) backTop.classList.toggle('show', y > 640);
+  }
+  window.addEventListener('scroll', onScrollState, { passive: true });
+  onScrollState();
+  if (backTop) {
+    backTop.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+    });
+  }
+
+  /* ---------- 03 · 滚动渐入（默认可见；无 JS / 减弱动效时直接显示） ---------- */
+  var revealEls = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+  if (!('IntersectionObserver' in window) || reduced) {
+    revealEls.forEach(function (el) { el.classList.add('in'); });
+  } else {
+    var revIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('in');
+          revIO.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    revealEls.forEach(function (el) { revIO.observe(el); });
+  }
+
+  /* ---------- 04 · 数字滚动 ---------- */
+  function animateNum(el) {
+    var target = parseFloat(el.getAttribute('data-count'));
+    if (isNaN(target)) return;
+    var dec = parseInt(el.getAttribute('data-dec') || '0', 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    if (reduced) { el.textContent = target.toFixed(dec) + suffix; return; }
+    var dur = 1400, t0 = null;
+    function frame(ts) {
+      if (!t0) t0 = ts;
+      var p = Math.min((ts - t0) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);          // easeOutCubic
+      el.textContent = (target * eased).toFixed(dec) + suffix;
+      if (p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  var numEls = Array.prototype.slice.call(document.querySelectorAll('.num[data-count]'));
+  if (!('IntersectionObserver' in window)) {
+    numEls.forEach(animateNum);
+  } else {
+    var numIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          animateNum(en.target);
+          numIO.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    numEls.forEach(function (el) { numIO.observe(el); });
+  }
+
+  /* ---------- 05 · 解决方案 Tab 切换 ---------- */
+  var tabBtns = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+  tabBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var id = btn.getAttribute('data-tab');
+      tabBtns.forEach(function (b) {
+        var on = b === btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      panels.forEach(function (p) {
+        var on = p.id === id;
+        p.classList.toggle('active', on);
+        p.setAttribute('aria-hidden', on ? 'false' : 'true');
+      });
+    });
+  });
+  // Tab 键盘左右切换
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    var activeBtn = document.querySelector('.tab-btn.active');
+    if (!activeBtn) return;
+    var idx = tabBtns.indexOf(activeBtn);
+    if (idx < 0) return;
+    e.preventDefault();
+    var next = e.key === 'ArrowRight' ? (idx + 1) % tabBtns.length : (idx - 1 + tabBtns.length) % tabBtns.length;
+    tabBtns[next].click();
+    tabBtns[next].focus();
+  });
+
+  /* ---------- 06 · 导航滚动高亮（scrollspy） ---------- */
+  var spyLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
+  if ('IntersectionObserver' in window && spyLinks.length) {
+    var secMap = {};
+    spyLinks.forEach(function (a) {
+      var id = a.getAttribute('href').slice(1);
+      var sec = document.getElementById(id);
+      if (sec) secMap[id] = a;
+    });
+    var spyIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          spyLinks.forEach(function (a) { a.classList.remove('active'); });
+          var link = secMap[en.target.id];
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    Object.keys(secMap).forEach(function (id) { spyIO.observe(document.getElementById(id)); });
+  }
+
+  /* ---------- 07 · 复制邮箱 + Toast ---------- */
+  var copyBtn = document.getElementById('copyMail');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg) {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2200);
+  }
+  function copyText(txt, okMsg) {
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = txt;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast(okMsg); }
+      catch (err) { showToast('复制失败，请手动复制邮箱'); }
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function () {
+        showToast(okMsg);
+      }, fallback);
+    } else {
+      fallback();
+    }
+  }
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function () {
+      copyText('1820688914@qq.com', '✅ 邮箱已复制：1820688914@qq.com');
+    });
+  }
+
+  /* ---------- 08 · 年份（页脚按规格固定 2026，此处保留占位） ---------- */
+  // 页脚「© 2026」按站点规格固定展示，不随系统年份变化
+})();
+</script>
+</body>
+</html>

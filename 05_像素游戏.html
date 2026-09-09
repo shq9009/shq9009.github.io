@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SHAO HANQING QUEST — 邵汉青个人网站合集 05 号站点 · 8-bit 像素游戏">
+<title>SHAO HANQING QUEST · 像素游戏 · 邵汉青</title>
+<style>
+/* ============================================================
+   05 像素游戏 PIXEL QUEST — 邵汉青个人网站合集第05号站点
+   8-bit RPG 风格 · 零外部依赖 · 纯 CSS 像素画 + 原生 JS
+   调色板：#1a1c2c 深蓝底 / #ffcd75 金 / #71efb9 绿
+            #ff004d 红 / #29adff 蓝
+   ============================================================ */
+
+/* ============ 01 根变量与全局 ============ */
+:root{
+  --bg:#1a1c2c;            /* 深蓝底 */
+  --bg-2:#20233a;          /* 面板底色 */
+  --bg-3:#14162a;          /* 更深一层 */
+  --gold:#ffcd75;          /* 金 */
+  --gold-dk:#c89a3c;       /* 暗金 */
+  --green:#71efb9;         /* 绿 */
+  --red:#ff004d;           /* 红 */
+  --blue:#29adff;          /* 蓝 */
+  --white:#eaf2ff;         /* 亮字 */
+  --dim:#8b93b8;           /* 暗字 */
+  --ink:#0a0c1c;           /* 近黑描边 */
+  --font-pixel:"Courier New","Nimbus Mono PS",Consolas,Menlo,monospace;
+  --font-body:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--white);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--gold);color:var(--ink);}
+button{font-family:inherit;cursor:pointer;}
+a{color:var(--blue);text-decoration:none;}
+a:hover{color:var(--gold);}
+/* 隐藏/显示工具 */
+.hide{display:none !important;}
+
+/* ============ 02 通用像素组件 ============ */
+/* 像素标题：monospace + 多层描边阴影，模拟 8-bit 字体 */
+.px-title{
+  font-family:var(--font-pixel);
+  letter-spacing:2px;
+  text-shadow:2px 0 0 var(--ink),-2px 0 0 var(--ink),0 2px 0 var(--ink),
+              0 -2px 0 var(--ink),2px 2px 0 var(--ink),-2px -2px 0 var(--ink),
+              2px -2px 0 var(--ink),-2px 2px 0 var(--ink);
+}
+/* 像素框：多层边框，做出 8-bit 厚描边质感 */
+.pixel-box{
+  border:3px solid var(--gold);
+  box-shadow:0 0 0 3px var(--ink),0 0 0 6px #33375f,
+             inset 0 0 0 2px var(--ink);
+  background:var(--bg-2);
+}
+.pixel-box.blue{border-color:var(--blue);box-shadow:0 0 0 3px var(--ink),0 0 0 6px #243a5e,inset 0 0 0 2px var(--ink);}
+.pixel-box.green{border-color:var(--green);box-shadow:0 0 0 3px var(--ink),0 0 0 6px #1f3d35,inset 0 0 0 2px var(--ink);}
+.pixel-box.red{border-color:var(--red);box-shadow:0 0 0 3px var(--ink),0 0 0 6px #46202f,inset 0 0 0 2px var(--ink);}
+/* 像素按钮 */
+.pixel-btn{
+  font-family:var(--font-pixel);
+  background:var(--gold);
+  color:var(--ink);
+  border:3px solid var(--ink);
+  box-shadow:0 4px 0 var(--ink);
+  padding:8px 16px;
+  font-size:14px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  transition:transform .08s, box-shadow .08s;
+}
+.pixel-btn:hover{background:#ffe3a3;}
+.pixel-btn:active{transform:translateY(4px);box-shadow:0 0 0 var(--ink);}
+.pixel-btn.dark{background:var(--bg-2);color:var(--gold);box-shadow:0 4px 0 var(--ink);}
+.pixel-btn.dark:hover{background:#262a45;}
+/* 像素条（HP/MP/EXP/属性）：条纹填充 + 硬边 */
+.px-bar{
+  position:relative;
+  height:18px;
+  border:3px solid var(--ink);
+  background:#0d0f1e;
+  overflow:hidden;
+}
+.px-bar .fill{
+  position:absolute;inset:0 auto 0 0;
+  width:0%;
+  background:repeating-linear-gradient(90deg,
+    var(--green) 0 8px, #4bbd8f 8px 16px);
+  transition:width 1.2s cubic-bezier(.25,.8,.3,1);
+}
+.px-bar.red .fill{background:repeating-linear-gradient(90deg,var(--red) 0 8px,#c20038 8px 16px);}
+.px-bar.blue .fill{background:repeating-linear-gradient(90deg,var(--blue) 0 8px,#1b7fc2 8px 16px);}
+.px-bar.gold .fill{background:repeating-linear-gradient(90deg,var(--gold) 0 8px,#c89a3c 8px 16px);}
+.px-bar .bar-txt{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-pixel);
+  font-size:11px;letter-spacing:1px;
+  color:var(--white);
+  text-shadow:1px 1px 0 #000;
+  z-index:2;
+}
+/* 像素标签 */
+.px-tag{
+  display:inline-block;
+  font-family:var(--font-pixel);
+  font-size:11px;letter-spacing:1px;
+  padding:2px 8px;
+  border:2px solid var(--ink);
+  background:var(--bg-3);
+  color:var(--gold);
+}
+.px-tag.red{background:var(--red);color:var(--ink);}
+.px-tag.blue{background:var(--blue);color:var(--ink);}
+.px-tag.green{background:var(--green);color:var(--ink);}
+/* 面板小节标题 */
+.panel-h{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--font-pixel);
+  font-size:16px;letter-spacing:2px;
+  color:var(--gold);
+  margin:0 0 14px;
+}
+.panel-h::before{content:"▸ ";color:var(--blue);}
+.panel-h::after{
+  content:"";flex:1;height:3px;
+  background:repeating-linear-gradient(90deg,var(--gold) 0 8px,transparent 8px 16px);
+  opacity:.5;
+}
+/* 闪烁光标 */
+@keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+.blink{animation:blink 1s steps(1) infinite;}
+.dlg-caret{color:var(--green);animation:blink .8s steps(1) infinite;}
+
+/* ============ 03 标题屏 ============ */
+#screen-title{
+  position:fixed;inset:0;z-index:50;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:22px;
+  overflow-y:auto;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #2b2f55 0%, transparent 60%),
+    var(--bg);
+  text-align:center;
+  padding:24px;
+  cursor:pointer;
+}
+/* 标题屏四角像素括号装饰 */
+#screen-title .corner{
+  position:absolute;width:34px;height:34px;
+  border:4px solid var(--gold);opacity:.85;
+}
+#screen-title .corner.tl{top:22px;left:22px;border-right:none;border-bottom:none;}
+#screen-title .corner.tr{top:22px;right:22px;border-left:none;border-bottom:none;}
+#screen-title .corner.bl{bottom:22px;left:22px;border-right:none;border-top:none;}
+#screen-title .corner.br{bottom:22px;right:22px;border-left:none;border-top:none;}
+/* 标题屏漂浮像素星 */
+.star{
+  position:absolute;width:8px;height:8px;
+  background:var(--gold);
+  animation:floatStar 3s ease-in-out infinite;
+  opacity:.8;
+}
+@keyframes floatStar{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-14px);}
+}
+/* 大 Logo：多层错位阴影做出立体 8-bit 字 */
+#title-logo{
+  font-family:var(--font-pixel);
+  font-size:clamp(28px,6.4vw,64px);
+  font-weight:bold;
+  letter-spacing:6px;
+  color:var(--gold);
+  text-shadow:
+    0 4px 0 var(--gold-dk),
+    0 8px 0 var(--ink),
+    0 0 24px rgba(255,205,117,.35);
+  line-height:1.05;
+}
+#title-logo .sub{
+  display:block;
+  font-size:clamp(14px,2.4vw,22px);
+  letter-spacing:14px;
+  color:var(--blue);
+  text-shadow:0 3px 0 var(--ink);
+  margin-top:6px;
+}
+#title-tag{
+  font-family:var(--font-pixel);
+  font-size:13px;letter-spacing:3px;
+  color:var(--green);
+  text-shadow:1px 1px 0 #000;
+}
+#title-avatar-wrap{
+  margin:10px 0 6px;
+  height:120px;
+  display:flex;align-items:center;justify-content:center;
+  filter:drop-shadow(0 8px 0 rgba(0,0,0,.35));
+}
+#pixel-avatar{
+  width:96px;height:96px;
+  image-rendering:pixelated;
+  border:4px solid var(--ink);
+  box-shadow:0 0 0 4px var(--gold),0 8px 0 rgba(0,0,0,.35);
+  animation:avatarBob 2.4s ease-in-out infinite;
+}
+@keyframes avatarBob{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-5px);}
+}
+#sc-avatar{width:64px;height:64px;border:3px solid var(--ink);box-shadow:0 0 0 3px var(--gold);overflow:hidden}
+#pixel-avatar-sm{width:100%;height:100%;image-rendering:pixelated}
+#title-sub{
+  max-width:640px;
+  font-size:clamp(13px,2vw,16px);
+  color:var(--white);
+  text-shadow:1px 1px 0 #000;
+}
+#title-sub b{color:var(--gold);}
+#title-sub i{color:var(--blue);font-style:normal;}
+#press-enter{
+  font-family:var(--font-pixel);
+  font-size:clamp(15px,2.4vw,20px);
+  letter-spacing:5px;
+  color:var(--white);
+  text-shadow:2px 2px 0 var(--red),0 0 14px rgba(255,0,77,.55);
+  animation:blink 1.1s steps(1) infinite;
+}
+#title-hint{
+  font-family:var(--font-pixel);
+  font-size:12px;letter-spacing:2px;
+  color:var(--dim);
+}
+#title-contact{
+  font-family:var(--font-pixel);
+  font-size:12px;letter-spacing:1px;
+  color:var(--dim);
+  border-top:2px dashed #33375f;
+  padding-top:12px;
+}
+#title-contact b{color:var(--gold);font-weight:normal;}
+
+/* ============ 04 载入屏 ============ */
+#screen-loading{
+  position:fixed;inset:0;z-index:40;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:26px;
+  background:var(--bg);
+  text-align:center;
+}
+#loading-logo{
+  font-family:var(--font-pixel);
+  font-size:clamp(20px,4vw,36px);
+  letter-spacing:4px;
+  color:var(--blue);
+  text-shadow:0 4px 0 var(--ink);
+}
+#loading-bar-wrap{width:min(480px,80vw);}
+#loading-bar{
+  height:26px;
+  border:4px solid var(--ink);
+  background:#0d0f1e;
+  padding:3px;
+  box-shadow:0 0 0 3px #33375f;
+}
+#loading-fill{
+  height:100%;width:0%;
+  background:repeating-linear-gradient(90deg,var(--blue) 0 10px,#1b7fc2 10px 20px);
+  transition:width .32s linear;
+}
+#loading-text{
+  font-family:var(--font-pixel);
+  font-size:13px;letter-spacing:2px;
+  color:var(--green);
+  min-height:20px;
+}
+#loading-pct{
+  font-family:var(--font-pixel);
+  font-size:22px;color:var(--gold);
+  text-shadow:2px 2px 0 var(--ink);
+}
+
+/* ============ 05 游戏屏：棋盘网格背景 + 扫描线 ============ */
+#screen-game{
+  position:relative;z-index:10;
+  min-height:100vh;
+  background-color:var(--bg);
+  /* 棋盘网格背景 */
+  background-image:conic-gradient(from 0deg,
+      #20233a 25%, var(--bg) 0 50%, #20233a 0 75%, var(--bg) 0);
+  background-size:34px 34px;
+  padding:18px 16px 40px;
+}
+/* CRT 扫描线 */
+#screen-game::after{
+  content:"";
+  position:fixed;inset:0;z-index:900;pointer-events:none;
+  background:repeating-linear-gradient(0deg,
+    rgba(0,0,0,.06) 0 1px, transparent 1px 3px);
+}
+#screen-game::before{
+  content:"";position:fixed;inset:0;z-index:901;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.25) 100%);
+}
+.game-shell{
+  position:relative;z-index:10;
+  max-width:1200px;margin:0 auto;
+  display:flex;flex-direction:column;gap:16px;
+}
+
+/* ============ 06 HUD 顶栏 ============ */
+#hud{
+  display:flex;align-items:center;flex-wrap:wrap;gap:14px;
+  padding:12px 16px;
+}
+#hud-logo{
+  font-family:var(--font-pixel);
+  font-size:15px;letter-spacing:2px;
+  color:var(--gold);
+  text-shadow:2px 2px 0 var(--ink);
+  margin-right:auto;
+}
+#hud-logo small{display:block;font-size:10px;letter-spacing:4px;color:var(--dim);}
+.hud-chip{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 12px;
+  border:3px solid var(--ink);
+  background:var(--bg-2);
+  box-shadow:0 3px 0 var(--ink);
+  font-family:var(--font-pixel);
+  font-size:13px;
+}
+.hud-chip .c-icon{font-size:16px;}
+.hud-chip .c-val{color:var(--gold);letter-spacing:1px;}
+.hud-chip .c-val.blue{color:var(--blue);}
+#hud-exp{
+  min-width:200px;
+}
+#hud-exp .px-bar{height:16px;}
+#hud-exp .bar-txt{font-size:10px;}
+#hud-lv{
+  border:3px solid var(--ink);
+  background:var(--red);
+  color:var(--ink);
+  font-family:var(--font-pixel);
+  font-size:13px;letter-spacing:1px;
+  padding:6px 10px;
+  box-shadow:0 3px 0 var(--ink);
+}
+
+/* ============ 07 主布局网格 ============ */
+#game-layout{
+  display:grid;
+  grid-template-columns:310px minmax(0,1fr);
+  gap:16px;
+  align-items:start;
+}
+#right-col{
+  display:flex;flex-direction:column;gap:16px;
+  min-width:0;
+}
+
+/* ============ 08 左侧状态卡 ============ */
+#status-card{padding:18px 16px;display:flex;flex-direction:column;gap:14px;}
+.sc-head{
+  display:flex;align-items:center;gap:12px;
+  border-bottom:3px dashed #33375f;
+  padding-bottom:12px;
+}
+#sc-avatar{
+  flex:0 0 auto;
+  background:repeating-linear-gradient(0deg,#14162a 0 10px,#181a30 10px 20px);
+  border:3px solid var(--ink);
+  box-shadow:0 0 0 3px var(--gold);
+  padding:10px;
+}
+#sc-name{
+  font-family:var(--font-pixel);
+  font-size:19px;letter-spacing:2px;
+  color:var(--gold);
+  text-shadow:2px 2px 0 var(--ink);
+}
+#sc-title{
+  font-size:12px;color:var(--dim);margin-top:4px;
+}
+#sc-title b{color:var(--green);}
+.sc-block h4{
+  font-family:var(--font-pixel);
+  font-size:12px;letter-spacing:2px;
+  color:var(--blue);
+  margin-bottom:6px;
+}
+.sc-block h4::before{content:"▸ ";}
+.bar-row{display:flex;align-items:center;gap:8px;margin:6px 0;}
+.bar-row .b-label{
+  flex:0 0 46px;font-family:var(--font-pixel);
+  font-size:11px;color:var(--white);letter-spacing:1px;
+}
+.bar-row .px-bar{flex:1;height:15px;}
+.bar-row .b-val{
+  flex:0 0 34px;text-align:right;
+  font-family:var(--font-pixel);font-size:11px;color:var(--gold);
+}
+/* 智力改为技能格：8 个小方块 */
+#int-pips{display:flex;gap:4px;flex:1;}
+#int-pips .pip{
+  width:13px;height:13px;border:2px solid var(--ink);
+  background:var(--blue);
+  opacity:0;
+  transform:scale(0);
+}
+#int-pips .pip.on{animation:pipIn .3s forwards;}
+@keyframes pipIn{to{opacity:1;transform:scale(1);}}
+.sc-meta{
+  font-size:12px;color:var(--dim);
+  border-top:2px dashed #33375f;
+  padding-top:10px;
+  display:flex;flex-direction:column;gap:3px;
+}
+.sc-meta b{color:var(--white);font-weight:normal;}
+.sc-meta .g{color:var(--gold);}
+.sc-meta .b{color:var(--blue);}
+
+/* ============ 09 菜单 ============ */
+#menu{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.menu-item{
+  position:relative;
+  display:flex;align-items:center;gap:8px;
+  padding:12px 10px;
+  border:3px solid var(--ink);
+  background:var(--bg-2);
+  box-shadow:0 4px 0 var(--ink);
+  color:var(--white);
+  text-align:left;
+  transition:transform .1s, background .15s;
+}
+.menu-item .mi-cursor{
+  flex:0 0 auto;
+  color:var(--green);
+  font-size:14px;
+  opacity:0;
+}
+.menu-item .mi-icon{font-size:20px;flex:0 0 auto;}
+.menu-item .mi-txt{display:flex;flex-direction:column;line-height:1.25;}
+.menu-item .mi-name{font-size:14px;letter-spacing:1px;}
+.menu-item .mi-en{
+  font-family:var(--font-pixel);
+  font-size:10px;letter-spacing:1px;color:var(--dim);
+}
+.menu-item:hover{background:#262a45;transform:translateY(-2px);}
+/* 选中态：金框 + 光标闪烁 + 呼吸发光 */
+.menu-item.sel{
+  border-color:var(--gold);
+  background:#2c304f;
+  box-shadow:0 4px 0 var(--ink),0 0 14px rgba(255,205,117,.25);
+  animation:selPulse 1.6s ease-in-out infinite;
+}
+@keyframes selPulse{
+  0%,100%{box-shadow:0 4px 0 var(--ink),0 0 10px rgba(255,205,117,.18);}
+  50%{box-shadow:0 4px 0 var(--ink),0 0 20px rgba(255,205,117,.42);}
+}
+.menu-item.sel .mi-cursor{opacity:1;animation:blink .7s steps(1) infinite;}
+.menu-item.sel .mi-name{color:var(--gold);}
+.menu-item.sel .mi-en{color:var(--blue);}
+/* 按键缩放动画（JS 添加 .pressed） */
+.menu-item.pressed{transform:scale(.94);}
+#menu-hint{
+  font-family:var(--font-pixel);
+  font-size:11px;letter-spacing:1px;
+  color:var(--dim);
+  text-align:center;
+  padding:2px 0;
+}
+
+/* ============ 10 面板通用 ============ */
+#panel{
+  border:3px solid var(--gold);
+  box-shadow:0 0 0 3px var(--ink),0 0 0 6px #33375f,
+             inset 0 0 0 2px var(--ink),
+             0 8px 0 rgba(0,0,0,.35);
+  background:var(--bg-2);
+  min-height:420px;
+  position:relative;
+}
+#panel-head{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;
+  border-bottom:3px solid var(--ink);
+  background:repeating-linear-gradient(90deg,#2c304f 0 16px,#262a45 16px 32px);
+}
+#panel-head .ph-cursor{color:var(--green);font-family:var(--font-pixel);font-size:16px;animation:blink .7s steps(1) infinite;}
+#panel-head .ph-name{font-family:var(--font-pixel);font-size:16px;letter-spacing:3px;color:var(--gold);}
+#panel-head .ph-en{font-family:var(--font-pixel);font-size:10px;letter-spacing:2px;color:var(--dim);margin-left:auto;}
+#panel-body{padding:18px 16px 22px;max-height:720px;overflow-y:auto;}
+#panel-body::-webkit-scrollbar{width:12px;}
+#panel-body::-webkit-scrollbar-track{background:var(--bg-3);border:2px solid var(--ink);}
+#panel-body::-webkit-scrollbar-thumb{background:var(--gold);border:2px solid var(--ink);}
+.panel-page{display:none;}
+.panel-page.active{display:block;animation:pageIn .25s ease both;}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+/* 未选择菜单时的待机画面 */
+#panel-idle{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:360px;gap:14px;text-align:center;
+}
+#panel-idle .pi-icon{font-size:46px;animation:avatarBob 2s ease-in-out infinite;}
+#panel-idle .pi-txt{font-family:var(--font-pixel);font-size:14px;letter-spacing:3px;color:var(--dim);}
+#panel-idle .pi-txt b{color:var(--gold);animation:blink .9s steps(1) infinite;}
+
+/* ============ 11 STATS 面板：对话 / 信息 / 阵营 / 成就 ============ */
+/* 对话打字机框 */
+.dlg-box{
+  border:3px solid var(--ink);
+  background:#0d0f1e;
+  box-shadow:0 0 0 3px var(--green),inset 0 0 0 2px var(--ink);
+  padding:12px 14px;
+  margin-bottom:16px;
+}
+.dlg-name{
+  font-family:var(--font-pixel);
+  font-size:12px;letter-spacing:2px;
+  color:var(--green);
+  margin-bottom:6px;
+}
+.dlg-text{
+  min-height:48px;
+  font-size:15px;color:var(--white);
+}
+.dlg-next{
+  margin-top:8px;
+  font-family:var(--font-pixel);font-size:12px;
+  color:var(--blue);background:none;border:none;letter-spacing:2px;
+}
+.dlg-next:hover{color:var(--gold);}
+.dlg-next:disabled{color:var(--dim);cursor:default;}
+/* 角色信息网格 */
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  margin-bottom:16px;
+}
+.info-cell{
+  border:2px solid #33375f;
+  background:var(--bg-3);
+  padding:8px 10px;
+  font-size:13px;
+}
+.info-cell .k{
+  display:block;
+  font-family:var(--font-pixel);
+  font-size:10px;letter-spacing:2px;
+  color:var(--blue);
+  margin-bottom:2px;
+}
+.info-cell .v{color:var(--white);}
+.info-cell .v.gold{color:var(--gold);}
+.info-cell.full{grid-column:1 / -1;}
+/* 阵营卡 */
+.guild-box{
+  border:3px solid var(--ink);
+  background:repeating-linear-gradient(90deg,#3a1220 0 20px,#32101c 20px 40px);
+  box-shadow:0 0 0 3px var(--red);
+  padding:12px 14px;
+  margin-bottom:16px;
+}
+.guild-box .g-name{font-family:var(--font-pixel);font-size:15px;letter-spacing:2px;color:var(--red);text-shadow:1px 1px 0 #000;}
+.guild-box .g-line{font-size:12px;color:var(--white);margin-top:4px;display:flex;flex-wrap:wrap;gap:6px;}
+.guild-box .g-line .px-tag{font-size:10px;}
+/* 成就徽章墙 */
+.badge-wall{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.badge{
+  position:relative;
+  border:3px solid var(--ink);
+  background:var(--bg-3);
+  box-shadow:0 0 0 2px var(--gold);
+  padding:12px 8px 10px;
+  text-align:center;
+  opacity:0;
+}
+.badge.in{animation:popIn .4s cubic-bezier(.2,1.6,.4,1) both;}
+@keyframes popIn{
+  0%{opacity:0;transform:scale(.4) rotate(-6deg);}
+  70%{opacity:1;transform:scale(1.06) rotate(1deg);}
+  100%{opacity:1;transform:scale(1) rotate(0);}
+}
+.badge .b-ico{font-size:24px;display:block;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.5));}
+.badge .b-num{
+  display:block;font-family:var(--font-pixel);
+  font-size:15px;letter-spacing:1px;color:var(--gold);
+  margin-top:4px;
+}
+.badge .b-label{display:block;font-size:11px;color:var(--dim);margin-top:2px;line-height:1.3;}
+.badge .b-ok{
+  position:absolute;top:-10px;right:-8px;
+  width:22px;height:22px;
+  background:var(--green);color:var(--ink);
+  border:2px solid var(--ink);
+  font-size:12px;line-height:18px;
+  font-weight:bold;
+}
+
+/* ============ 12 SKILLS 面板：技能树 ============ */
+#skills-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+.skill-cell{
+  position:relative;
+  border:3px solid var(--ink);
+  background:var(--bg-3);
+  box-shadow:0 0 0 2px var(--blue);
+  padding:14px 10px;
+  text-align:center;
+  transition:transform .15s, box-shadow .15s;
+}
+.skill-cell:hover{transform:translateY(-4px);box-shadow:0 0 0 2px var(--blue),0 6px 0 rgba(0,0,0,.35);}
+.skill-cell .sk-ico{font-size:28px;display:block;}
+.skill-cell .sk-name{display:block;font-size:14px;letter-spacing:1px;color:var(--white);margin-top:6px;}
+.skill-cell .sk-en{display:block;font-family:var(--font-pixel);font-size:9px;letter-spacing:1px;color:var(--dim);margin-top:2px;}
+.skill-cell .sk-type{
+  display:inline-block;margin-top:8px;
+  font-family:var(--font-pixel);font-size:10px;letter-spacing:1px;
+  padding:2px 8px;border:2px solid var(--ink);
+}
+.skill-cell .sk-type.active{background:var(--blue);color:var(--ink);}
+.skill-cell .sk-type.passive{background:var(--green);color:var(--ink);}
+.skill-cell .sk-type.combo{background:var(--gold);color:var(--ink);}
+.skill-cell .sk-desc{display:block;font-size:11px;color:var(--dim);margin-top:8px;line-height:1.5;}
+.skill-cell .sk-learned{
+  position:absolute;top:-10px;left:-8px;
+  font-family:var(--font-pixel);font-size:10px;
+  background:var(--green);color:var(--ink);
+  border:2px solid var(--ink);padding:1px 5px;
+}
+#skills-note{
+  margin-top:14px;
+  font-family:var(--font-pixel);font-size:12px;letter-spacing:1px;
+  color:var(--dim);border:2px dashed #33375f;padding:10px;text-align:center;
+}
+#skills-note b{color:var(--gold);}
+
+/* ============ 13 STORY 面板：主线任务列表 ============ */
+.quest{
+  position:relative;
+  border:3px solid var(--ink);
+  background:var(--bg-3);
+  box-shadow:0 0 0 3px #33375f;
+  margin-bottom:14px;
+  padding:12px 14px;
+}
+.quest.current{box-shadow:0 0 0 3px var(--gold),0 0 16px rgba(255,205,117,.25);}
+.q-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.q-no{
+  font-family:var(--font-pixel);font-size:11px;letter-spacing:1px;
+  background:var(--blue);color:var(--ink);
+  border:2px solid var(--ink);padding:2px 8px;
+}
+.q-name{font-size:16px;letter-spacing:1px;color:var(--white);}
+.quest.current .q-name{color:var(--gold);}
+.q-status{
+  margin-left:auto;
+  font-family:var(--font-pixel);font-size:11px;letter-spacing:1px;
+  padding:2px 8px;border:2px solid var(--ink);
+}
+.q-status.done{background:var(--green);color:var(--ink);}
+.q-status.ongoing{background:var(--red);color:var(--ink);animation:blink 1.2s steps(1) infinite;}
+.q-meta{
+  margin-top:8px;
+  font-family:var(--font-pixel);font-size:11px;letter-spacing:1px;
+  color:var(--dim);
+  border-top:2px dashed #33375f;padding-top:8px;
+  display:flex;flex-wrap:wrap;gap:4px 14px;
+}
+.q-meta b{color:var(--white);font-weight:normal;}
+.q-body{margin-top:8px;font-size:13px;color:var(--white);line-height:1.7;}
+.q-rewards{margin-top:8px;list-style:none;display:flex;flex-wrap:wrap;gap:6px;}
+.q-rewards li{
+  font-family:var(--font-pixel);font-size:11px;letter-spacing:1px;
+  color:var(--gold);border:2px solid var(--ink);
+  background:#0d0f1e;padding:3px 8px;
+}
+.quest.current .q-rewards li{color:var(--green);}
+#story-legend{
+  display:flex;gap:16px;justify-content:center;
+  font-family:var(--font-pixel);font-size:11px;letter-spacing:1px;
+  color:var(--dim);margin-top:4px;
+}
+
+/* ============ 14 PROJECTS 面板：装备栏 ============ */
+#gear-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.gear{
+  border:3px solid var(--ink);
+  background:var(--bg-3);
+  padding:14px;
+  position:relative;
+  transition:transform .15s;
+}
+.gear:hover{transform:translateY(-4px);}
+.gear.ssr{box-shadow:0 0 0 3px var(--gold),0 0 18px rgba(255,205,117,.18);}
+.gear.sr{box-shadow:0 0 0 3px var(--blue),0 0 14px rgba(41,173,255,.14);}
+.g-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.g-rarity{
+  font-family:var(--font-pixel);font-size:11px;letter-spacing:1px;
+  padding:2px 8px;border:2px solid var(--ink);
+}
+.gear.ssr .g-rarity{background:var(--gold);color:var(--ink);}
+.gear.sr .g-rarity{background:var(--blue);color:var(--ink);}
+.g-level{font-family:var(--font-pixel);font-size:10px;letter-spacing:1px;color:var(--dim);}
+.gear h3{font-size:15px;letter-spacing:1px;color:var(--white);margin-bottom:6px;}
+.gear.ssr h3{color:var(--gold);}
+.gear.sr h3{color:var(--blue);}
+.gear .g-desc{font-size:12.5px;color:var(--white);line-height:1.7;}
+.gear .g-desc i{color:var(--green);font-style:normal;}
+.gear .g-stats{
+  margin-top:10px;
+  border-top:2px dashed #33375f;padding-top:8px;
+  font-family:var(--font-pixel);font-size:11px;letter-spacing:1px;
+  color:var(--dim);
+  display:flex;flex-wrap:wrap;gap:4px 12px;
+}
+.gear .g-stats b{color:var(--gold);font-weight:normal;}
+.gear .g-skills{
+  margin-top:8px;
+  display:flex;flex-wrap:wrap;gap:4px;
+}
+.gear .g-skills span{
+  font-family:var(--font-pixel);font-size:9px;letter-spacing:.5px;
+  color:var(--blue);border:1px solid #33375f;
+  padding:1px 5px;
+}
+
+/* ============ 15 ROADMAP 面板：关卡预告 ============ */
+#stage-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;}
+.stage{
+  border:3px solid var(--ink);
+  background:var(--bg-3);
+  box-shadow:0 0 0 3px #33375f;
+  padding:14px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.stage.lock{box-shadow:0 0 0 3px var(--green);}
+.stage.next{box-shadow:0 0 0 3px var(--blue),0 0 16px rgba(41,173,255,.22);}
+.st-head{display:flex;align-items:center;justify-content:space-between;}
+.st-lv{
+  font-family:var(--font-pixel);font-size:11px;letter-spacing:1px;
+  padding:2px 8px;border:2px solid var(--ink);
+}
+.stage.next .st-lv{background:var(--blue);color:var(--ink);animation:blink 1.4s steps(1) infinite;}
+.stage.lock .st-lv{background:var(--green);color:var(--ink);}
+.st-year{font-family:var(--font-pixel);font-size:22px;color:var(--gold);text-shadow:2px 2px 0 var(--ink);}
+.stage h3{font-size:15px;letter-spacing:2px;}
+.stage.next h3{color:var(--blue);}
+.stage.lock h3{color:var(--green);}
+.stage .st-desc{font-size:12.5px;color:var(--white);line-height:1.7;}
+.stage .st-desc b{color:var(--gold);}
+.boss-list{
+  font-size:12px;color:var(--dim);
+  border:2px dashed #33375f;background:#0d0f1e;
+  padding:7px 9px;line-height:1.6;
+}
+.boss-list .bl-k{display:block;font-family:var(--font-pixel);font-size:10px;letter-spacing:2px;color:var(--red);margin-bottom:2px;}
+.boss-list.alt .bl-k{color:var(--blue);}
+.boss-list.alt2 .bl-k{color:var(--green);}
+.boss-list b{color:var(--white);font-weight:normal;}
+/* 四行心法卷轴 */
+.scroll{
+  border:3px solid var(--ink);
+  background:repeating-linear-gradient(90deg,#2a1d0e 0 22px,#24190c 22px 44px);
+  box-shadow:0 0 0 3px var(--gold);
+  padding:16px 20px;
+  position:relative;
+}
+.scroll .sc-title{
+  font-family:var(--font-pixel);font-size:13px;letter-spacing:3px;
+  color:var(--gold);margin-bottom:10px;
+}
+.scroll .sc-title span{color:var(--dim);font-size:10px;letter-spacing:2px;margin-left:8px;}
+.scroll p{
+  font-size:14px;letter-spacing:1px;
+  color:var(--white);
+  padding:5px 0;
+  border-bottom:1px dashed #5a4a2a;
+}
+.scroll p:last-child{border-bottom:none;}
+.scroll p b{color:var(--gold);}
+.scroll p i{color:var(--green);font-style:normal;}
+
+/* ============ 16 CONTACT 面板：商店界面 ============ */
+#shop-line{
+  font-family:var(--font-pixel);font-size:12px;letter-spacing:1px;
+  color:var(--dim);border:2px dashed #33375f;
+  background:#0d0f1e;padding:10px 12px;margin-bottom:14px;
+}
+#shop-line b{color:var(--gold);}
+#shop-list{display:flex;flex-direction:column;gap:12px;}
+.shop-item{
+  display:flex;align-items:center;gap:14px;
+  border:3px solid var(--ink);
+  background:var(--bg-3);
+  box-shadow:0 0 0 3px #33375f;
+  padding:12px 14px;
+  flex-wrap:wrap;
+}
+.shop-item .s-ico{font-size:30px;flex:0 0 auto;}
+.shop-item .s-info{flex:1;min-width:180px;}
+.shop-item .s-name{font-size:14px;letter-spacing:1px;color:var(--white);}
+.shop-item .s-name em{font-style:normal;color:var(--dim);font-size:12px;}
+.shop-item .s-val{
+  font-family:var(--font-pixel);font-size:13px;letter-spacing:1px;
+  color:var(--gold);margin-top:2px;
+}
+.shop-item .s-val.mail{color:var(--blue);}
+.shop-item .s-price{
+  font-family:var(--font-pixel);font-size:11px;letter-spacing:1px;
+  color:var(--green);
+}
+.shop-item .s-act{flex:0 0 auto;}
+.shop-item .s-act .pixel-btn{font-size:12px;padding:6px 12px;}
+.shop-item .s-act .unlocked{
+  font-family:var(--font-pixel);font-size:11px;letter-spacing:1px;
+  color:var(--dim);border:2px solid #33375f;padding:6px 10px;
+  background:transparent;
+}
+#shop-total{
+  margin-top:14px;text-align:right;
+  font-family:var(--font-pixel);font-size:13px;letter-spacing:1px;
+  color:var(--white);
+}
+#shop-total b{color:var(--gold);}
+
+/* ============ 17 页脚 ============ */
+#site-footer{
+  text-align:center;
+  padding:18px 12px 8px;
+  font-family:var(--font-pixel);
+  font-size:12px;letter-spacing:1px;
+  color:var(--dim);
+  border-top:3px solid #33375f;
+}
+#site-footer .f-copy{color:var(--gold);}
+#site-footer a{
+  color:var(--blue);
+  text-decoration:none;
+  border:2px solid var(--blue);
+  padding:2px 10px;
+  margin-left:6px;
+  display:inline-block;
+  transition:all .15s;
+}
+#site-footer a:hover{background:var(--blue);color:var(--ink);}
+#site-footer .f-sub{display:block;margin-top:6px;font-size:10px;color:#8f97bd;}
+
+/* ============ 18 Toast 提示 ============ */
+#toast{
+  position:fixed;left:50%;bottom:34px;z-index:950;
+  transform:translateX(-50%) translateY(30px);
+  font-family:var(--font-pixel);font-size:13px;letter-spacing:1px;
+  background:var(--green);color:var(--ink);
+  border:3px solid var(--ink);
+  box-shadow:0 4px 0 var(--ink),0 0 20px rgba(113,239,185,.4);
+  padding:10px 18px;
+  opacity:0;pointer-events:none;
+  transition:transform .25s, opacity .25s;
+  max-width:88vw;
+  text-align:center;
+}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* ============ 19 其他动画 ============ */
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  25%{transform:translateX(-4px);}
+  75%{transform:translateX(4px);}
+}
+.shake{animation:shake .3s linear;}
+
+/* ============ 20 响应式（≤768px 手机） ============ */
+@media (max-width:768px){
+  #game-layout{grid-template-columns:1fr;}
+  /* 状态卡堆叠：头像在上、数据在下 */
+  #status-card{flex-direction:column;}
+  #menu{grid-template-columns:repeat(2,1fr);}
+  .info-grid{grid-template-columns:1fr;}
+  .badge-wall{grid-template-columns:repeat(2,1fr);}
+  #skills-grid{grid-template-columns:repeat(2,1fr);}
+  #gear-grid{grid-template-columns:1fr;}
+  #stage-grid{grid-template-columns:1fr;}
+  #hud{gap:10px;}
+  #hud-logo{margin-right:0;width:100%;}
+  #hud-exp{min-width:200px;}
+  #hud-exp .bar-txt{font-size:9px;white-space:nowrap;}
+  #panel-body{max-height:none;}
+  #title-contact{font-size:12px;}
+  /* 移动端次要文字放大，保证可读 */
+  .sk-en,.mi-en,.g-skills span,.info-cell .k{font-size:11px;}
+  .g-desc,.st-desc,.q-body,.sc-meta,.boss-list,.skill-cell .sk-desc{font-size:13px;}
+  .shop-item .s-act{width:100%;}
+  .shop-item .s-act .pixel-btn{width:100%;}
+}
+@media (max-width:420px){
+  #menu{grid-template-columns:1fr;}
+  .badge-wall{grid-template-columns:1fr;}
+  #skills-grid{grid-template-columns:1fr;}
+}
+/* 769–1024px 中宽屏：多列网格收拢，避免单元格过挤 */
+@media (max-width:1024px){
+  #skills-grid,#badge-wall{grid-template-columns:repeat(2,1fr);}
+  #stage-grid{grid-template-columns:1fr;}
+}
+/* 矮视口（如 iframe 预览）：标题屏内容压缩，避免裁切 */
+@media (max-height:640px){
+  #screen-title{gap:12px;padding:14px;}
+  #title-avatar-wrap{height:96px;}
+  #pixel-avatar{width:72px;height:72px;}
+}
+</style>
+<noscript><style>
+  #screen-game{display:block !important}
+  #screen-title,#screen-loading{display:none !important}
+  .badge,.pip{opacity:1 !important}
+</style></noscript>
+</head>
+<body>
+
+<!-- ============================================================
+     标题屏 TITLE SCREEN
+     ============================================================ -->
+<section id="screen-title">
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+  <div class="star" style="top:18%;left:12%;animation-delay:.2s"></div>
+  <div class="star" style="top:70%;left:86%;animation-delay:.8s;background:var(--blue)"></div>
+  <div class="star" style="top:26%;left:80%;animation-delay:1.4s;background:var(--green)"></div>
+  <div class="star" style="top:64%;left:10%;animation-delay:2s"></div>
+  <div id="title-logo">
+    SHAO HANQING
+    <span class="sub">QUEST</span>
+  </div>
+  <div id="title-tag">★ 8-BIT ADVENTURE · 像素冒险 · 05 号站点 ★</div>
+  <div id="title-avatar-wrap">
+    <img id="pixel-avatar" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAAFk0lEQVR4nO2dS2hcVRyH7+PMM8kkjU1JrU0Vi22NUrWIQhBxYQVBqBtdaBB14U4KXSt14UaX4iLNpipKIoo0bgQ3CiIkzaPS+EobzTRprJpk0kwe987jXnH/+y9mk18Wv2/5zXBn0q93OOfec2b86emrHiL1QugDw/uBj32YQl/MBdB3tOPjZBx+ftrEx89lM9AXigXoozjCx8nloG8ar7u9ueW1Av6rxK6hAGQUgIwCkFEAMgpARgHIuIzD4+WGMc71fTxOTwzv48N49Qb2cQ0fx+Hph5fLZ6FfXa1AP/z+h9DPzS9Bf9ehA9C/9OJz0PcfOwZ9muB/CJ0BZBSAjAKQUQAyCkBGAcgoABl/9urv8IFGM4E+8Y0BuTUPMHwY4OPnjOv+bfgyvnfnwW7oz517G/qh4U+hf+LUQ9BnjT+3fV8RH//CB9CHWXxfQWcAGQUgowBkFICMApBRADIKQMalxvV6zzfaWOP60JoHWIfBDxi3Ibx6A7+fzeo29FsrK9CfGTgJ/cvPPwv9wMBj0E/MXYPeFfCEpRHXodcZQEYByCgAGQUgowBkFICMApBxnofH4+b0wBi/B8YCoMB4fmrOAxLoozp+frWKx9eDTz4MfWis968F2P/w4zj0Pcfvhz4I8A2EWg3PV3QGkFEAMgpARgHIKAAZBSCjAGScPd5v8TaBsU/YOr61/7ZYzEMfGC8c1fA8IO28A/qeorH/OcSv6/fuh77zBN4HEO/sQF/d1v2APYk+gsgoABkFIKMAZBSAjAKQcZ6xMMg3ru8by+X/v8Df0vfz3CjfgP7yxCT0a6t4nc/UzE/Qv376Ufx+Svh9btyOoW9m8Hzl8RP90Hv5Nqi3dnQ/YE+ijyAyCkBGAcgoABkFIKMAZJz1gHUdPzHWEYUBblmv1aB/5/y70M9cweP6tI6Pc7jvCPR9jzwF/W/j30Kfa8P7jUubt6CfujwD/UqC5z0nH8T7kHUGkFEAMgpARgHIKAAZBSCjAGRc6jWNh8KWvkeos6sE/ecjo9BPT+FxdO+hg9BvrK9Df+/Ro9DPzi1A//3PeFyfptif6jH2J/89Af0nX38H/ccfDUOvM4CMApBRADIKQEYByCgAGQUg41JjXVBi+MDhWwjV2xvQj458AX0mg+cZ0TZeP7MT4d/56uzqgv7XX2ahL8/j7/mpbGxC/83yIvSldjzv6e7G+wm2tvDvi+kMIKMAZBSAjAKQUQAyCkBGAcg4a+Nvs47vE5T24fUzY199Cf31639AHxq/MxxHeJ+tNV+x9hsvLpahn5wcb2k+kWnx+1DN9VTWvMp4vtglFICMApBRADIKQEYByCgAGZekzZbG138t4d/dHRq6AD1eReR5+7vxfKIe4/26UYT3B4Qh/j3k1TW8jqitrR36ZqPe0vi93sA/iFyt4vsK68b9Ep0BZBSAjAKQUQAyCkBGAcgoABnnQtwgW8DzgPfeOg/90jJeX1/I4+M8c/pp6McuXWppH3I+j/fl7mzHLT0/jq37EHgm4xyef0TGvui5a3PQ6wwgowBkFICMApBRADIKQEYByLgwg9f7j41+Bn30L15vExoLZc6efRP6f27dhH5xcR76w333QV8odkC/vLwMfRzjcXqlUoHeObyPIUmMfdQp/j/dkdW6oD2JPoLIKAAZBSCjAGQUgIwCkPFHL17Ejyxcgbqv9wD0I7Nr0J8ZfBX6m+U/oa9Wq9B3lPC+3K4uvL6oXMbfF5Qm+Pp+dRO/bi3C9xXKC/j9B8a84Y3XXsHPh1bsGgpARgHIKAAZBSCjAGQUgIyrxXhcHAR4HX0lwL/T+8LgGehTY93R8f4HoM8Y30eUGOP3ZhPvbzhyz91eK/jWxl8LY0NwkuD3E23j7zvSGUBGAcgoABkFIKMAZBSAjAJ4XP4D7iNmXYkOPzsAAAAASUVORK5CYII=" alt="邵汉青像素头像">
+  </div>
+  <p id="title-sub">
+    <b>邵汉青</b> · 10年工程机械大客户销售 × <i>AI重度实践者</i><br>
+    「既懂销售，又懂AI」— 太原重工·工程起重机分公司 业务经理 / 大客户销售<br>
+    base：河南郑州（可出差）
+  </p>
+  <div id="press-enter">▶ PRESS ENTER 开始游戏 ◀</div>
+  <p id="title-hint">或 点击任意处 · CLICK TO START</p>
+  <p id="title-contact">
+    联系方式 · <b>177-7211-8785</b> · <b>1820688914@qq.com</b>
+  </p>
+</section>
+
+<!-- ============================================================
+     载入屏 LOADING SCREEN
+     ============================================================ -->
+<section id="screen-loading" class="hide">
+  <div id="loading-logo">LOADING...</div>
+  <div id="loading-bar-wrap">
+    <div id="loading-bar"><div id="loading-fill"></div></div>
+  </div>
+  <div id="loading-pct">0%</div>
+  <div id="loading-text">读取角色数据...</div>
+</section>
+
+<!-- ============================================================
+     游戏主屏 GAME SCREEN
+     ============================================================ -->
+<section id="screen-game" class="hide">
+  <div class="game-shell">
+
+    <!-- ===== HUD 顶栏：金币 / 等级 / EXP / 意向 ===== -->
+    <header id="hud" class="pixel-box blue">
+      <div id="hud-logo">SHAO HANQING QUEST<small>PIXEL PROFILE · VER 2026</small></div>
+      <div class="hud-chip">
+        <span class="c-icon">🪙</span>
+        <span>金币</span>
+        <span class="c-val" id="hud-coins">0</span>
+      </div>
+      <div id="hud-lv">LV.10</div>
+      <div class="hud-chip" id="hud-exp">
+        <span class="c-icon">📈</span>
+        <div style="flex:1;min-width:120px">
+          <div class="px-bar gold">
+            <div class="fill" id="hud-exp-fill"></div>
+            <div class="bar-txt">EXP 78% · 重工销售熟练度</div>
+          </div>
+        </div>
+      </div>
+      <div class="hud-chip">
+        <span class="c-icon">💰</span>
+        <span>意向价值</span>
+        <span class="c-val blue">1.2亿</span>
+      </div>
+    </header>
+
+    <!-- ===== 主布局：左状态卡 + 右菜单/面板 ===== -->
+    <div id="game-layout">
+
+      <!-- ===== 左侧：像素头像 + HP/MP 状态卡 ===== -->
+      <aside id="status-card" class="pixel-box">
+        <div class="sc-head">
+          <div id="sc-avatar"><img id="pixel-avatar-sm" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAAFk0lEQVR4nO2dS2hcVRyH7+PMM8kkjU1JrU0Vi22NUrWIQhBxYQVBqBtdaBB14U4KXSt14UaX4iLNpipKIoo0bgQ3CiIkzaPS+EobzTRprJpk0kwe987jXnH/+y9mk18Wv2/5zXBn0q93OOfec2b86emrHiL1QugDw/uBj32YQl/MBdB3tOPjZBx+ftrEx89lM9AXigXoozjCx8nloG8ar7u9ueW1Av6rxK6hAGQUgIwCkFEAMgpARgHIuIzD4+WGMc71fTxOTwzv48N49Qb2cQ0fx+Hph5fLZ6FfXa1AP/z+h9DPzS9Bf9ehA9C/9OJz0PcfOwZ9muB/CJ0BZBSAjAKQUQAyCkBGAcgoABl/9urv8IFGM4E+8Y0BuTUPMHwY4OPnjOv+bfgyvnfnwW7oz517G/qh4U+hf+LUQ9BnjT+3fV8RH//CB9CHWXxfQWcAGQUgowBkFICMApBRADIKQMalxvV6zzfaWOP60JoHWIfBDxi3Ibx6A7+fzeo29FsrK9CfGTgJ/cvPPwv9wMBj0E/MXYPeFfCEpRHXodcZQEYByCgAGQUgowBkFICMApBxnofH4+b0wBi/B8YCoMB4fmrOAxLoozp+frWKx9eDTz4MfWis968F2P/w4zj0Pcfvhz4I8A2EWg3PV3QGkFEAMgpARgHIKAAZBSCjAGScPd5v8TaBsU/YOr61/7ZYzEMfGC8c1fA8IO28A/qeorH/OcSv6/fuh77zBN4HEO/sQF/d1v2APYk+gsgoABkFIKMAZBSAjAKQcZ6xMMg3ru8by+X/v8Df0vfz3CjfgP7yxCT0a6t4nc/UzE/Qv376Ufx+Svh9btyOoW9m8Hzl8RP90Hv5Nqi3dnQ/YE+ijyAyCkBGAcgoABkFIKMAZJz1gHUdPzHWEYUBblmv1aB/5/y70M9cweP6tI6Pc7jvCPR9jzwF/W/j30Kfa8P7jUubt6CfujwD/UqC5z0nH8T7kHUGkFEAMgpARgHIKAAZBSCjAGRc6jWNh8KWvkeos6sE/ecjo9BPT+FxdO+hg9BvrK9Df+/Ro9DPzi1A//3PeFyfptif6jH2J/89Af0nX38H/ccfDUOvM4CMApBRADIKQEYByCgAGQUg41JjXVBi+MDhWwjV2xvQj458AX0mg+cZ0TZeP7MT4d/56uzqgv7XX2ahL8/j7/mpbGxC/83yIvSldjzv6e7G+wm2tvDvi+kMIKMAZBSAjAKQUQAyCkBGAcg4a+Nvs47vE5T24fUzY199Cf31639AHxq/MxxHeJ+tNV+x9hsvLpahn5wcb2k+kWnx+1DN9VTWvMp4vtglFICMApBRADIKQEYByCgAGZekzZbG138t4d/dHRq6AD1eReR5+7vxfKIe4/26UYT3B4Qh/j3k1TW8jqitrR36ZqPe0vi93sA/iFyt4vsK68b9Ep0BZBSAjAKQUQAyCkBGAcgoABnnQtwgW8DzgPfeOg/90jJeX1/I4+M8c/pp6McuXWppH3I+j/fl7mzHLT0/jq37EHgm4xyef0TGvui5a3PQ6wwgowBkFICMApBRADIKQEYByLgwg9f7j41+Bn30L15vExoLZc6efRP6f27dhH5xcR76w333QV8odkC/vLwMfRzjcXqlUoHeObyPIUmMfdQp/j/dkdW6oD2JPoLIKAAZBSCjAGQUgIwCkPFHL17Ejyxcgbqv9wD0I7Nr0J8ZfBX6m+U/oa9Wq9B3lPC+3K4uvL6oXMbfF5Qm+Pp+dRO/bi3C9xXKC/j9B8a84Y3XXsHPh1bsGgpARgHIKAAZBSCjAGQUgIyrxXhcHAR4HX0lwL/T+8LgGehTY93R8f4HoM8Y30eUGOP3ZhPvbzhyz91eK/jWxl8LY0NwkuD3E23j7zvSGUBGAcgoABkFIKMAZBSAjAJ4XP4D7iNmXYkOPzsAAAAASUVORK5CYII=" alt="邵汉青像素头像"></div>
+          <div>
+            <div id="sc-name">邵汉青</div>
+            <div id="sc-title"><b>10年重工大客户销售</b> × AI重度实践者<br>「既懂销售，又懂AI」</div>
+          </div>
+        </div>
+        <div class="sc-block">
+          <h4>HP 精力</h4>
+          <div class="bar-row">
+            <div class="px-bar red">
+              <div class="fill" id="hp-fill"></div>
+              <div class="bar-txt">HP 100 / 100</div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-block">
+          <h4>MP AI能量</h4>
+          <div class="bar-row">
+            <div class="px-bar blue">
+              <div class="fill" id="mp-fill"></div>
+              <div class="bar-txt">MP 88 / 100 · 技能 8/8</div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-block">
+          <h4>能力属性（数值均为真实战绩）</h4>
+          <div class="bar-row">
+            <div class="b-label">STR 力量</div>
+            <div class="px-bar gold"><div class="fill" data-w="90"></div></div>
+            <div class="b-val">180</div>
+          </div>
+          <div class="bar-row">
+            <div class="b-label">AGI 敏捷</div>
+            <div class="px-bar gold"><div class="fill" data-w="66"></div></div>
+            <div class="b-val">132</div>
+          </div>
+          <div class="bar-row">
+            <div class="b-label">INT 智力</div>
+            <div id="int-pips"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></div>
+            <div class="b-val">8/8</div>
+          </div>
+          <div class="bar-row">
+            <div class="b-label">LUK 幸运</div>
+            <div class="px-bar gold"><div class="fill" data-w="46"></div></div>
+            <div class="b-val">92</div>
+          </div>
+          <div class="bar-row">
+            <div class="b-label">DEF 防御</div>
+            <div class="px-bar gold"><div class="fill" data-w="56"></div></div>
+            <div class="b-val">112</div>
+          </div>
+        </div>
+        <div class="sc-meta">
+          <span>📍 常驻：<b class="g">河南郑州（可出差）</b></span>
+          <span>🎂 32岁 · 已婚</span>
+          <span>🏷 座右铭：<b class="b">既懂销售，又懂AI</b></span>
+          <span>💼 现职：<b>太原重工·工程起重机分公司 业务经理 / 大客户销售</b></span>
+        </div>
+      </aside>
+
+      <!-- ===== 右侧：菜单 + 内容面板 ===== -->
+      <div id="right-col">
+        <!-- 菜单 -->
+        <nav id="menu" aria-label="游戏菜单">
+          <button class="menu-item" data-i="0">
+            <span class="mi-cursor">▶</span>
+            <span class="mi-icon">📊</span>
+            <span class="mi-txt"><span class="mi-name">人物</span><span class="mi-en">STATS</span></span>
+          </button>
+          <button class="menu-item" data-i="1">
+            <span class="mi-cursor">▶</span>
+            <span class="mi-icon">⚡</span>
+            <span class="mi-txt"><span class="mi-name">技能</span><span class="mi-en">SKILLS</span></span>
+          </button>
+          <button class="menu-item" data-i="2">
+            <span class="mi-cursor">▶</span>
+            <span class="mi-icon">📜</span>
+            <span class="mi-txt"><span class="mi-name">任务主线</span><span class="mi-en">STORY</span></span>
+          </button>
+          <button class="menu-item" data-i="3">
+            <span class="mi-cursor">▶</span>
+            <span class="mi-icon">🗡️</span>
+            <span class="mi-txt"><span class="mi-name">装备</span><span class="mi-en">PROJECTS</span></span>
+          </button>
+          <button class="menu-item" data-i="4">
+            <span class="mi-cursor">▶</span>
+            <span class="mi-icon">🗺️</span>
+            <span class="mi-txt"><span class="mi-name">地图</span><span class="mi-en">ROADMAP</span></span>
+          </button>
+          <button class="menu-item" data-i="5">
+            <span class="mi-cursor">▶</span>
+            <span class="mi-icon">🛒</span>
+            <span class="mi-txt"><span class="mi-name">联系</span><span class="mi-en">CONTACT</span></span>
+          </button>
+        </nav>
+        <p id="menu-hint">↑↓←→ 选择 · ENTER 确定 · ESC 返回 · 数字键 1-6 快捷跳转</p>
+        <!-- 面板 -->
+        <main id="panel">
+          <div id="panel-head">
+            <span class="ph-cursor">■</span>
+            <span class="ph-name" id="ph-name">人物</span>
+            <span class="ph-en" id="ph-en">STATS</span>
+          </div>
+          <div id="panel-body">
+            <!-- 待机画面 -->
+            <div id="panel-idle">
+              <div class="pi-icon">🕹️</div>
+              <div class="pi-txt"><b>▶ 请选择菜单</b><br>↑↓ 移动光标 · ENTER 进入</div>
+            </div>
+
+            <!-- ===== 面板 0：人物 STATS ===== -->
+            <div class="panel-page" id="page-0">
+              <!-- 对话打字机 -->
+              <div class="dlg-box">
+                <div class="dlg-name">▶ 汉青</div>
+                <div class="dlg-text"><span id="dlg-content"></span><span class="dlg-caret">▌</span></div>
+                <button class="dlg-next" id="dlg-next">▶ 继续</button>
+              </div>
+              <div class="panel-h">角色信息</div>
+              <div class="info-grid">
+                <div class="info-cell"><span class="k">姓名</span><span class="v gold">邵汉青（汉青）</span></div>
+                <div class="info-cell"><span class="k">等级</span><span class="v gold">LV.10 · 重工大客户销售</span></div>
+                <div class="info-cell full"><span class="k">定位</span><span class="v">10年工程机械大客户销售 × AI重度实践者 — 「既懂销售，又懂AI」</span></div>
+                <div class="info-cell full"><span class="k">现职</span><span class="v">太原重工·工程起重机分公司 业务经理 / 大客户销售（高空作业平台：剪叉 4-14m / 臂式 16-60m）</span></div>
+                <div class="info-cell"><span class="k">BASE</span><span class="v">河南郑州（可出差）</span></div>
+                <div class="info-cell"><span class="k">年龄 · 婚姻</span><span class="v">32岁 · 已婚</span></div>
+                <div class="info-cell full"><span class="k">学历</span><span class="v">本科 · 黄淮学院 · 汽车服务工程（2015-2017）；大专 · 鹤壁职业技术学院 · 汽车检测（2012-2015）</span></div>
+                <div class="info-cell"><span class="k">工龄</span><span class="v">10年重工大客户销售</span></div>
+                <div class="info-cell"><span class="k">战绩</span><span class="v gold">客户 0→180 · 意向 1.2亿 · 已完成订单 1500万</span></div>
+                <div class="info-cell full"><span class="k">履历主线</span><span class="v">宇通重工 → 三一重工 → 中联重科 → 复盛实业 → 太原重工</span></div>
+                <div class="info-cell full"><span class="k">座右铭</span><span class="v gold">既懂销售，又懂AI</span></div>
+                <div class="info-cell full"><span class="k">主战场</span><span class="v">湖北市场 · 高空作业平台 · 已完成订单 1500万</span></div>
+                <div class="info-cell full"><span class="k">学习原则</span><span class="v">结果导向 → 先模仿后创造 → 重复的事自动化 → 小步快跑</span></div>
+                <div class="info-cell full"><span class="k">沟通风格</span><span class="v">专业干练、直奔结果</span></div>
+                <div class="info-cell full"><span class="k">行动心法</span><span class="v">内推＞海投 · 卖方案不卖力气 · 攻坚大单必组队 · 赚大钱之前先站上大平台</span></div>
+              </div>
+              <div class="panel-h">当前阵营</div>
+              <div class="guild-box">
+                <div class="g-name">⚙ 太原重工 · 工程起重机分公司</div>
+                <div class="g-line">
+                  <span class="px-tag">76年底蕴</span>
+                  <span class="px-tag red">A股 600169</span>
+                  <span class="px-tag green">2025营收约103.79亿</span>
+                  <span class="px-tag">高空作业平台 · 湖北市场</span>
+                </div>
+              </div>
+              <div class="panel-h">成就徽章墙</div>
+              <div class="badge-wall">
+                <div class="badge"><span class="b-ok">✓</span><span class="b-ico">🏆</span><span class="b-num">10年</span><span class="b-label">重工大客户销售</span></div>
+                <div class="badge"><span class="b-ok">✓</span><span class="b-ico">🥇</span><span class="b-num">180+</span><span class="b-label">客户开发（三一 0→180）</span></div>
+                <div class="badge"><span class="b-ok">✓</span><span class="b-ico">📜</span><span class="b-num">35份</span><span class="b-label">独立完成标书</span></div>
+                <div class="badge"><span class="b-ok">✓</span><span class="b-ico">💰</span><span class="b-num">1.2亿</span><span class="b-label">意向价值（太重湖北）</span></div>
+                <div class="badge"><span class="b-ok">✓</span><span class="b-ico">💎</span><span class="b-num">1500万</span><span class="b-label">已完成订单</span></div>
+                <div class="badge"><span class="b-ok">✓</span><span class="b-ico">🤝</span><span class="b-num">1亿</span><span class="b-label">协助意向订单</span></div>
+                <div class="badge"><span class="b-ok">✓</span><span class="b-ico">🧩</span><span class="b-num">1400万</span><span class="b-label">协助完成订单</span></div>
+                <div class="badge"><span class="b-ok">✓</span><span class="b-ico">🗺️</span><span class="b-num">113条</span><span class="b-label">湖北客户线索</span></div>
+                <div class="badge"><span class="b-ok">✓</span><span class="b-ico">📋</span><span class="b-num">92条</span><span class="b-label">空压机报备意向</span></div>
+                <div class="badge"><span class="b-ok">✓</span><span class="b-ico">🤖</span><span class="b-num">8个</span><span class="b-label">AI定制技能</span></div>
+              </div>
+            </div>
+
+            <!-- ===== 面板 1：技能 SKILLS ===== -->
+            <div class="panel-page" id="page-1">
+              <div class="panel-h">技能树</div>
+              <div id="skills-grid">
+                <div class="skill-cell">
+                  <span class="sk-learned">已习得</span>
+                  <span class="sk-ico">👑</span>
+                  <span class="sk-name">大客户经营</span>
+                  <span class="sk-en">KEY ACCOUNT</span>
+                  <span class="sk-type passive">被动 · 核心</span>
+                  <span class="sk-desc">十年深耕工程机械大客户销售，从目标客户 40 家做到 132 家</span>
+                </div>
+                <div class="skill-cell">
+                  <span class="sk-learned">已习得</span>
+                  <span class="sk-ico">🚩</span>
+                  <span class="sk-name">区域0→1开拓</span>
+                  <span class="sk-en">TERRITORY BUILD</span>
+                  <span class="sk-type active">主动 · 开拓</span>
+                  <span class="sk-desc">独立开发河南市场，客户从 0 到 180 家，年均销售 1500 万</span>
+                </div>
+                <div class="skill-cell">
+                  <span class="sk-learned">已习得</span>
+                  <span class="sk-ico">📜</span>
+                  <span class="sk-name">招投标 / 标书</span>
+                  <span class="sk-en">TENDER</span>
+                  <span class="sk-type active">主动 · 输出</span>
+                  <span class="sk-desc">独立完成标书 35 份，协助投标 19 项</span>
+                </div>
+                <div class="skill-cell">
+                  <span class="sk-learned">已习得</span>
+                  <span class="sk-ico">💳</span>
+                  <span class="sk-name">融资租赁方案设计</span>
+                  <span class="sk-en">FINANCE PLAN</span>
+                  <span class="sk-type active">主动 · 方案</span>
+                  <span class="sk-desc">高机销售工具箱内置融资租赁方案模块，帮客户算清账</span>
+                </div>
+                <div class="skill-cell">
+                  <span class="sk-learned">已习得</span>
+                  <span class="sk-ico">🛡️</span>
+                  <span class="sk-name">应收账款风控</span>
+                  <span class="sk-en">RISK CONTROL</span>
+                  <span class="sk-type passive">被动 · 防御</span>
+                  <span class="sk-desc">主导应收账款催收与风险评估，完善客户信息 112 条</span>
+                </div>
+                <div class="skill-cell">
+                  <span class="sk-learned">已习得</span>
+                  <span class="sk-ico">🔄</span>
+                  <span class="sk-name">客户成功 / 续约</span>
+                  <span class="sk-en">CUSTOMER SUCCESS</span>
+                  <span class="sk-type passive">被动 · 运营</span>
+                  <span class="sk-desc">长期客户经营，拓展 113 条线索、新增 74 条</span>
+                </div>
+                <div class="skill-cell">
+                  <span class="sk-learned">已习得</span>
+                  <span class="sk-ico">🤖</span>
+                  <span class="sk-name">AI提效</span>
+                  <span class="sk-en">AI POWER</span>
+                  <span class="sk-type combo">组合技 · 大招</span>
+                  <span class="sk-desc">WorkBuddy 自建 8 个定制技能，把重复的事自动化</span>
+                </div>
+                <div class="skill-cell">
+                  <span class="sk-learned">已习得</span>
+                  <span class="sk-ico">📊</span>
+                  <span class="sk-name">可量化业绩</span>
+                  <span class="sk-en">DATA-DRIVEN</span>
+                  <span class="sk-type passive">被动 · 光环</span>
+                  <span class="sk-desc">每一仗都算得清：客户数、标书数、意向额、落单额全有记录</span>
+                </div>
+              </div>
+              <div id="skills-note">⚡ 技能来源：<b>WorkBuddy 8 个定制技能</b> — market-dev-kit · amap-poi-collector · customer-geo-viz · sales-lead-workbook · sales-pitch-ppt · wechat-addfriend · secure-html-deploy · industry-briefing</div>
+            </div>
+
+            <!-- ===== 面板 2：任务主线 STORY ===== -->
+            <div class="panel-page" id="page-2">
+              <div class="panel-h">主线任务列表</div>
+              <article class="quest">
+                <div class="q-head">
+                  <span class="q-no">主线任务 Ⅰ</span>
+                  <span class="q-name">「粤东拓荒」</span>
+                  <span class="q-status done">✓ 已完成</span>
+                </div>
+                <div class="q-meta">
+                  <span>🗓 <b>2017.10 - 2021.03</b></span>
+                  <span>🏭 <b>宇通重工</b></span>
+                  <span>📍 <b>粤东区域</b></span>
+                  <span>🏗 <b>旋挖钻机 / 履带吊</b></span>
+                </div>
+                <p class="q-body">目标客户从 40 家开发到 132 家；年业绩 600-1000 万；同批 60+ 新人中最早转正。</p>
+                <ul class="q-rewards">
+                  <li>⭐ 客户 40→132</li>
+                  <li>💰 年业绩 600-1000万</li>
+                  <li>🏅 同批60+新人最早转正</li>
+                </ul>
+              </article>
+              <article class="quest">
+                <div class="q-head">
+                  <span class="q-no">主线任务 Ⅱ</span>
+                  <span class="q-name">「中原破局」</span>
+                  <span class="q-status done">✓ 已完成</span>
+                </div>
+                <div class="q-meta">
+                  <span>🗓 <b>2021.04 - 2023.06</b></span>
+                  <span>🏭 <b>三一重工</b></span>
+                  <span>📍 <b>河南区域</b></span>
+                  <span>🏗 <b>旋挖钻机</b></span>
+                </div>
+                <p class="q-body">独立开发市场，客户从 0 到 180 家；年均销售 1500 万。</p>
+                <ul class="q-rewards">
+                  <li>🚩 独立开发市场</li>
+                  <li>⭐ 客户 0→180</li>
+                  <li>💰 年均销售 1500万</li>
+                </ul>
+              </article>
+              <article class="quest">
+                <div class="q-head">
+                  <span class="q-no">主线任务 Ⅲ</span>
+                  <span class="q-name">「风控清账」</span>
+                  <span class="q-status done">✓ 已完成</span>
+                </div>
+                <div class="q-meta">
+                  <span>🗓 <b>2023.07 - 2024.10</b></span>
+                  <span>🏭 <b>中联重科</b></span>
+                  <span>📍 <b>河南区域</b></span>
+                  <span>🏗 <b>旋挖钻机</b></span>
+                </div>
+                <p class="q-body">完善客户信息 112 条；主导应收账款催收与风险评估。</p>
+                <ul class="q-rewards">
+                  <li>🛡️ 完善客户信息 112条</li>
+                  <li>⚔️ 主导催收与风险评估</li>
+                </ul>
+              </article>
+              <article class="quest">
+                <div class="q-head">
+                  <span class="q-no">主线任务 Ⅳ</span>
+                  <span class="q-name">「标书快枪」</span>
+                  <span class="q-status done">✓ 已完成</span>
+                </div>
+                <div class="q-meta">
+                  <span>🗓 <b>2025.05 - 2025.12</b></span>
+                  <span>🏭 <b>复盛实业（上海）</b></span>
+                  <span>📍 <b>河南区域</b></span>
+                  <span>🏗 <b>空压机</b></span>
+                </div>
+                <p class="q-body">报备意向 92 条；独立完成标书 35 份；协助投标 19 项。</p>
+                <ul class="q-rewards">
+                  <li>📋 报备意向 92条</li>
+                  <li>📜 独立标书 35份</li>
+                  <li>🎯 协助投标 19项</li>
+                </ul>
+              </article>
+              <article class="quest current">
+                <div class="q-head">
+                  <span class="q-no">主线任务 Ⅴ</span>
+                  <span class="q-name">「江城远征」</span>
+                  <span class="q-status ongoing">⏳ 进行中</span>
+                </div>
+                <div class="q-meta">
+                  <span>🗓 <b>2025.12 - 至今</b></span>
+                  <span>🏭 <b>太原重工·工程起重机分公司</b></span>
+                  <span>📍 <b>湖北市场</b></span>
+                  <span>🏗 <b>高空作业平台</b></span>
+                </div>
+                <p class="q-body">拓展客户 113 条、新增 74 条；意向价值 1.2 亿；已完成订单 1500 万；协助意向订单 1 亿；协助完成订单 1400 万。</p>
+                <ul class="q-rewards">
+                  <li>🗺️ 拓展客户 113条 / 新增 74条</li>
+                  <li>💰 意向价值 1.2亿</li>
+                  <li>💎 已完成订单 1500万</li>
+                  <li>🤝 协助意向订单 1亿</li>
+                  <li>🧩 协助完成订单 1400万</li>
+                </ul>
+              </article>
+              <div id="story-legend">
+                <span>🟩 已完成任务</span>
+                <span>🟥 进行中任务</span>
+              </div>
+            </div>
+
+            <!-- ===== 面板 3：装备 PROJECTS ===== -->
+            <div class="panel-page" id="page-3">
+              <div class="panel-h">装备栏 · 4 件代表作</div>
+              <div id="gear-grid">
+                <article class="gear ssr">
+                  <div class="g-top">
+                    <span class="g-rarity">SSR · 神器</span>
+                    <span class="g-level">装备 01 / WORK</span>
+                  </div>
+                  <h3>📚 高机销售资料库</h3>
+                  <p class="g-desc">湖北市场开发工具箱：产品推介 / 市场开发 / 融资租赁 / 客户运营 / 行业资讯 <i>6 类归档</i>，沉淀 <i>1000+ 销售资料</i>。</p>
+                  <div class="g-stats">
+                    <span>📦 归档 <b>6类</b></span>
+                    <span>📄 资料 <b>1000+</b></span>
+                    <span>🎯 赋能 <b>湖北市场</b></span>
+                  </div>
+                </article>
+                <article class="gear ssr">
+                  <div class="g-top">
+                    <span class="g-rarity">SSR · 神器</span>
+                    <span class="g-level">装备 02 / AI</span>
+                  </div>
+                  <h3>🤖 AI技能库</h3>
+                  <p class="g-desc">WorkBuddy 上自建的 <i>8 个定制技能</i>，覆盖线索采集、客户可视化、销售执行、PPT 生成与自动化简报。</p>
+                  <div class="g-skills">
+                    <span>market-dev-kit</span><span>amap-poi-collector</span><span>customer-geo-viz</span><span>sales-lead-workbook</span><span>sales-pitch-ppt</span><span>wechat-addfriend</span><span>secure-html-deploy</span><span>industry-briefing</span>
+                  </div>
+                  <div class="g-stats">
+                    <span>🤖 技能 <b>8个</b></span>
+                    <span>📊 区域开发总入口</span>
+                    <span>🗺 客户热力作战图</span>
+                    <span>📅 简报每月5日自动</span>
+                    <span>📑 14页高转化推介PPT</span>
+                  </div>
+                </article>
+                <article class="gear sr">
+                  <div class="g-top">
+                    <span class="g-rarity">SR · 秘宝</span>
+                    <span class="g-level">装备 03 / STRATEGY</span>
+                  </div>
+                  <h3>📜 汉青职业工作台 <em>Career Workbench</em></h3>
+                  <p class="g-desc">单文件 HTML 效率应用——<i>6 大模块</i>：学习 / 积累 / 记录 / 提高 / 事项安排 / 自我进化；<i>localStorage 持久化</i> + JSON 导入导出；jsdom 功能自检 <i>10 项全 PASS</i>。</p>
+                  <div class="g-stats">
+                    <span>📚 学习</span>
+                    <span>🗂 积累</span>
+                    <span>📝 记录</span>
+                    <span>📈 提高</span>
+                    <span>🗓 事项安排</span>
+                    <span>🧬 自我进化</span>
+                    <span>💾 localStorage 持久化</span>
+                    <span>🔁 JSON 导入导出</span>
+                    <span>✅ jsdom 自检 10/10</span>
+                  </div>
+                </article>
+                <article class="gear sr">
+                  <div class="g-top">
+                    <span class="g-rarity">SR · 装备</span>
+                    <span class="g-level">装备 04 / GROWTH</span>
+                  </div>
+                  <h3>📱 微信获客助手 <em>WeChat Lead Tool</em></h3>
+                  <p class="g-desc">状态机 + CSV 备份 + 加密的单文件获客工具，按 <i>每日 25–30 条客户触达节奏</i> 的 SOP 稳定执行。</p>
+                  <div class="g-stats">
+                    <span>🔁 状态机流程</span>
+                    <span>💾 CSV 备份</span>
+                    <span>🔐 加密存储</span>
+                    <span>📈 每日 <b>25–30条</b> 触达节奏</span>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <!-- ===== 面板 4：地图 ROADMAP ===== -->
+            <div class="panel-page" id="page-4">
+              <div class="panel-h">关卡预告 · 三年行动纲领 2026-2028</div>
+              <div id="stage-grid">
+                <article class="stage next">
+                  <div class="st-head">
+                    <span class="st-lv">LEVEL 1 · 进行中</span>
+                    <span class="st-year">2026</span>
+                  </div>
+                  <h3>动身求职</h3>
+                  <p class="st-desc">下半年（8-11月）发力，<b>10月下旬-11月中旬</b>为签约窗口。</p>
+                  <div class="boss-list">
+                    <span class="bl-k">主线 BOSS · 工业互联网SaaS销售 / 客户成功</span>
+                    <b>树根互联 · 徐工汉云 · 卡奥斯 · 腾讯云工业 · 华为云</b>
+                  </div>
+                  <div class="boss-list alt">
+                    <span class="bl-k">保底支线 · 融资租赁客户经理</span>
+                    <b>远东宏信 · 平安租赁 · 厂商金融</b>
+                  </div>
+                  <div class="boss-list alt2">
+                    <span class="bl-k">近选路线 · 高机头部厂销售管理岗</span>
+                    <b>临工 / 星邦 / 鼎力</b>
+                  </div>
+                </article>
+                <article class="stage lock">
+                  <div class="st-head">
+                    <span class="st-lv">LEVEL 2 · 锁定</span>
+                    <span class="st-year">2027</span>
+                  </div>
+                  <h3>定盘</h3>
+                  <p class="st-desc"><b>名分落实，业绩年。</b>站稳平台、兑现承诺，把 1.2 亿意向变成真金白银。</p>
+                  <div class="boss-list">
+                    <span class="bl-k">通关奖励</span>
+                    <b>名分落实 · 业绩大年</b>
+                  </div>
+                </article>
+                <article class="stage lock">
+                  <div class="st-head">
+                    <span class="st-lv">LEVEL 3 · 锁定</span>
+                    <span class="st-year">2028</span>
+                  </div>
+                  <h3>上阶</h3>
+                  <p class="st-desc"><b>争取带团队。</b>从单兵作战升级为带兵打仗，复制 0→180 的开拓打法。</p>
+                  <div class="boss-list">
+                    <span class="bl-k">通关奖励</span>
+                    <b>带队权限 · 解锁</b>
+                  </div>
+                </article>
+              </div>
+              <div class="scroll">
+                <div class="sc-title">📖 四行心法 <span>SCROLL OF WISDOM</span></div>
+                <p>① <b>内推</b> ＞ 海投</p>
+                <p>② 卖<i>方案</i>，不卖力气</p>
+                <p>③ 攻坚大单，<b>必组队</b></p>
+                <p>④ 赚大钱之前，先站上<i>大平台</i></p>
+              </div>
+            </div>
+
+            <!-- ===== 面板 5：联系 CONTACT ===== -->
+            <div class="panel-page" id="page-5">
+              <div class="panel-h">商店 · 联系店主</div>
+              <div id="shop-line">🏪 <b>店主：邵汉青（汉青）</b> · 本店商品一律免费 —— 因为老板忙着赶下一单。</div>
+              <div id="shop-list">
+                <div class="shop-item">
+                  <span class="s-ico">📞</span>
+                  <div class="s-info">
+                    <div class="s-name">直拨电话 <em>DIRECT LINE</em></div>
+                    <div class="s-val">177-7211-8785</div>
+                  </div>
+                  <span class="s-price">价格：0 金币</span>
+                  <span class="s-act"><button class="pixel-btn" data-copy="177-7211-8785" data-msg="号码已复制：177-7211-8785">复制号码</button></span>
+                </div>
+                <div class="shop-item">
+                  <span class="s-ico">📧</span>
+                  <div class="s-info">
+                    <div class="s-name">电子邮箱 <em>E-MAIL</em></div>
+                    <div class="s-val mail">1820688914@qq.com</div>
+                  </div>
+                  <span class="s-price">价格：0 金币</span>
+                  <span class="s-act"><button class="pixel-btn" data-copy="1820688914@qq.com" data-msg="邮箱已复制：1820688914@qq.com">复制邮箱</button></span>
+                </div>
+                <div class="shop-item">
+                  <span class="s-ico">📍</span>
+                  <div class="s-info">
+                    <div class="s-name">常驻点位 <em>HOME BASE</em></div>
+                    <div class="s-val">河南郑州（可出差）</div>
+                  </div>
+                  <span class="s-price">价格：0 金币</span>
+                  <span class="s-act"><span class="unlocked">✓ 已解锁</span></span>
+                </div>
+                <div class="shop-item">
+                  <span class="s-ico">🏢</span>
+                  <div class="s-info">
+                    <div class="s-name">阵营信息 <em>GUILD</em></div>
+                    <div class="s-val">太原重工 · 工程起重机分公司 · A股 600169</div>
+                  </div>
+                  <span class="s-price">价格：0 金币</span>
+                  <span class="s-act"><span class="unlocked">✓ 已解锁</span></span>
+                </div>
+                <div class="shop-item">
+                  <span class="s-ico">🎯</span>
+                  <div class="s-info">
+                    <div class="s-name">当前任务 <em>ACTIVE QUEST</em></div>
+                    <div class="s-val">湖北市场 · 高空作业平台 · 已完成订单 1500万</div>
+                  </div>
+                  <span class="s-price">价格：0 金币</span>
+                  <span class="s-act"><span class="unlocked">✓ 已解锁</span></span>
+                </div>
+              </div>
+              <div id="shop-total">合计：<b>0 金币</b> · 满 0 金币包邮到家 🚚</div>
+            </div>
+          </div><!-- /panel-body -->
+        </main>
+      </div><!-- /right-col -->
+    </div><!-- /game-layout -->
+
+    <!-- ===== 页脚 ===== -->
+    <footer id="site-footer">
+      <span class="f-copy">© 2026 邵汉青</span> · 个人网站合集
+      <a href="index.html">返回总览</a>
+      <span class="f-sub">SITE 05 / 10 · PIXEL QUEST · 8-BIT ADVENTURE</span>
+    </footer>
+  </div><!-- /game-shell -->
+</section>
+<!-- Toast -->
+<div id="toast"></div>
+<script>
+"use strict";
+/* ============================================================
+   05 像素游戏 — 脚本区（原生 JS，零依赖）
+   1. 像素头像生成（16x16 位图 → box-shadow 技法）
+   2. 标题屏 → 载入屏 → 主界面 状态机
+   3. 键盘 / 鼠标双操作菜单
+   4. 对话打字机 / 金币计数 / 进度条动画
+   5. 剪贴板复制与 Toast 反馈
+   ============================================================ */
+
+/* ---------- 1. 像素头像：16x16 像素阵 ----------
+   字符图例：h=金发(#ffcd75) s=皮肤(#ffb380) e=眼睛(#1a1c2c)
+            m=嘴(#c2403c) g=金饰(#ffcd75) r=红袍(#ff004d) .=透明 */
+/* 头像已替换为真实像素化照片 */
+
+
+/* ---------- 2. 全局状态与元素引用 ---------- */
+var state = { screen: "title", menu: 0, open: true };
+var $ = function (id) { return document.getElementById(id); };
+var els = {
+  title: $("screen-title"),
+  loading: $("screen-loading"),
+  game: $("screen-game"),
+  coins: $("hud-coins"),
+  expFill: $("hud-exp-fill"),
+  hpFill: $("hp-fill"),
+  mpFill: $("mp-fill"),
+  dlgContent: $("dlg-content"),
+  dlgNext: $("dlg-next"),
+  phName: $("ph-name"),
+  phEn: $("ph-en"),
+  toast: $("toast")
+};
+var MENU = [
+  { name: "人物", en: "STATS" },
+  { name: "技能", en: "SKILLS" },
+  { name: "任务主线", en: "STORY" },
+  { name: "装备", en: "PROJECTS" },
+  { name: "地图", en: "ROADMAP" },
+  { name: "联系", en: "CONTACT" }
+];
+var DIALOG_LINES = [
+  "既懂销售，又懂AI——我是邵汉青，请多指教。",
+  "10年重工大客户销售，从宇通到太原重工，战绩可查。",
+  "2026 正在动身求职：工业互联网SaaS / 客户成功 / 融资租赁，欢迎来聊。"
+];
+var dlgIdx = 0, dlgTimer = null, typing = false;
+var coinsDone = false;
+
+/* ---------- 3. 标题屏 → 载入屏 → 主界面 ---------- */
+function startGame() {
+  if (state.screen !== "title") return;
+  state.screen = "loading";
+  els.title.classList.add("hide");
+  els.loading.classList.remove("hide");
+  var steps = [
+    "读取角色数据...",
+    "加载技能树...",
+    "同步主线任务...",
+    "装备栏校验...",
+    "导入地图数据...",
+    "商店开门营业...",
+    "任务完成！进入游戏！"
+  ];
+  var i = 0;
+  var pct = $("loading-pct"), fill = $("loading-fill"), txt = $("loading-text");
+  pct.textContent = "0%";
+  fill.style.width = "0%";
+  var iv = setInterval(function () {
+    i++;
+    var p = Math.round((i / steps.length) * 100);
+    pct.textContent = p + "%";
+    fill.style.width = p + "%";
+    txt.textContent = steps[Math.min(i - 1, steps.length - 1)];
+    if (i >= steps.length) {
+      clearInterval(iv);
+      setTimeout(showGame, 320);
+    }
+  }, 300);
+}
+function showGame() {
+  state.screen = "game";
+  els.loading.classList.add("hide");
+  els.game.classList.remove("hide");
+  /* 顶栏数据动画 */
+  if (!coinsDone) {
+    coinsDone = true;
+    countUp(els.coins, 15000000, 1400);
+  }
+  setTimeout(function () {
+    els.expFill.style.width = "78%";
+    els.hpFill.style.width = "100%";
+    els.mpFill.style.width = "88%";
+    var fills = document.querySelectorAll(".bar-row .fill[data-w]");
+    for (var i = 0; i < fills.length; i++) {
+      fills[i].style.width = fills[i].getAttribute("data-w") + "%";
+    }
+    var pips = document.querySelectorAll("#int-pips .pip");
+    for (var j = 0; j < pips.length; j++) {
+      (function (pip, k) { setTimeout(function () { pip.classList.add("on"); }, k * 90); })(pips[j], j);
+    }
+  }, 120);
+  /* 默认打开第一个面板 */
+  selectMenu(0, true);
+}
+/* 金币计数动画（缓动） */
+function countUp(el, target, dur) {
+  var t0 = performance.now();
+  function tick() {
+    var p = Math.max(0, Math.min(1, (performance.now() - t0) / dur));
+    var v = Math.floor(target * (1 - Math.pow(1 - p, 3)));
+    el.textContent = v.toLocaleString("en-US");
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ---------- 4. 菜单选择与面板切换 ---------- */
+function selectMenu(i, force) {
+  if (state.screen !== "game") return;
+  state.menu = i;
+  state.open = true;
+  var items = document.querySelectorAll(".menu-item");
+  for (var k = 0; k < items.length; k++) {
+    items[k].classList.toggle("sel", k === i);
+  }
+  els.phName.textContent = MENU[i].name;
+  els.phEn.textContent = MENU[i].en;
+  $("panel-idle").classList.add("hide");
+  var pages = document.querySelectorAll(".panel-page");
+  for (var p = 0; p < pages.length; p++) pages[p].classList.remove("active");
+  var page = $("page-" + i);
+  page.classList.remove("active");
+  void page.offsetWidth; /* 强制重排，重放进入动画 */
+  page.classList.add("active");
+  /* 面板专属触发逻辑 */
+  if (i === 0) startDialogue();
+  if (i === 1) animateSkillCells(page);
+  if (i === 3) animateGear(page);
+  if (i === 4) animateStages(page);
+  badgePop(page);
+}
+/* 关闭面板回到待机画面 */
+function closePanel() {
+  state.open = false;
+  $("panel-idle").classList.remove("hide");
+  var pages = document.querySelectorAll(".panel-page");
+  for (var p = 0; p < pages.length; p++) pages[p].classList.remove("active");
+}
+/* 成就徽章入场（重放动画） */
+function badgePop(page) {
+  var badges = page.querySelectorAll(".badge");
+  for (var i = 0; i < badges.length; i++) {
+    badges[i].classList.remove("in");
+    void badges[i].offsetWidth;
+    badges[i].classList.add("in");
+  }
+}
+/* 技能格 / 装备 / 关卡 交错入场 */
+function animateSkillCells(page) {
+  var cells = page.querySelectorAll(".skill-cell");
+  for (var i = 0; i < cells.length; i++) {
+    cells[i].style.animation = "none";
+    void cells[i].offsetWidth;
+    cells[i].style.animation = "pageIn .3s ease both";
+    cells[i].style.animationDelay = (i * 0.06) + "s";
+  }
+}
+function animateGear(page) {
+  var gears = page.querySelectorAll(".gear");
+  for (var i = 0; i < gears.length; i++) {
+    gears[i].style.animation = "none";
+    void gears[i].offsetWidth;
+    gears[i].style.animation = "pageIn .3s ease both";
+    gears[i].style.animationDelay = (i * 0.08) + "s";
+  }
+}
+function animateStages(page) {
+  var sts = page.querySelectorAll(".stage");
+  for (var i = 0; i < sts.length; i++) {
+    sts[i].style.animation = "none";
+    void sts[i].offsetWidth;
+    sts[i].style.animation = "pageIn .35s ease both";
+    sts[i].style.animationDelay = (i * 0.12) + "s";
+  }
+}
+
+/* ---------- 5. 对话打字机 ---------- */
+function startDialogue() {
+  if (dlgTimer) clearInterval(dlgTimer);
+  dlgIdx = 0;
+  els.dlgNext.disabled = false;
+  els.dlgNext.textContent = "▶ 继续";
+  typeLine(els.dlgContent, DIALOG_LINES[0]);
+}
+function typeLine(el, text, cb) {
+  typing = true;
+  el.textContent = "";
+  var i = 0;
+  if (dlgTimer) clearInterval(dlgTimer);
+  dlgTimer = setInterval(function () {
+    i++;
+    el.textContent = text.slice(0, i);
+    if (i >= text.length) {
+      clearInterval(dlgTimer);
+      dlgTimer = null;
+      typing = false;
+      if (cb) cb();
+    }
+  }, 34);
+}
+function nextDialogue() {
+  if (typing) { /* 快进：直接显示当前句全文 */
+    if (dlgTimer) clearInterval(dlgTimer);
+    dlgTimer = null;
+    typing = false;
+    els.dlgContent.textContent = DIALOG_LINES[dlgIdx];
+    return;
+  }
+  dlgIdx++;
+  if (dlgIdx < DIALOG_LINES.length) {
+    typeLine(els.dlgContent, DIALOG_LINES[dlgIdx]);
+  } else {
+    els.dlgNext.disabled = true;
+    els.dlgNext.textContent = "对话结束 ◼";
+  }
+}
+
+/* ---------- 6. 键盘控制 ---------- */
+document.addEventListener("keydown", function (e) {
+  if (state.screen === "title") {
+    if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      startGame();
+    }
+    return;
+  }
+  if (state.screen !== "game") return;
+  var k = e.key;
+  if (k === "ArrowDown" || k === "ArrowRight") {
+    e.preventDefault();
+    moveMenu(1);
+  } else if (k === "ArrowUp" || k === "ArrowLeft") {
+    e.preventDefault();
+    moveMenu(-1);
+  } else if (k === "Enter") {
+    e.preventDefault();
+    if (!state.open) {
+      selectMenu(state.menu, true);
+    } else if (state.menu === 0) {
+      nextDialogue();
+    }
+  } else if (k === "Escape" || k === "Backspace") {
+    e.preventDefault();
+    if (state.open) closePanel();
+  } else if (k >= "1" && k <= "6") {
+    e.preventDefault();
+    selectMenu(parseInt(k, 10) - 1);
+  }
+});
+function moveMenu(delta) {
+  var next = (state.menu + delta + MENU.length) % MENU.length;
+  selectMenu(next);
+  /* 按键缩放反馈 */
+  var items = document.querySelectorAll(".menu-item");
+  var el = items[next];
+  el.classList.add("pressed");
+  setTimeout(function () { el.classList.remove("pressed"); }, 120);
+}
+
+/* ---------- 7. 鼠标控制 ---------- */
+document.addEventListener("click", function (e) {
+  if (state.screen === "title") { startGame(); return; }
+  /* 菜单项点击 */
+  var item = e.target.closest(".menu-item");
+  if (item) {
+    selectMenu(parseInt(item.getAttribute("data-i"), 10));
+    return;
+  }
+  /* 对话继续按钮 */
+  if (e.target.closest("#dlg-next")) { nextDialogue(); return; }
+  /* 商店复制按钮 */
+  var copyBtn = e.target.closest("[data-copy]");
+  if (copyBtn) {
+    copyText(copyBtn.getAttribute("data-copy"), copyBtn.getAttribute("data-msg"));
+    return;
+  }
+});
+
+/* ---------- 8. 剪贴板复制 + Toast ---------- */
+function copyText(text, msg) {
+  var done = function () { showToast(msg); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, function () { legacyCopy(text, done); });
+  } else {
+    legacyCopy(text, done);
+  }
+}
+/* file:// 环境下 navigator.clipboard 可能不可用，退回 textarea 方案 */
+function legacyCopy(text, done) {
+  var ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand("copy"); } catch (err) {}
+  document.body.removeChild(ta);
+  done();
+}
+var toastTimer = null;
+function showToast(msg) {
+  els.toast.textContent = msg;
+  els.toast.classList.add("show");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { els.toast.classList.remove("show"); }, 2200);
+}
+
+/* ---------- 9. 初始化 ---------- */
+/* 头像由 <img> 直接加载 */
+</script>
+</body>
+</html>

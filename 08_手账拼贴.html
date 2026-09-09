@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="邵汉青 · 个人网站合集 08 · 手账拼贴 SCRAPBOOK · 暖纸底手写体拍立得胶带便签">
+<title>08 手账拼贴 SCRAPBOOK · 邵汉青 · 个人网站合集</title>
+<style>
+/* ============================================================
+   08 · 手账拼贴 SCRAPBOOK — 手账 / 拼贴
+   ------------------------------------------------------------
+   设计语言：
+   · 暖纸底 #f7f1e3，纸纹 = 重复渐变 + SVG noise data-uri（纯内联）
+   · 手写体：Kaiti SC / STKaiti / 楷体 / KaiTi / Bradley Hand / cursive
+   · 马克笔高亮：黄色半透明旋转背景块（.hl 伪元素）
+   · 胶带：半透明白/黄条，旋转贴在卡片角（.tape）
+   · 订书钉：卡片四角伪元素（.stapled::before 四枚钢钉）
+   · 便签纸：黄色贴纸 + 伪元素锯齿撕边（.sticky::after）
+   · 日期印章：红色 2026.08 圆角框（.stamp）
+   · 元素歪斜摆放 rotate ±2deg；手绘箭头（内联 SVG / ➜ 字符）
+   · 内容手账化：十年=胶带拍立得；技能=贴纸墙；数字=手写大字+下划线；
+     作品=便签卡片（悬停出拍立得相纸彩蛋）；三年计划=月历格贴纸；
+     今日心情=涂鸦盖章区；联系=便利贴
+   · 交互：hover 撕起效果（scale+rotate+阴影加深）、点击便签抖动、
+     滚动渐入（IntersectionObserver）、心情盖章、年历贴纸打卡
+   · 响应式：桌面双列 → ≤900px 单列
+   ============================================================ */
+
+/* ===== 01 设计令牌 ======================================== */
+:root{
+  --paper:#f7f1e3;            /* 暖纸底 */
+  --paper-2:#efe6d0;          /* 略深纸色（卡片内衬） */
+  --ink:#3a3126;              /* 手写墨色 */
+  --ink-soft:#4f4432;         /* 次级墨色（加深，提升彩色便签上对比度） */
+  --brown:#8a6d3b;            /* 牛皮纸棕 */
+  --red:#c0392b;              /* 印章红 */
+  --red-deep:#a93226;
+  --marker:rgba(255,224,0,.45);      /* 马克笔黄 */
+  --marker-soft:rgba(255,224,0,.22);
+  --marker-blue:rgba(120,205,255,.35);
+  --marker-pink:rgba(255,150,170,.30);
+  --sticky:#ffe9a8;           /* 便签黄 */
+  --sticky-2:#fff3b0;
+  --sticky-pink:#ffd9c9;
+  --sticky-blue:#d6ecff;
+  --sticky-green:#d9f0c9;
+  --tape-w:rgba(255,255,255,.55);    /* 白胶带 */
+  --tape-y:rgba(255,232,138,.62);    /* 黄胶带 */
+  --polaroid:#fffdf4;         /* 拍立得相纸白 */
+  --staple:#aeb4ba;           /* 订书钉钢色 */
+  --line:#d9cfb6;             /* 手绘线 */
+  --shadow:0 6px 14px rgba(96,74,32,.18);        /* 平放阴影 */
+  --shadow-lift:0 20px 38px rgba(96,74,32,.32);  /* 撕起阴影 */
+  --hand:"Kaiti SC","STKaiti","楷体","KaiTi","Bradley Hand",
+         "Brush Script MT","Comic Sans MS",cursive;   /* 手写体栈 */
+  --serif:"Songti SC","SimSun","宋体",serif;
+  --wrap:1180px;             /* 内容最大宽度 */
+}
+
+/* ===== 02 基础重置 ======================================== */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--hand);
+  font-size:16px;
+  line-height:1.75;
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  /* 纸纹：SVG noise（data-uri，xmlns 已做百分号编码，无外链）
+     叠加两组极淡的重复渐变模拟纸纤维 + 一点边缘暗角 */
+  background-color:var(--paper);
+  background-image:
+    url("data:image/svg+xml,%3Csvg%20xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width='180'%20height='180'%3E%3Cfilter%20id='grain'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.85'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='180'%20height='180'%20filter='url(%23grain)'%20opacity='0.05'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(0deg, rgba(120,95,45,.018) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(120,95,45,.014) 0 1px, transparent 1px 4px);
+  background-attachment:fixed;
+}
+a{color:inherit;}
+a:hover{color:var(--red);}
+ul,ol{list-style:none;}
+::selection{background:var(--marker);color:var(--ink);}
+button{font-family:inherit;cursor:pointer;}
+img{max-width:100%;display:block;}
+
+/* ===== 03 通用元件 ======================================== */
+
+/* ---- 3.1 马克笔高亮：黄条旋转垫在文字底下 ---- */
+.hl{
+  position:relative;
+  padding:0 .28em;
+  white-space:nowrap;
+  z-index:0;
+}
+/* 移动端允许高亮文字换行，避免长句撑出横向滚动条 */
+@media (max-width:768px){
+  .hl{white-space:normal;}
+}
+.hl::before{
+  content:"";
+  position:absolute;
+  left:-.08em; right:-.08em;
+  top:34%; bottom:10%;
+  background:linear-gradient(90deg,
+    rgba(255,225,0,.12),
+    rgba(255,225,0,.6) 18%,
+    rgba(255,225,0,.6) 82%,
+    rgba(255,225,0,.12));
+  transform:rotate(-1.4deg) skewX(-8deg);
+  border-radius:3px;
+  z-index:-1;
+}
+.hl.blue::before{background:linear-gradient(90deg,rgba(120,205,255,.15),rgba(120,205,255,.55) 20%,rgba(120,205,255,.55) 80%,rgba(120,205,255,.15));}
+.hl.pink::before{background:linear-gradient(90deg,rgba(255,150,170,.12),rgba(255,150,170,.5) 20%,rgba(255,150,170,.5) 80%,rgba(255,150,170,.12));}
+
+/* ---- 3.2 胶带：半透明白/黄条，默认横向，可旋转贴角 ---- */
+.tape{
+  position:absolute;
+  width:92px; height:28px;
+  background:linear-gradient(180deg,rgba(255,255,255,.66),rgba(255,255,255,.34));
+  box-shadow:0 1px 3px rgba(60,50,20,.14);
+  z-index:6;
+  pointer-events:none;
+  /* 下缘撕齿 */
+  clip-path:polygon(0 0,100% 0,100% 74%,96% 100%,88% 78%,80% 100%,72% 80%,
+    62% 100%,52% 78%,42% 100%,32% 80%,22% 100%,12% 78%,4% 100%,0 76%);
+}
+.tape-y{background:linear-gradient(180deg,rgba(255,232,138,.72),rgba(255,224,100,.46));}
+.tape-w{background:linear-gradient(180deg,rgba(255,255,255,.68),rgba(255,255,255,.38));}
+.tape-t{top:-14px; left:50%; transform:translateX(-50%) rotate(-3deg);}
+.tape-tl{top:-11px; left:-16px; transform:rotate(-34deg); width:66px;}
+.tape-tr{top:-11px; right:-16px; transform:rotate(30deg); width:66px;}
+.tape-bl{bottom:-11px; left:-14px; transform:rotate(28deg); width:60px;}
+.tape-br{bottom:-11px; right:-14px; transform:rotate(-26deg); width:60px;}
+
+/* ---- 3.3 订书钉：四角伪元素 ---- */
+.stapled{position:relative;}
+.stapled::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:7;
+  background:
+    radial-gradient(circle 2.6px at 12px 12px, #b6bcc2 92%, rgba(70,58,32,.45) 99%, transparent 100%),
+    radial-gradient(circle 2.6px at calc(100% - 12px) 12px, #b6bcc2 92%, rgba(70,58,32,.45) 99%, transparent 100%),
+    radial-gradient(circle 2.6px at 12px calc(100% - 12px), #b6bcc2 92%, rgba(70,58,32,.45) 99%, transparent 100%),
+    radial-gradient(circle 2.6px at calc(100% - 12px) calc(100% - 12px), #b6bcc2 92%, rgba(70,58,32,.45) 99%, transparent 100%);
+  background-repeat:no-repeat;
+}
+
+/* ---- 3.4 日期印章：红色 2026.08 圆角框 ---- */
+.stamp{
+  display:inline-block;
+  font-family:var(--serif);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:2px;
+  color:var(--red);
+  border:2px solid var(--red);
+  border-radius:6px;
+  padding:2px 10px 2px 12px;
+  transform:rotate(-5deg);
+  background:rgba(255,255,255,.22);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);
+  outline:1px solid rgba(192,57,43,.4);
+  outline-offset:3px;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+/* ---- 3.5 手写批注（小字歪斜） ---- */
+.scrawl{
+  font-size:12px;
+  color:var(--ink-soft);
+  transform:rotate(-2deg);
+  font-style:italic;
+}
+.scrawl::before{content:"✎ ";color:var(--red);}
+.scrawl-red{color:var(--red-deep);font-weight:700;}
+
+/* ---- 3.6 撕边便签底色 ----
+   说明：不用 clip-path 裁整卡（会连带裁掉胶带/图钉/悬停相纸），
+   改为底部伪元素锯齿撕边，颜色跟随 --sticky-c 变量 */
+.sticky{
+  --sticky-c:var(--sticky);
+  position:relative;
+  background:var(--sticky);
+  padding:18px 16px 26px;
+  border:1px solid rgba(214,180,90,.4);
+  box-shadow:var(--shadow);
+}
+.sticky::after{
+  content:"";
+  position:absolute;
+  left:0; right:0; bottom:-10px;
+  height:10px;
+  background:
+    linear-gradient(-45deg, transparent 8px, var(--sticky-c) 0),
+    linear-gradient(45deg, transparent 8px, var(--sticky-c) 0);
+  background-size:16px 10px;
+  background-repeat:repeat-x;
+  pointer-events:none;
+  z-index:-1;
+}
+.sticky-pink{--sticky-c:var(--sticky-pink);background:var(--sticky-pink);border-color:rgba(220,140,110,.45);}
+.sticky-blue{--sticky-c:var(--sticky-blue);background:var(--sticky-blue);border-color:rgba(120,170,220,.45);}
+.sticky-green{--sticky-c:var(--sticky-green);background:var(--sticky-green);border-color:rgba(140,190,110,.45);}
+.sticky-white{--sticky-c:#fffdf2;background:#fffdf2;border-color:#e5d9bd;}
+
+/* ---- 3.7 旋转档位：元素歪斜摆放 ---- */
+.rot-1{transform:rotate(-2.2deg);}
+.rot-2{transform:rotate(1.8deg);}
+.rot-3{transform:rotate(-1.4deg);}
+.rot-4{transform:rotate(2.4deg);}
+.rot-5{transform:rotate(-3deg);}
+
+/* ===== 04 封面 ============================================ */
+.cover{
+  max-width:var(--wrap);
+  margin:0 auto;
+  padding:30px 20px 10px;
+}
+.cover-inner{
+  position:relative;
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:26px;
+  align-items:center;
+  background:rgba(255,253,244,.55);
+  border:2px dashed var(--line);
+  border-radius:14px;
+  padding:44px 40px 40px;
+  box-shadow:var(--shadow);
+}
+.cover-tag{
+  display:inline-block;
+  font-size:13px;
+  letter-spacing:3px;
+  color:var(--ink-soft);
+  border-bottom:2px solid var(--brown);
+  padding-bottom:4px;
+  margin-bottom:16px;
+}
+.cover-title{
+  font-size:64px;
+  line-height:1.12;
+  letter-spacing:4px;
+  font-weight:700;
+  position:relative;
+}
+.cover-title .hl{font-size:56px;}
+.cover-sub{
+  margin-top:18px;
+  font-size:19px;
+  color:var(--ink-soft);
+}
+.cover-sub .hl{color:var(--ink);font-size:19px;}
+.cover-meta{
+  margin-top:16px;
+  font-size:14px;
+  color:var(--ink-soft);
+}
+.cover-arrow{position:relative;margin-top:22px;}
+.cover-right{position:relative;justify-self:center;}
+.cover-right .stamp{
+  position:absolute;
+  right:-6px; bottom:-20px;
+  font-size:14px;
+}
+.cover-photo{
+  width:240px;
+  --r:2.5deg;
+  margin:10px 6px 20px;
+}
+.photo{
+  position:relative;
+  height:150px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:52px;
+  overflow:hidden;
+  user-select:none;
+}
+.photo-me{
+  background:#fff;
+  overflow:hidden;
+}
+.photo-me img{
+  width:100%;height:100%;object-fit:cover;
+  filter:saturate(1.1) contrast(.95);
+}
+.photo-me::after{
+  content:"☀";
+  position:absolute;
+  top:8px; right:12px;
+  font-size:22px;
+  transform:rotate(12deg);
+  opacity:.8;
+  color:#d98f4e;
+  text-shadow:0 1px 2px rgba(255,255,255,.7);
+}
+
+/* 手绘箭头（内联 SVG） */
+.doodle-arrow{
+  width:150px; height:70px;
+  position:absolute;
+  left:-6px; top:6px;
+  transform:rotate(-6deg);
+}
+.arrow-label{
+  position:relative;
+  margin-left:150px;
+  font-size:15px;
+  color:var(--red);
+  font-weight:700;
+}
+
+/* ---- 手账目录（导航便签） ---- */
+.nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:28px;
+  justify-content:center;
+}
+.nav-note{
+  position:relative;
+  display:block;
+  padding:8px 18px;
+  background:var(--sticky);
+  border:1px solid rgba(214,180,90,.5);
+  border-radius:6px;
+  box-shadow:0 3px 7px rgba(96,74,32,.15);
+  font-size:16px;
+  text-decoration:none;
+  transform:rotate(var(--r,0deg));
+  transition:transform .22s ease, box-shadow .22s ease;
+}
+.nav-note:nth-child(odd){--r:-2deg;}
+.nav-note:nth-child(even){--r:1.6deg;}
+.nav-note:hover{
+  transform:rotate(0deg) translateY(-4px) scale(1.06);
+  box-shadow:var(--shadow-lift);
+  color:var(--red);
+}
+
+/* ===== 05 章节骨架 ======================================== */
+main{
+  max-width:var(--wrap);
+  margin:0 auto;
+  padding:36px 20px 60px;
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:40px 30px;
+}
+section{position:relative;}
+#about{grid-column:1/8;}
+#numbers{grid-column:8/13;margin-top:60px;}
+#timeline{grid-column:1/13;}
+#skills{grid-column:1/6;}
+#mood{grid-column:6/13;margin-top:30px;}
+#works{grid-column:1/13;}
+#plan{grid-column:1/13;}
+#contact{grid-column:1/13;}
+
+.sec-head{
+  position:relative;
+  margin-bottom:20px;
+}
+.sec-num{
+  font-size:13px;
+  letter-spacing:2px;
+  color:var(--ink-soft);
+  display:block;
+  margin-bottom:2px;
+}
+.sec-title{
+  font-size:34px;
+  letter-spacing:2px;
+  position:relative;
+  display:inline-block;
+  /* 手写波浪下划线 */
+  padding-bottom:8px;
+}
+.sec-title::after{
+  content:"";
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:6px;
+  background:
+    radial-gradient(circle 3px at 4px 3px, var(--brown) 40%, transparent 42%) 0 0 / 10px 6px repeat-x;
+  opacity:.55;
+  transform:rotate(-1deg);
+}
+.sec-title .stamp{
+  margin-left:14px;
+  transform:translateY(-6px) rotate(-7deg);
+  font-size:11px;
+}
+.sec-note{
+  margin-top:6px;
+  font-size:14px;
+  color:var(--ink-soft);
+}
+
+/* ===== 06 关于 ============================================ */
+.bio-card{
+  background:var(--polaroid);
+  border:1px solid #ede4cd;
+  border-radius:8px;
+  box-shadow:var(--shadow);
+  padding:26px 26px 30px;
+  position:relative;
+}
+.bio-card p{font-size:17px;margin-bottom:10px;}
+.bio-quote{
+  font-size:20px;
+  font-weight:700;
+  margin:16px 0 6px;
+}
+.bio-quote::before{content:"「";color:var(--red);}
+.bio-quote::after{content:"」";color:var(--red);}
+.bio-motto{
+  background:rgba(255,253,244,.8);
+  border-left:4px solid var(--brown);
+  padding:10px 14px;
+  margin:14px 0;
+  font-size:16px;
+  transform:rotate(-.6deg);
+}
+.bio-list li{
+  font-size:16px;
+  padding:6px 0 6px 26px;
+  position:relative;
+}
+.bio-list li::before{
+  content:"➜";
+  position:absolute;
+  left:0; top:6px;
+  color:var(--red);
+  transform:rotate(-14deg);
+}
+
+/* 信息便签堆（右侧/下方） */
+.info-stack{
+  display:grid;
+  gap:16px;
+  margin-top:18px;
+}
+.info-note h3{
+  font-size:17px;
+  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.info-note h3 .hl{font-size:15px;}
+.info-note ul li{
+  font-size:15px;
+  padding:2px 0;
+  color:var(--ink-soft);
+}
+.info-note ul li b{color:var(--ink);}
+.tag-mini{
+  display:inline-block;
+  font-size:12px;
+  background:var(--marker-soft);
+  border-radius:4px;
+  padding:0 7px;
+  margin-left:4px;
+  transform:rotate(-2deg);
+  color:var(--ink);
+}
+.bazi-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:8px 0 4px;
+}
+.bazi-cell{
+  font-family:var(--serif);
+  font-size:15px;
+  background:#f3ead6;
+  border:1px solid #ddd0b2;
+  border-radius:5px;
+  padding:2px 9px;
+  transform:rotate(var(--r,0deg));
+}
+.bazi-cell:nth-child(odd){--r:-2deg;}
+.bazi-cell:nth-child(even){--r:1.5deg;}
+.bazi-desc{
+  font-size:14px;
+  color:var(--ink-soft);
+  margin-top:8px;
+}
+.bazi-desc b{color:var(--red-deep);}
+
+/* ===== 07 关键数字（手写大字+下划线） ===================== */
+.num-wall{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+.num-card{
+  position:relative;
+  background:var(--polaroid);
+  border:1px solid #ede4cd;
+  border-radius:8px;
+  box-shadow:var(--shadow);
+  padding:16px 14px 18px;
+  text-align:center;
+  transition:transform .26s ease, box-shadow .26s ease;
+}
+.num-card:nth-child(odd){transform:rotate(-1.6deg);}
+.num-card:nth-child(even){transform:rotate(1.8deg);}
+.num-card:hover{
+  transform:rotate(0deg) scale(1.05) translateY(-6px);
+  box-shadow:var(--shadow-lift);
+}
+.num-big{
+  display:inline-block;
+  font-size:46px;
+  font-weight:700;
+  letter-spacing:1px;
+  position:relative;
+  padding-bottom:6px;
+  color:#4a3c26;
+}
+/* 手写粗下划线 */
+.num-big::after{
+  content:"";
+  position:absolute;
+  left:-4px; right:-4px; bottom:-2px;
+  height:7px;
+  background:
+    linear-gradient(90deg, rgba(192,57,43,0) 0 3%, rgba(192,57,43,.55) 12% 88%, rgba(192,57,43,0) 97%);
+  transform:rotate(-.8deg) scaleY(.55);
+  border-radius:50%;
+}
+.num-unit{font-size:20px;margin-left:2px;}
+.num-label{
+  display:block;
+  margin-top:8px;
+  font-size:14px;
+  color:var(--ink-soft);
+}
+.num-memo{
+  position:absolute;
+  top:-10px; right:-8px;
+  font-size:11px;
+  background:var(--sticky);
+  border:1px solid rgba(214,180,90,.6);
+  border-radius:4px;
+  padding:1px 7px;
+  transform:rotate(6deg);
+  box-shadow:0 2px 4px rgba(96,74,32,.18);
+}
+
+/* ===== 08 我的十年 · 拍立得时间线 ========================= */
+.timeline{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:22px;
+  margin-top:6px;
+  position:relative;
+}
+/* 拍立得之间手绘箭头 */
+.tl-item{position:relative;}
+.tl-item:not(:last-child)::after{
+  content:"➜";
+  position:absolute;
+  right:-22px; top:44%;
+  color:var(--red);
+  font-size:22px;
+  transform:rotate(-16deg) translateX(6px);
+  z-index:3;
+}
+.polaroid{
+  position:relative;
+  background:var(--polaroid);
+  padding:10px 10px 13px;
+  border:1px solid #efe7d2;
+  box-shadow:var(--shadow);
+  /* 旋转用 --r 变量，鼠标跟随位移用 --tx/--ty（JS 注入） */
+  transform:rotate(var(--r,0deg)) translate(var(--tx,0px),var(--ty,0px));
+  transition:transform .28s cubic-bezier(.2,.7,.3,1.15), box-shadow .28s ease;
+}
+.polaroid:nth-child(odd){--r:-2.4deg;}
+.polaroid:nth-child(even){--r:2.2deg;}
+.polaroid:hover{
+  transform:rotate(0deg) translate(var(--tx,0px),var(--ty,0px)) scale(1.045) translateY(-7px);
+  box-shadow:var(--shadow-lift);
+  z-index:5;
+}
+.photo-p1{background:linear-gradient(165deg,#a8d8ea,#e9d9b8 60%,#d9c39a);}
+.photo-p2{background:linear-gradient(165deg,#b9e0ae,#efe4c4 62%,#dcc69c);}
+.photo-p3{background:linear-gradient(165deg,#ccd6da,#eee5d2 62%,#d8c9a8);}
+.photo-p4{background:linear-gradient(165deg,#b3d4f0,#e9e1cc 62%,#d5c69d);}
+.photo-p5{background:linear-gradient(165deg,#ffd9a0,#f0bf8b 58%,#d99e5f);}
+.photo .scribble{
+  position:absolute;
+  right:6px; bottom:4px;
+  font-size:11px;
+  color:var(--ink);
+  transform:rotate(-7deg);
+  font-style:italic;
+}
+.caption{
+  display:block;
+  text-align:center;
+  padding:9px 4px 0;
+}
+.caption .year{
+  display:block;
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:1px;
+}
+.caption .co{
+  display:block;
+  font-size:14px;
+  color:var(--ink-soft);
+  margin-top:2px;
+}
+.caption .note{
+  display:block;
+  font-size:12px;
+  color:var(--ink-soft);
+  margin-top:6px;
+  transform:rotate(-1.2deg);
+  background:var(--marker-soft);
+  padding:1px 4px;
+  border-radius:3px;
+}
+.tl-foot{
+  grid-column:1/-1;
+  text-align:right;
+  font-size:13px;
+  color:var(--ink-soft);
+}
+.tl-foot::before{content:"—— 路还长，慢慢贴 ——";letter-spacing:1px;}
+
+/* ===== 09 技能贴纸墙 ====================================== */
+.sticker-wall{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  align-content:flex-start;
+}
+.sticker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 16px;
+  background:#fffdf2;
+  border:2px dashed var(--brown);
+  border-radius:9px;
+  font-size:16px;
+  box-shadow:2px 4px 0 rgba(96,74,32,.14);
+  transition:transform .22s ease, box-shadow .22s ease;
+}
+.sticker:hover{
+  transform:rotate(0deg) translateY(-5px) scale(1.06);
+  box-shadow:4px 8px 0 rgba(96,74,32,.16);
+  background:var(--sticky-2);
+}
+.sticker .ico{font-size:19px;}
+.sticker .sub{
+  display:block;
+  font-size:11px;
+  color:var(--ink-soft);
+  letter-spacing:0;
+}
+.sk-1{transform:rotate(-2.6deg);}
+.sk-2{transform:rotate(1.9deg);}
+.sk-3{transform:rotate(-1.2deg);}
+.sk-4{transform:rotate(2.7deg);}
+.sk-5{transform:rotate(-1.8deg);}
+.sk-6{transform:rotate(1.4deg);}
+.sk-7{transform:rotate(-2.2deg);}
+.sk-8{transform:rotate(2.1deg);}
+.sticker-wall-tip{
+  width:100%;
+  font-size:13px;
+  color:var(--ink-soft);
+  transform:rotate(-1deg);
+  background:var(--paper-2);
+  border-radius:6px;
+  padding:6px 12px;
+  margin-top:4px;
+}
+.skill-award{
+  margin-top:18px;
+  background:var(--sticky);
+  border:1px dashed var(--brown);
+  border-radius:8px;
+  padding:12px 16px;
+  font-size:15px;
+  transform:rotate(-1deg);
+  box-shadow:var(--shadow);
+}
+
+/* ===== 10 作品便签卡片 ==================================== */
+.works-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:22px;
+  margin-top:6px;
+}
+.work-card{
+  position:relative;
+  min-height:230px;
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  transition:transform .26s ease, box-shadow .26s ease;
+  z-index:1;
+}
+.work-card:nth-child(1){transform:rotate(-1.6deg);}
+.work-card:nth-child(2){transform:rotate(1.4deg);}
+.work-card:nth-child(3){transform:rotate(-1.9deg);}
+.work-card:nth-child(4){transform:rotate(1.7deg);}
+.work-card:hover{
+  transform:rotate(0deg) scale(1.04) translateY(-7px);
+  box-shadow:var(--shadow-lift);
+  z-index:8;
+}
+.pin{
+  position:absolute;
+  top:-13px; left:50%;
+  margin-left:-11px;
+  width:22px; height:22px;
+  background:radial-gradient(circle at 36% 32%, #ff6b6b, #d64545 62%, #a92f2f);
+  border-radius:50%;
+  box-shadow:0 3px 5px rgba(60,20,10,.4), inset 0 -2px 3px rgba(0,0,0,.25);
+  z-index:9;
+  transform:rotate(-8deg);
+}
+.pin::after{
+  content:"";
+  position:absolute;
+  left:50%; bottom:-8px;
+  width:2px; height:10px;
+  background:rgba(80,60,30,.55);
+  transform:translateX(-50%);
+  border-radius:2px;
+}
+.work-head{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:18px;
+  margin-bottom:8px;
+}
+.work-head .ico{font-size:22px;}
+.work-card p{font-size:14.5px;color:var(--ink-soft);}
+.work-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:12px;
+}
+.work-tags span{
+  font-size:11.5px;
+  background:rgba(255,255,255,.75);
+  border:1px solid rgba(180,150,80,.5);
+  border-radius:99px;
+  padding:2px 9px;
+  transform:rotate(var(--r,0deg));
+}
+.work-tags span:nth-child(odd){--r:-2deg;}
+.work-tags span:nth-child(even){--r:2deg;}
+
+/* ---- 悬停拍立得相纸彩蛋 ---- */
+.egg{
+  position:absolute;
+  top:-70px; right:-42px;
+  width:196px;
+  background:var(--polaroid);
+  padding:9px 9px 12px;
+  border:1px solid #efe7d2;
+  box-shadow:var(--shadow-lift);
+  transform:rotate(7deg) scale(.6);
+  opacity:0;
+  pointer-events:none;
+  transition:transform .32s cubic-bezier(.2,.9,.3,1.25), opacity .28s ease;
+  z-index:10;
+}
+.work-card:hover .egg{
+  transform:rotate(3deg) scale(1);
+  opacity:1;
+}
+.egg .photo{height:104px;font-size:34px;}
+.egg-ph1{background:linear-gradient(160deg,#f5d9a8,#e3b87c);}
+.egg-ph2{background:linear-gradient(160deg,#cfe3f7,#a8c8e8);}
+.egg-ph3{background:linear-gradient(160deg,#e6d2f0,#c3a8dc);}
+.egg-ph4{background:linear-gradient(160deg,#c9efc9,#9ed19e);}
+.egg .caption{font-size:12px;padding-top:7px;}
+.egg .scrawl{font-size:11px;display:block;text-align:center;margin-top:3px;}
+
+/* ===== 11 三年纲领 · 月历贴纸 ============================= */
+.plan-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+  margin-top:6px;
+}
+.plan-card{
+  position:relative;
+  background:var(--polaroid);
+  border:1px solid #ede4cd;
+  border-radius:8px;
+  box-shadow:var(--shadow);
+  padding:20px 18px 22px;
+  transition:transform .26s ease, box-shadow .26s ease;
+}
+.plan-card:nth-child(1){transform:rotate(-1.4deg);}
+.plan-card:nth-child(2){transform:rotate(1.2deg);}
+.plan-card:nth-child(3){transform:rotate(-1.7deg);}
+.plan-card:hover{
+  transform:rotate(0deg) scale(1.03) translateY(-6px);
+  box-shadow:var(--shadow-lift);
+}
+.plan-year{
+  display:inline-block;
+  font-size:30px;
+  font-weight:700;
+  position:relative;
+  padding:0 10px;
+}
+.plan-year::before{
+  content:"";
+  position:absolute;
+  left:0; right:0; top:38%;
+  height:46%;
+  background:var(--marker);
+  transform:rotate(-1.5deg);
+  z-index:-1;
+  border-radius:3px;
+}
+.plan-zh{
+  display:block;
+  font-size:15px;
+  color:var(--ink-soft);
+  margin:2px 0 10px;
+}
+.plan-card ul{margin-top:4px;}
+.plan-card ul li{
+  font-size:14.5px;
+  color:var(--ink-soft);
+  padding:3px 0 3px 22px;
+  position:relative;
+}
+.plan-card ul li::before{
+  content:"·";
+  position:absolute;
+  left:6px;
+  font-size:20px;
+  color:var(--red);
+  top:-2px;
+}
+.plan-card ul li b{color:var(--ink);}
+
+/* 2026 月份贴纸日历 */
+.months{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:6px;
+  margin:10px 0 8px;
+}
+.month{
+  text-align:center;
+  font-size:12px;
+  padding:4px 0;
+  background:#fffdf2;
+  border:1px solid #e5d9bd;
+  border-radius:4px;
+  color:var(--ink-soft);
+  cursor:pointer;
+  transition:transform .18s ease, background .18s ease;
+  user-select:none;
+}
+.month:hover{transform:scale(1.15) rotate(-3deg);background:var(--sticky-2);}
+.month.hot{
+  background:var(--sticky);
+  border-color:#e0b64e;
+  font-weight:700;
+  color:#6b4a00;
+  transform:rotate(-2deg);
+  box-shadow:0 2px 4px rgba(120,90,20,.2);
+}
+.month.win{
+  background:var(--sticky-blue);
+  border-color:#7fa8d8;
+  font-weight:700;
+  color:#23486e;
+  transform:rotate(2deg);
+}
+.month.done{
+  background:var(--sticky-green);
+  border-color:#8fb877;
+  color:#3d5c2a;
+  text-decoration:line-through;
+}
+.month .dot{
+  display:block;
+  margin:-2px auto 0;
+  width:5px; height:5px;
+  border-radius:50%;
+  background:var(--red);
+}
+.month-legend{
+  display:flex;
+  gap:14px;
+  font-size:12px;
+  color:var(--ink-soft);
+  margin:6px 0 10px;
+  flex-wrap:wrap;
+}
+.month-legend i{
+  display:inline-block;
+  width:11px; height:11px;
+  border-radius:3px;
+  margin-right:4px;
+  vertical-align:-1px;
+}
+.plan-memo{
+  margin-top:12px;
+  background:rgba(255,253,244,.75);
+  border:1px dashed var(--line);
+  border-radius:6px;
+  padding:8px 12px;
+  font-size:13.5px;
+  color:var(--ink-soft);
+}
+.plan-memo b{color:var(--red-deep);}
+
+/* 心法条 */
+.mindset{
+  grid-column:1/-1;
+  margin-top:8px;
+}
+.mindset h3{
+  font-size:19px;
+  margin-bottom:12px;
+}
+.mindset-strips{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+}
+.mind-strip{
+  position:relative;
+  background:var(--sticky-2);
+  border:1px solid rgba(214,180,90,.55);
+  border-radius:6px;
+  padding:14px 12px;
+  font-size:16px;
+  text-align:center;
+  box-shadow:0 4px 8px rgba(96,74,32,.16);
+  transform:rotate(var(--r,0deg));
+}
+.mind-strip:nth-child(1){--r:-2.2deg;}
+.mind-strip:nth-child(2){--r:1.6deg;}
+.mind-strip:nth-child(3){--r:-1.4deg;}
+.mind-strip:nth-child(4){--r:2deg;}
+.mind-strip:hover{
+  transform:rotate(0deg) translateY(-5px) scale(1.05);
+  box-shadow:var(--shadow-lift);
+}
+.mind-strip .tag{
+  position:absolute;
+  top:-9px; left:50%;
+  margin-left:-20px;
+  background:var(--red);
+  color:#fff;
+  font-size:10px;
+  letter-spacing:1px;
+  border-radius:99px;
+  padding:1px 9px;
+  transform:rotate(-3deg);
+}
+
+/* ===== 12 今日心情 · 涂鸦盖章区 =========================== */
+.mood-box{
+  background:
+    repeating-linear-gradient(0deg, transparent 0 27px, rgba(150,125,70,.22) 27px 28px),
+    var(--polaroid);
+  border:2px dashed var(--line);
+  border-radius:10px;
+  height:300px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.mood-box .mood-tip{
+  position:absolute;
+  top:8px; left:50%;
+  transform:translateX(-50%) rotate(-1deg);
+  font-size:12px;
+  color:var(--ink-soft);
+  background:rgba(255,253,244,.85);
+  border-radius:99px;
+  padding:2px 12px;
+  z-index:2;
+  pointer-events:none;
+}
+.mood-stamp{
+  position:absolute;
+  pointer-events:none;
+  line-height:1;
+  animation:pop .35s cubic-bezier(.2,.9,.3,1.3);
+  filter:drop-shadow(0 2px 2px rgba(96,74,32,.25));
+}
+@keyframes pop{
+  0%{transform:scale(0) rotate(-40deg);opacity:0;}
+  100%{transform:scale(1) rotate(var(--mr,0deg));opacity:1;}
+}
+.mood-bar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+.mood-btn{
+  font-size:24px;
+  background:var(--polaroid);
+  border:2px dashed var(--brown);
+  border-radius:10px;
+  padding:6px 12px;
+  box-shadow:1px 3px 0 rgba(96,74,32,.15);
+  transform:rotate(var(--r,0deg));
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.mood-btn:nth-child(odd){--r:-2deg;}
+.mood-btn:nth-child(even){--r:2deg;}
+.mood-btn:hover{
+  transform:rotate(0deg) scale(1.18) translateY(-3px);
+  box-shadow:3px 6px 0 rgba(96,74,32,.18);
+}
+.mood-clear{
+  margin-left:auto;
+  font-size:13px;
+  background:var(--paper-2);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:4px 12px;
+  color:var(--ink-soft);
+}
+.mood-clear:hover{color:var(--red);border-color:var(--red);}
+.mood-count{
+  margin-top:12px;
+  font-size:13px;
+  color:var(--ink-soft);
+}
+.mood-count b{
+  color:var(--red);
+  font-size:18px;
+  margin:0 2px;
+}
+
+/* ===== 13 联系便利贴 ====================================== */
+.contact-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+  margin-top:6px;
+}
+.contact-note{position:relative;}
+.contact-note h3{
+  font-size:18px;
+  margin-bottom:8px;
+}
+.contact-note .big{
+  font-size:23px;
+  font-weight:700;
+  letter-spacing:1px;
+  color:var(--ink);
+  word-break:break-all;
+}
+.contact-note .big a{
+  text-decoration:none;
+  border-bottom:2px solid var(--marker);
+  padding-bottom:2px;
+}
+.contact-note .big a:hover{color:var(--red);border-bottom-color:var(--red);}
+.contact-note .sub{
+  display:block;
+  margin-top:10px;
+  font-size:13.5px;
+  color:var(--ink-soft);
+}
+.contact-side{
+  grid-column:1/-1;
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  margin-top:4px;
+}
+.contact-side .note-mini{
+  font-size:14px;
+  color:var(--ink-soft);
+  background:rgba(255,253,244,.8);
+  border:1px dashed var(--line);
+  border-radius:8px;
+  padding:10px 16px;
+  transform:rotate(-1deg);
+  box-shadow:0 3px 7px rgba(96,74,32,.12);
+}
+.contact-side .note-mini b{color:var(--ink);}
+
+/* ===== 14 页脚 ============================================ */
+footer{
+  max-width:var(--wrap);
+  margin:0 auto;
+  padding:10px 20px 46px;
+}
+.foot-strip{
+  position:relative;
+  text-align:center;
+  background:var(--paper-2);
+  border:1px dashed var(--line);
+  border-radius:10px;
+  padding:18px 16px;
+  font-size:14px;
+  color:var(--ink-soft);
+  transform:rotate(-.6deg);
+  box-shadow:var(--shadow);
+}
+.foot-strip a{
+  color:var(--red-deep);
+  font-weight:700;
+  text-decoration:none;
+  border-bottom:2px dashed var(--red);
+  padding:0 2px;
+}
+.foot-strip a:hover{background:var(--marker-soft);}
+.foot-strip .foot-tape{
+  position:absolute;
+  top:-12px; left:50%;
+  transform:translateX(-50%) rotate(-2deg);
+  width:120px; height:26px;
+  background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,.3));
+  clip-path:polygon(0 0,100% 0,100% 72%,95% 100%,85% 76%,75% 100%,65% 78%,54% 100%,44% 76%,33% 100%,23% 78%,12% 100%,4% 76%,0 74%);
+  z-index:2;
+}
+.back-top{
+  display:inline-block;
+  margin-top:16px;
+  font-size:13px;
+  color:var(--ink-soft);
+  text-decoration:none;
+  border-bottom:1px dashed var(--line);
+  padding-bottom:2px;
+}
+.back-top:hover{color:var(--red);border-bottom-color:var(--red);}
+
+/* ===== 15 交互：hover 撕起 / 抖动 / 滚动渐入 ============== */
+/* hover 撕起：scale + 转正 + 阴影加深（各卡片已定义） */
+/* 点击抖动 */
+.shaking{animation:shake .42s ease;}
+@keyframes shake{
+  0%,100%{transform:translate(0,0) rotate(var(--r,0deg));}
+  20%{transform:translate(-5px,2px) rotate(calc(var(--r,0deg) - 3deg));}
+  40%{transform:translate(5px,-2px) rotate(calc(var(--r,0deg) + 3deg));}
+  60%{transform:translate(-4px,-1px) rotate(calc(var(--r,0deg) - 2deg));}
+  80%{transform:translate(4px,1px) rotate(calc(var(--r,0deg) + 2deg));}
+}
+.shaking{box-shadow:0 12px 26px rgba(96,74,32,.34);}
+
+/* 滚动渐入：用独立的 translate 属性做位移，
+   避免覆盖各卡片的 rotate/transform（两者可叠加） */
+.io{
+  opacity:0;
+  translate:0 26px;
+  transition:opacity .6s ease var(--d,0ms),
+             translate .6s cubic-bezier(.2,.7,.3,1.1) var(--d,0ms);
+}
+.io.on{
+  opacity:1;
+  translate:0 0;
+}
+
+/* 封面印章点击盖章动画 */
+.stamping{animation:stampPress .45s ease;}
+@keyframes stampPress{
+  0%{transform:rotate(-5deg) scale(1);}
+  35%{transform:rotate(-5deg) scale(1.35);}
+  60%{transform:rotate(-2deg) scale(.92);}
+  100%{transform:rotate(-5deg) scale(1);}
+}
+.stamp{cursor:pointer;}
+
+/* ===== 16 响应式 ========================================== */
+/* ≤900px：双列 → 单列 */
+@media (max-width:900px){
+  main{grid-template-columns:1fr;}
+  #about,#numbers,#skills,#mood,#works,#plan,#contact,
+  #timeline{grid-column:1;}
+  #numbers,#mood{margin-top:0;}
+  .cover-inner{grid-template-columns:1fr;text-align:center;padding:34px 22px 26px;}
+  .cover-arrow{display:none;}
+  .cover-right{justify-self:center;}
+  .cover-title{font-size:44px;}
+  .cover-title .hl{font-size:40px;}
+  .timeline{grid-template-columns:repeat(2,1fr);gap:26px 20px;}
+  .tl-item:not(:last-child)::after{display:none;}
+  .tl-item:last-child{grid-column:1/-1;}
+  .tl-item:last-child .polaroid{max-width:320px;margin:0 auto;}
+  .works-grid{grid-template-columns:repeat(2,1fr);}
+  .plan-grid{grid-template-columns:1fr;}
+  .mindset-strips{grid-template-columns:repeat(2,1fr);}
+  .contact-grid{grid-template-columns:1fr;}
+  .num-wall{grid-template-columns:repeat(2,1fr);}
+}
+/* ≤768px：手机端微调 */
+@media (max-width:768px){
+  body{font-size:15px;}
+  .cover-title{font-size:36px;}
+  .cover-title .hl{font-size:32px;}
+  .cover-photo{width:190px;}
+  .photo{height:140px;font-size:44px;}
+  .photo-me img{width:100%;height:100%;object-fit:cover;}
+  .nav{gap:8px;}
+  .nav-note{padding:6px 13px;font-size:14px;}
+  .sec-title{font-size:28px;}
+  .timeline{grid-template-columns:1fr;gap:24px;}
+  .tl-item:last-child{grid-column:auto;}
+  .tl-item:last-child .polaroid{max-width:none;}
+  .works-grid{grid-template-columns:1fr;}
+  .egg{right:6px;top:-64px;}
+  .mindset-strips{grid-template-columns:1fr;}
+  .num-wall{grid-template-columns:1fr 1fr;gap:12px;}
+  .num-big{font-size:38px;}
+  .months{grid-template-columns:repeat(6,1fr);}
+  .mood-box{height:260px;}
+  .stamp{font-size:10px;letter-spacing:1px;}
+  .contact-side{flex-direction:column;}
+  main{padding-top:26px;}
+}
+/* ≤430px：更小屏 */
+@media (max-width:430px){
+  .num-wall{grid-template-columns:1fr;}
+  .months{grid-template-columns:repeat(4,1fr);}
+  .bio-card{padding:20px 16px;}
+  .cover{padding-top:16px;}
+  .cover-inner{padding:26px 14px 22px;}
+}
+
+
+</style>
+</head>
+<body>
+
+<!-- ================= 封面 ================= -->
+<header class="cover" id="top">
+  <div class="cover-inner io" style="transform:rotate(-1deg);">
+    <div class="tape tape-t tape-w"></div>
+    <div class="cover-left">
+      <div class="cover-tag">个人网站合集 · 第 08 号 · SCRAPBOOK</div>
+      <h1 class="cover-title">邵汉青<br><span class="hl">的手账本</span></h1>
+      <p class="cover-sub">
+        <span class="hl">10年工程机械大客户销售</span> × <span class="hl blue">AI重度实践者</span>
+      </p>
+      <p class="cover-meta">「既懂销售，又懂AI」 · base 河南郑州 · 32岁 · 已婚</p>
+      <div class="cover-arrow">
+        <svg class="doodle-arrow" viewBox="0 0 140 70" aria-hidden="true">
+          <path d="M8 60 C 42 16, 90 14, 126 32" fill="none" stroke="#c0392b" stroke-width="3" stroke-linecap="round" stroke-dasharray="8 6"/>
+          <path d="M116 24 l11 9 -15 7" fill="none" stroke="#c0392b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="arrow-label">这是我 ➜</span>
+      </div>
+    </div>
+    <div class="cover-right">
+      <figure class="polaroid cover-photo">
+        <div class="tape tape-tl tape-w"></div>
+        <div class="tape tape-tr tape-w"></div>
+        <div class="photo photo-me"><img src="data:image/jpeg;base64,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" alt="邵汉青" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+        <span class="caption">
+          <span class="year">2026 · 郑州</span>
+          <span class="note scrawl">既懂销售，又懂AI</span>
+        </span>
+      </figure>
+      <span class="stamp" id="coverStamp" title="点我盖个章">2026.08</span>
+    </div>
+  </div>
+
+  <!-- 手账目录 -->
+  <nav class="nav io" aria-label="手账目录" style="--d:120ms;">
+    <a class="nav-note" href="#about">✎ 关于</a>
+    <a class="nav-note" href="#numbers">❝ 数字</a>
+    <a class="nav-note" href="#timeline">📷 十年</a>
+    <a class="nav-note" href="#skills">🏷 技能</a>
+    <a class="nav-note" href="#works">📌 作品</a>
+    <a class="nav-note" href="#plan">🗓 纲领</a>
+    <a class="nav-note" href="#mood">🎨 心情</a>
+    <a class="nav-note" href="#contact">☎ 联系</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ================= 关于 ================= -->
+  <section id="about">
+    <header class="sec-head io">
+      <span class="sec-num">SECTION 01</span>
+      <h2 class="sec-title">关于汉青<span class="stamp">2026.08</span></h2>
+      <p class="sec-note scrawl">先撕开这一页，认识一下这位卖设备又玩AI的人</p>
+    </header>
+
+    <article class="bio-card stapled io" style="transform:rotate(-.8deg);">
+      <div class="tape tape-t tape-y"></div>
+      <p class="bio-quote">既懂销售，又懂AI</p>
+      <p>
+        定位：<span class="hl">10年工程机械大客户销售</span> ×
+        <span class="hl blue">AI重度实践者</span>。
+        从旋挖钻机、履带吊、空压机一路卖到高空作业平台，
+        现在把 AI 工具链搬进销售战场——区域开发、线索采集、
+        标书、简报，能自动化的绝不动手。
+      </p>
+      <div class="bio-motto">
+        ✍ 气质画像：<b>「既懂销售，又懂AI」</b>
+        —— 拼业绩是真刀真枪，但讲究体面与章法。
+      </div>
+      <p>沟通风格：<span class="hl">专业干练、直奔结果</span>，不绕弯子。</p>
+      <ul class="bio-list">
+        <li>学习原则① <b>结果导向</b> —— 先问「这能带来什么结果」</li>
+        <li>学习原则② <b>先模仿后创造</b> —— 抄优秀者的骨架，再长出自己</li>
+        <li>学习原则③ <b>重复的事自动化</b> —— 脚本、技能、流水线</li>
+        <li>学习原则④ <b>小步快跑</b> —— 每周都能交付一点可用的东西</li>
+      </ul>
+    </article>
+
+    <div class="info-stack">
+      <article class="sticky sticky-white rot-2 stapled io" style="--d:80ms;">
+        <div class="tape tape-tl tape-w"></div>
+        <h3>🏢 现职</h3>
+        <ul>
+          <li><b>太原重工 · 工程起重机分公司</b> —— 业务经理 / 大客户销售</li>
+          <li>产品：高空作业平台（剪叉 <b>4-14m</b> / 臂式 <b>16-60m</b>）</li>
+          <li>市场：湖北市场开拓中 · base 河南郑州（可出差）</li>
+        </ul>
+      </article>
+      <article class="sticky rot-1 stapled io" style="--d:140ms;">
+        <div class="tape tape-tr tape-y"></div>
+        <h3>🎓 学历</h3>
+        <ul>
+          <li>本科 · <b>黄淮学院</b> · 汽车服务工程（2015-2017）</li>
+          <li>大专 · <b>鹤壁职业技术学院</b> · 汽车检测（2012-2015）</li>
+        </ul>
+      </article>
+      <article class="sticky sticky-blue rot-3 stapled io" style="--d:200ms;">
+        <div class="tape tape-tl tape-w"></div>
+        <h3>🎯 座右铭 <span class="tag-mini">十年速览</span></h3>
+        <div class="bazi-row">
+          <span class="bazi-cell">10年重工</span>
+          <span class="bazi-cell">180+客户</span>
+          <span class="bazi-cell">35份标书</span>
+          <span class="bazi-cell">1.2亿意向</span>
+          <span class="bazi-cell">已完成订单1500万</span>
+          <span class="bazi-cell">协助意向订单1亿</span>
+          <span class="bazi-cell">协助完成订单1400万</span>
+        </div>
+        <p class="bazi-desc">
+          座右铭：<b>「既懂销售，又懂AI」</b> —— 10年重工大客户销售 × AI重度实践者。
+        </p>
+      </article>
+      <article class="sticky sticky-green rot-4 stapled io" style="--d:260ms;">
+        <div class="tape tape-tr tape-y"></div>
+        <h3>🏭 公司背书</h3>
+        <ul>
+          <li>太原重工：<b>76年</b> 底蕴 · A股 <b>600169</b></li>
+          <li>2025 营收约 <b>103.79 亿</b> —— 平台够大，才能站上台阶</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= 关键数字 ================= -->
+  <section id="numbers">
+    <header class="sec-head io">
+      <span class="sec-num">SECTION 02</span>
+      <h2 class="sec-title">关键数字<span class="stamp">手写账</span></h2>
+      <p class="sec-note scrawl">都是真金白银跑出来的，不是PPT上的数</p>
+    </header>
+
+    <div class="num-wall">
+      <article class="num-card stapled io" title="点我抖一抖">
+        <span class="num-memo">履历总长</span>
+        <span class="num-big">10<span class="num-unit">年</span></span>
+        <span class="num-label">重工大客户销售</span>
+      </article>
+      <article class="num-card stapled io" style="--d:60ms;" title="点我抖一抖">
+        <span class="num-memo">三一 0→180</span>
+        <span class="num-big">180<span class="num-unit">+</span></span>
+        <span class="num-label">客户开发（河南区域）</span>
+      </article>
+      <article class="num-card stapled io" style="--d:120ms;" title="点我抖一抖">
+        <span class="num-memo">复盛时期</span>
+        <span class="num-big">35<span class="num-unit">份</span></span>
+        <span class="num-label">独立完成标书</span>
+      </article>
+      <article class="num-card stapled io" style="--d:180ms;" title="点我抖一抖">
+        <span class="num-memo">太重湖北</span>
+        <span class="num-big">1.2<span class="num-unit">亿</span></span>
+        <span class="num-label">意向价值</span>
+      </article>
+      <article class="num-card stapled io" style="--d:240ms;" title="点我抖一抖">
+        <span class="num-memo">已落袋</span>
+        <span class="num-big">1500<span class="num-unit">万</span></span>
+        <span class="num-label">已完成订单</span>
+      </article>
+      <article class="num-card stapled io" style="--d:300ms;" title="点我抖一抖"><span class="num-memo">太重湖北</span><span class="num-big">1<span class="num-unit">亿</span></span><span class="num-label">协助意向订单</span></article>
+      <article class="num-card stapled io" style="--d:360ms;" title="点我抖一抖"><span class="num-memo">太重湖北</span><span class="num-big">1400<span class="num-unit">万</span></span><span class="num-label">协助完成订单</span></article>
+      <article class="num-card stapled io" style="--d:300ms;" title="点我抖一抖">
+        <span class="num-memo">湖北线索</span>
+        <span class="num-big">113<span class="num-unit">条</span></span>
+        <span class="num-label">客户线索（新增74条）</span>
+      </article>
+      <article class="num-card stapled io" style="--d:360ms;" title="点我抖一抖">
+        <span class="num-memo">空压机报备</span>
+        <span class="num-big">92<span class="num-unit">条</span></span>
+        <span class="num-label">意向报备</span>
+      </article>
+      <article class="num-card stapled io" style="--d:420ms;" title="点我抖一抖">
+        <span class="num-memo">WorkBuddy</span>
+        <span class="num-big">8<span class="num-unit">个</span></span>
+        <span class="num-label">AI 定制技能</span>
+      </article>
+    </div>
+
+    <p class="sec-note io" style="margin-top:16px;--d:200ms;">
+      <span class="scrawl scrawl-red">数字会说话，但只有把生意做成闭环，数字才作数。</span>
+    </p>
+  </section>
+
+  <!-- ================= 我的十年 · 职业履历时间线 ================= -->
+  <section id="timeline">
+    <header class="sec-head io">
+      <span class="sec-num">SECTION 03</span>
+      <h2 class="sec-title">我的十年 · 拍立得时间线<span class="stamp">履历</span></h2>
+      <p class="sec-note scrawl">从粤东海岸到河南平原再到湖北市场，一格格贴出来</p>
+    </header>
+
+    <ol class="timeline">
+      <!-- 1 宇通重工 -->
+      <li class="tl-item io">
+        <figure class="polaroid" title="点我抖一抖">
+          <div class="tape tape-t tape-w"></div>
+          <div class="photo photo-p1">🏗️<span class="scribble">粤东海风🌊</span></div>
+          <span class="caption">
+            <span class="year">2017.10 — 2021.03</span>
+            <span class="co">宇通重工 · 旋挖钻机/履带吊</span>
+            <span class="co">粤东区域</span>
+            <span class="note">目标客户 40→132 家 · 年业绩 600-1000万</span>
+            <span class="note">同批 60+ 新人中最早转正 🏆</span>
+          </span>
+        </figure>
+      </li>
+      <!-- 2 三一重工 -->
+      <li class="tl-item io" style="--d:90ms;">
+        <figure class="polaroid" title="点我抖一抖">
+          <div class="tape tape-t tape-y"></div>
+          <div class="photo photo-p2">🌾<span class="scribble">河南麦田</span></div>
+          <span class="caption">
+            <span class="year">2021.04 — 2023.06</span>
+            <span class="co">三一重工 · 旋挖钻机</span>
+            <span class="co">河南区域</span>
+            <span class="note">独立开发市场 · 客户 0→180 家</span>
+            <span class="note">年均销售 1500 万 💪</span>
+          </span>
+        </figure>
+      </li>
+      <!-- 3 中联重科 -->
+      <li class="tl-item io" style="--d:180ms;">
+        <figure class="polaroid" title="点我抖一抖">
+          <div class="tape tape-t tape-w"></div>
+          <div class="photo photo-p3">🏢<span class="scribble">风控时刻</span></div>
+          <span class="caption">
+            <span class="year">2023.07 — 2024.10</span>
+            <span class="co">中联重科 · 旋挖钻机</span>
+            <span class="co">河南区域</span>
+            <span class="note">完善客户信息 112 条</span>
+            <span class="note">主导应收账款催收与风险评估 ⚖</span>
+          </span>
+        </figure>
+      </li>
+      <!-- 4 复盛实业 -->
+      <li class="tl-item io" style="--d:270ms;">
+        <figure class="polaroid" title="点我抖一抖">
+          <div class="tape tape-t tape-y"></div>
+          <div class="photo photo-p4">⚙️<span class="scribble">上海制造</span></div>
+          <span class="caption">
+            <span class="year">2025.05 — 2025.12</span>
+            <span class="co">复盛实业（上海）· 空压机</span>
+            <span class="co">河南区域</span>
+            <span class="note">报备意向 92 条 · 独立标书 35 份</span>
+            <span class="note">协助投标 19 项 📄</span>
+          </span>
+        </figure>
+      </li>
+      <!-- 5 太原重工 -->
+      <li class="tl-item io" style="--d:360ms;">
+        <figure class="polaroid" title="点我抖一抖">
+          <div class="tape tape-t tape-w"></div>
+          <div class="photo photo-p5">🚧<span class="scribble">湖北新战场</span></div>
+          <span class="caption">
+            <span class="year">2025.12 — 至今</span>
+            <span class="co">太原重工·工程起重机分公司</span>
+            <span class="co">高空作业平台 · 湖北市场</span>
+            <span class="note">拓展客户 113 条、新增 74 条</span>
+            <span class="note">意向价值 1.2 亿 · 已完成订单 1500 万 · 协助意向订单 1 亿 · 协助完成订单 1400 万 🔥</span>
+          </span>
+        </figure>
+      </li>
+      <li class="tl-foot io"><span class="scrawl">—— 路还长，慢慢贴 ——</span></li>
+    </ol>
+  </section>
+
+  <!-- ================= 技能贴纸墙 ================= -->
+  <section id="skills">
+    <header class="sec-head io">
+      <span class="sec-num">SECTION 04</span>
+      <h2 class="sec-title">能力贴纸墙<span class="stamp">8枚</span></h2>
+      <p class="sec-note scrawl">攒了十年的一墙贴纸，每一枚都贴过真项目</p>
+    </header>
+
+    <div class="sticker-wall io">
+      <span class="sticker sk-1"><span class="ico">🤝</span>大客户经营<span class="sub">KA</span></span>
+      <span class="sticker sk-2"><span class="ico">🗺</span>区域0→1开拓<span class="sub">from zero</span></span>
+      <span class="sticker sk-3"><span class="ico">📄</span>招投标 / 标书<span class="sub">35份</span></span>
+      <span class="sticker sk-4"><span class="ico">💰</span>融资租赁方案设计<span class="sub">lease</span></span>
+      <span class="sticker sk-5"><span class="ico">🛡</span>应收账款风控<span class="sub">AR risk</span></span>
+      <span class="sticker sk-6"><span class="ico">🔁</span>客户成功 / 续约<span class="sub">CS</span></span>
+      <span class="sticker sk-7"><span class="ico">🤖</span>AI提效<span class="sub">workflow</span></span>
+      <span class="sticker sk-8"><span class="ico">📊</span>可量化业绩<span class="sub">data-driven</span></span>
+      <p class="sticker-wall-tip scrawl">小字：贴纸会旧，手艺不会 —— 每枚背后都是客户数、标书数、回款数。</p>
+    </div>
+
+    <div class="skill-award stapled io" style="--d:120ms;">
+      <b>🏅 一句话版：</b>
+      <span class="hl">既能从 0 到 1 把市场打穿，又能用 AI 把销售动作变成可复制的流水线。</span>
+    </div>
+  </section>
+
+  <!-- ================= 今日心情 · 涂鸦区 ================= -->
+  <section id="mood">
+    <header class="sec-head io">
+      <span class="sec-num">SECTION 05</span>
+      <h2 class="sec-title">今日心情涂鸦<span class="stamp">盖章处</span></h2>
+      <p class="sec-note scrawl">点一点，把心情盖在这页纸上</p>
+    </header>
+
+    <div class="mood-box io" id="moodBox" title="点空白处随机画一笔">
+      <span class="mood-tip">✎ 今日心情 · 盖章区</span>
+    </div>
+
+    <div class="mood-bar io" style="--d:100ms;">
+      <button class="mood-btn" type="button" data-mood="😄" title="开心">😄</button>
+      <button class="mood-btn" type="button" data-mood="😌" title="平静">😌</button>
+      <button class="mood-btn" type="button" data-mood="😴" title="困">😴</button>
+      <button class="mood-btn" type="button" data-mood="🔥" title="冲！">🔥</button>
+      <button class="mood-btn" type="button" data-mood="💪" title="干就完了">💪</button>
+      <button class="mood-btn" type="button" data-mood="✍️" title="写一笔">✍️</button>
+      <button class="mood-clear" type="button" id="moodClear">🧽 擦掉重来</button>
+    </div>
+    <p class="mood-count io" style="--d:160ms;">
+      今日已盖章 <b id="moodCount">0</b> 枚 —— 销售的日子，心情也要可视化 📊
+    </p>
+  </section>
+
+  <!-- ================= 作品 ================= -->
+  <section id="works">
+    <header class="sec-head io">
+      <span class="sec-num">SECTION 06</span>
+      <h2 class="sec-title">作品 · 便签墙<span class="stamp">4件</span></h2>
+      <p class="sec-note scrawl">全是真东西 —— 悬停便签，会掉出拍立得相纸哦</p>
+    </header>
+
+    <div class="works-grid">
+      <!-- 作品1 高机销售资料库 -->
+      <article class="sticky work-card stapled io" title="点我抖一抖">
+        <span class="pin"></span>
+        <h3 class="work-head"><span class="ico">📦</span>高机销售资料库</h3>
+        <p>湖北市场开发工具箱：产品推介 / 市场开发 / 融资租赁 / 客户运营 / 行业资讯 6 类归档，<b>1000+ 销售资料</b>。</p>
+        <div class="work-tags">
+          <span>6类归档</span><span>1000+资料</span><span>工具箱</span>
+        </div>
+        <div class="egg">
+          <div class="photo egg-ph1">🗂</div>
+          <span class="caption">资料就是弹药库<br><span class="scrawl">「仗还没打，弹药先备齐」</span></span>
+        </div>
+      </article>
+
+      <!-- 作品2 AI技能库 -->
+      <article class="sticky sticky-blue work-card stapled io" style="--d:90ms;" title="点我抖一抖">
+        <span class="pin"></span>
+        <h3 class="work-head"><span class="ico">🤖</span>AI技能库 · WorkBuddy</h3>
+        <p>自建 <b>8 个定制技能</b>：market-dev-kit（区域开发总入口）、amap-poi-collector（高德线索采集）、customer-geo-viz（客户热力作战图）、sales-lead-workbook（销售执行体系）、sales-pitch-ppt（高转化14页推介PPT）、wechat-addfriend（微信获客助手）、secure-html-deploy（加密部署）、industry-briefing（行业简报流水线）。</p>
+        <div class="work-tags">
+          <span>8技能</span><span>热力作战图</span><span>每月5日自动简报</span>
+        </div>
+        <div class="egg">
+          <div class="photo egg-ph2">⚡</div>
+          <span class="caption">技能即武器库<br><span class="scrawl">「别人加班做PPT，我让技能跑流水线」</span></span>
+        </div>
+      </article>
+
+      <!-- 作品3 汉青职业工作台 -->
+      <article class="sticky sticky-pink work-card stapled io" style="--d:180ms;" title="点我抖一抖">
+        <span class="pin"></span>
+        <h3 class="work-head"><span class="ico">💼</span>汉青职业工作台 · Career Workbench</h3>
+        <p>单文件 HTML 效率应用——6 大模块：学习 / 积累 / 记录 / 提高 / 事项安排 / 自我进化；<b>localStorage 持久化</b> + JSON 导入导出；jsdom 功能自检 10 项全 PASS。</p>
+        <div class="work-tags">
+          <span>单文件HTML</span><span>6大模块</span><span>JSON导入导出</span>
+        </div>
+        <div class="egg">
+          <div class="photo egg-ph3">🧰</div>
+          <span class="caption">工作台在手，打法我有<br><span class="scrawl">「把效率做成工程」</span></span>
+        </div>
+      </article>
+
+      <!-- 作品4 微信获客助手 -->
+      <article class="sticky sticky-green work-card stapled io" style="--d:270ms;" title="点我抖一抖">
+        <span class="pin"></span>
+        <h3 class="work-head"><span class="ico">📱</span>微信获客助手</h3>
+        <p>状态机 + CSV 备份 + 加密的单文件获客工具，<b>每日 25-30 条客户触达节奏</b>，让拓客动作标准化、可复盘。</p>
+        <div class="work-tags">
+          <span>状态机</span><span>CSV备份</span><span>25-30条/日</span>
+        </div>
+        <div class="egg">
+          <div class="photo egg-ph4">📲</div>
+          <span class="caption">拓客流水线<br><span class="scrawl">「一天25-30条触达，攒的是客户池」</span></span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= 三年纲领 2026-2028 ================= -->
+  <section id="plan">
+    <header class="sec-head io">
+      <span class="sec-num">SECTION 07</span>
+      <h2 class="sec-title">三年行动纲领 2026-2028<span class="stamp">作战图</span></h2>
+      <p class="sec-note scrawl">贴在案头的月历 —— 点击月份贴纸可以打卡（划掉 = 完成）</p>
+    </header>
+
+    <div class="plan-grid">
+      <!-- 2026 动身求职 -->
+      <article class="plan-card stapled io">
+        <div class="tape tape-t tape-y"></div>
+        <span class="plan-year">2026</span>
+        <span class="plan-zh">动身求职 · 秋招季发力</span>
+        <div class="months" data-year="2026">
+          <span class="month" data-m="1">1月</span>
+          <span class="month" data-m="2">2月</span>
+          <span class="month" data-m="3">3月</span>
+          <span class="month" data-m="4">4月</span>
+          <span class="month" data-m="5">5月</span>
+          <span class="month" data-m="6">6月</span>
+          <span class="month" data-m="7">7月</span>
+          <span class="month hot" data-m="8">8月<span class="dot"></span></span>
+          <span class="month hot" data-m="9">9月<span class="dot"></span></span>
+          <span class="month hot" data-m="10">10月<span class="dot"></span></span>
+          <span class="month hot" data-m="11">11月<span class="dot"></span></span>
+          <span class="month" data-m="12">12月</span>
+        </div>
+        <div class="month-legend">
+          <span><i style="background:var(--sticky);"></i>秋招季发力（8-11月）</span>
+          <span><i style="background:var(--sticky-blue);"></i>签约窗口（10月下旬-11月中旬）</span>
+        </div>
+        <ul>
+          <li><b>主攻</b>：工业互联网 SaaS 行业销售/客户成功 —— 树根互联、徐工汉云、卡奥斯、腾讯云工业、华为云</li>
+          <li><b>保底</b>：融资租赁客户经理 —— 远东宏信、平安租赁、厂商金融</li>
+          <li><b>近选</b>：高机头部厂销售管理岗 —— 临工 / 星邦 / 鼎力</li>
+        </ul>
+        <p class="plan-memo"><b>窗口提示：</b>10月下旬-11月中旬是签约窗口，别让秋招季空转。</p>
+      </article>
+
+      <!-- 2027 定盘 -->
+      <article class="plan-card stapled io" style="--d:90ms;">
+        <div class="tape tape-t tape-w"></div>
+        <span class="plan-year">2027</span>
+        <span class="plan-zh">定盘 · 名分落实，业绩年</span>
+        <div class="months" data-year="2027">
+          <span class="month" data-m="1">1月</span>
+          <span class="month" data-m="2">2月</span>
+          <span class="month" data-m="3">3月</span>
+          <span class="month" data-m="4">4月</span>
+          <span class="month" data-m="5">5月</span>
+          <span class="month" data-m="6">6月</span>
+          <span class="month" data-m="7">7月</span>
+          <span class="month" data-m="8">8月</span>
+          <span class="month" data-m="9">9月</span>
+          <span class="month" data-m="10">10月</span>
+          <span class="month" data-m="11">11月</span>
+          <span class="month" data-m="12">12月</span>
+        </div>
+        <div class="month-legend">
+          <span><i style="background:var(--sticky-green);"></i>点击贴纸打卡</span>
+        </div>
+        <ul>
+          <li>把「名分」落下来 —— 岗位、平台、title 各就各位</li>
+          <li>用 <b>可量化业绩</b> 把 2026 年谈下的盘面做扎实</li>
+          <li>AI 技能库全面接入日常工作流，省下的时间全砸进大客户</li>
+        </ul>
+        <p class="plan-memo"><b>一句话：</b>名分落实，业绩年 —— 挣的就是这一年的数字。</p>
+      </article>
+
+      <!-- 2028 上阶 -->
+      <article class="plan-card stapled io" style="--d:180ms;">
+        <div class="tape tape-t tape-y"></div>
+        <span class="plan-year">2028</span>
+        <span class="plan-zh">上阶 · 争取带团队</span>
+        <div class="months" data-year="2028">
+          <span class="month" data-m="1">1月</span>
+          <span class="month" data-m="2">2月</span>
+          <span class="month" data-m="3">3月</span>
+          <span class="month" data-m="4">4月</span>
+          <span class="month" data-m="5">5月</span>
+          <span class="month" data-m="6">6月</span>
+          <span class="month" data-m="7">7月</span>
+          <span class="month" data-m="8">8月</span>
+          <span class="month" data-m="9">9月</span>
+          <span class="month" data-m="10">10月</span>
+          <span class="month" data-m="11">11月</span>
+          <span class="month" data-m="12">12月</span>
+        </div>
+        <div class="month-legend">
+          <span><i style="background:var(--sticky-green);"></i>点击贴纸打卡</span>
+        </div>
+        <ul>
+          <li><b>争取带团队</b> —— 把区域打法和 AI 流水线复制给更多人</li>
+          <li>从「大客户销售」走向「销售管理 + 打法设计」</li>
+          <li>站在大平台上，把「赚大钱」变成水到渠成</li>
+        </ul>
+        <p class="plan-memo"><b>一句话：</b>上阶靠的不是加班，是把体系建起来。</p>
+      </article>
+
+      <!-- 心法 -->
+      <div class="mindset io">
+        <h3>🧠 心法便签（贴在最显眼处）</h3>
+        <div class="mindset-strips">
+          <div class="mind-strip stapled" title="点我抖一抖">
+            <span class="tag">MIND</span>
+            <span class="hl">内推 ＞ 海投</span>
+          </div>
+          <div class="mind-strip stapled" title="点我抖一抖">
+            <span class="tag">MIND</span>
+            <span class="hl">卖方案 不卖力气</span>
+          </div>
+          <div class="mind-strip stapled" title="点我抖一抖">
+            <span class="tag">MIND</span>
+            <span class="hl">攻坚大单 必组队</span>
+          </div>
+          <div class="mind-strip stapled" title="点我抖一抖">
+            <span class="tag">MIND</span>
+            <span class="hl">赚大钱之前 先站上大平台</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 联系方式 ================= -->
+  <section id="contact">
+    <header class="sec-head io">
+      <span class="sec-num">SECTION 08</span>
+      <h2 class="sec-title">联系我 · 便利贴<span class="stamp">撕下来</span></h2>
+      <p class="sec-note scrawl">需要大客户打法、标书功夫或 AI 销售流水线？撕张便利贴联系</p>
+    </header>
+
+    <div class="contact-grid">
+      <article class="sticky contact-note stapled io" title="点我抖一抖">
+        <div class="tape tape-tl tape-w"></div>
+        <h3>☎ 电话</h3>
+        <span class="big"><a href="tel:17772118785">177-7211-8785</a></span>
+        <span class="sub">直接打，专业干练、直奔结果</span>
+      </article>
+      <article class="sticky sticky-blue contact-note stapled io" style="--d:90ms;" title="点我抖一抖">
+        <div class="tape tape-t tape-w"></div>
+        <h3>✉ 邮箱</h3>
+        <span class="big"><a href="mailto:1820688914@qq.com">1820688914@qq.com</a></span>
+        <span class="sub">发邮件请带主题，24小时内回</span>
+      </article>
+      <article class="sticky sticky-pink contact-note stapled io" style="--d:180ms;" title="点我抖一抖">
+        <div class="tape tape-tr tape-y"></div>
+        <h3>📍 坐标</h3>
+        <span class="big">河南 · 郑州</span>
+        <span class="sub">base 郑州 · 可出差 · 32岁 · 已婚</span>
+      </article>
+      <div class="contact-side">
+        <span class="note-mini"><b>合作意向：</b>工业互联网 SaaS 销售/客户成功、融资租赁客户经理、高机头部厂销售管理 —— 都聊。</span>
+        <span class="note-mini"><b>一句话自荐：</b><span class="hl">「既懂销售，又懂AI」</span>，10年重工大客户销售 + 8个AI定制技能。</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ================= 页脚 ================= -->
+<footer>
+  <div class="foot-strip io">
+    <span class="foot-tape"></span>
+    © 2026 邵汉青 · 个人网站合集 · 第 08 号站点「手账拼贴 SCRAPBOOK」
+    · <a href="index.html">返回总览</a>
+  </div>
+  <p style="text-align:center;">
+    <a class="back-top" href="#top">↑ 撕回封面顶部</a>
+  </p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============ 1) 滚动渐入（IntersectionObserver） ============ */
+  var ioEls = document.querySelectorAll('.io');
+  function revealAll() {
+    for (var i = 0; i < ioEls.length; i++) { ioEls[i].classList.add('on'); }
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('on');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    for (var i = 0; i < ioEls.length; i++) { io.observe(ioEls[i]); }
+  } else {
+    /* 老浏览器兜底：直接全部显示 */
+    revealAll();
+  }
+
+  /* ============ 2) 点击便签抖动（撕一下） ============ */
+  var SHAKE_SEL = '.sticky, .work-card, .polaroid, .mind-strip, .num-card';
+  function shake(el) {
+    if (!el || el.classList.contains('shaking')) { return; }
+    el.classList.add('shaking');
+    el.addEventListener('animationend', function done() {
+      el.classList.remove('shaking');
+      el.removeEventListener('animationend', done);
+    });
+  }
+  document.addEventListener('click', function (ev) {
+    var el = ev.target && ev.target.closest ? ev.target.closest(SHAKE_SEL) : null;
+    shake(el);
+  });
+  /* 键盘无障碍：Enter 也可触发抖动 */
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Enter' && ev.key !== ' ') { return; }
+    var el = ev.target && ev.target.closest ? ev.target.closest(SHAKE_SEL) : null;
+    shake(el);
+  });
+
+  /* ============ 3) 今日心情 · 盖章 ============ */
+  var moodBox = document.getElementById('moodBox');
+  var moodCount = document.getElementById('moodCount');
+  var total = 0;
+  var MOOD_DOODLES = ['✎', '✧', '✦', '❀', '☘', '⚡', '☁', '★'];
+
+  function stampMood(ch) {
+    if (!moodBox) { return; }
+    var s = document.createElement('span');
+    s.className = 'mood-stamp';
+    s.textContent = ch;
+    /* 随机落点 + 随机旋转 */
+    var rot = (Math.random() * 50 - 25).toFixed(1);
+    s.style.left = (6 + Math.random() * 76).toFixed(1) + '%';
+    s.style.top = (10 + Math.random() * 68).toFixed(1) + '%';
+    s.style.fontSize = (24 + Math.random() * 20).toFixed(1) + 'px';
+    s.style.setProperty('--mr', rot + 'deg');
+    moodBox.appendChild(s);
+    total += 1;
+    if (moodCount) { moodCount.textContent = total; }
+  }
+
+  var moodBtns = document.querySelectorAll('.mood-btn');
+  for (var b = 0; b < moodBtns.length; b++) {
+    moodBtns[b].addEventListener('click', function () {
+      stampMood(this.getAttribute('data-mood') || '✎');
+    });
+  }
+
+  /* 点涂鸦区空白：随机画一笔 */
+  if (moodBox) {
+    moodBox.addEventListener('click', function (ev) {
+      if (ev.target === moodBox) {
+        var ch = MOOD_DOODLES[Math.floor(Math.random() * MOOD_DOODLES.length)];
+        stampMood(ch);
+      }
+    });
+  }
+
+  var moodClear = document.getElementById('moodClear');
+  if (moodClear) {
+    moodClear.addEventListener('click', function () {
+      var stamps = moodBox.querySelectorAll('.mood-stamp');
+      for (var i = 0; i < stamps.length; i++) { stamps[i].remove(); }
+      total = 0;
+      if (moodCount) { moodCount.textContent = 0; }
+    });
+  }
+
+  /* ============ 4) 封面印章 · 盖章动画 ============ */
+  var coverStamp = document.getElementById('coverStamp');
+  if (coverStamp) {
+    coverStamp.addEventListener('click', function () {
+      this.classList.remove('stamping');
+      /* 强制回流以重启动画 */
+      void this.offsetWidth;
+      this.classList.add('stamping');
+    });
+  }
+
+  /* ============ 5) 年历贴纸 · 打卡（划掉=完成） ============ */
+  var months = document.querySelectorAll('.month');
+  for (var m = 0; m < months.length; m++) {
+    months[m].addEventListener('click', function () {
+      this.classList.toggle('done');
+    });
+  }
+
+  /* ============ 6) 照片轻微跟随鼠标（拍立得更生动） ============ */
+  var polaroids = document.querySelectorAll('.polaroid');
+  for (var p = 0; p < polaroids.length; p++) {
+    polaroids[p].addEventListener('mousemove', function (ev) {
+      if (this.classList.contains('cover-photo')) { return; }
+      var rect = this.getBoundingClientRect();
+      var dx = (ev.clientX - rect.left) / rect.width - 0.5;
+      var dy = (ev.clientY - rect.top) / rect.height - 0.5;
+      this.style.setProperty('--tx', (dx * 6).toFixed(2) + 'px');
+      this.style.setProperty('--ty', (dy * 5).toFixed(2) + 'px');
+    });
+    polaroids[p].addEventListener('mouseleave', function () {
+      this.style.setProperty('--tx', '0px');
+      this.style.setProperty('--ty', '0px');
+    });
+  }
+})();
+</script>
+</body>
+</html>

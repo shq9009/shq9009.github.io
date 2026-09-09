@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="邵汉青 · 新拟物 NEUMORPHISM · 个人网站合集 10 号站 · 10年工程机械大客户销售 × AI重度实践者">
+<title>邵汉青 · 新拟物 NEUMORPHISM · 个人网站合集 10 号站</title>
+<script>document.documentElement.classList.remove('no-js');</script>
+<style>
+/* ==========================================================================
+   10 新拟物 NEUMORPHISM —— 邵汉青 · 个人网站合集 10 号站
+   --------------------------------------------------------------------------
+   视觉：软浮雕。浅色 #e0e5ec 经典新拟物灰 / 深色 #2d3436
+         双阴影塑形（外阴影 = 亮色高光 + 暗色阴影；内阴影 = 凹槽）
+         圆角 16-24px · 无边框 · 低饱和点缀（浅蓝 #5b7cfa / 青 #26c6da）
+   布局：顶栏（凹槽搜索条装饰 + 标题 + 夜间模式开关）
+         → hero（浮雕大圆 + 姓名）
+         → 浮雕卡片网格（关于 / 关键数字 / 能力标签）
+         → 履历（凹槽内嵌面板列表）
+         → 作品（可按压大按钮卡，active 阴影反转 = 按下）
+         → 三年纲领（三列浮雕卡 + 浮雕槽进度条）
+         → 联系（浮雕按钮 tel: / mailto: + 复制邮箱）
+   交互：按钮按压（:active 阴影反转）、右上角圆形夜间模式开关
+         （滑块 + 唯一允许的过渡动画）、进度条动画、滚动渐入
+   零外部依赖：无 CDN / 无外链字体图片 JS CSS / 无 fetch / file:// 可直接运行
+   ========================================================================== */
+
+/* ==========================================================================
+   1. 设计令牌：CSS 变量（浅色 / 深色两套，随 body.dark 切换）
+   ========================================================================== */
+:root {
+  --bg:           #e0e5ec;                 /* 经典新拟物浅灰（页面与浮雕同底色） */
+  --bg-deep:      #d3d9e2;                 /* 深一档灰（凹槽底 / 渐变暗端） */
+  --bg-soft:      #edf0f6;                 /* 浅一档灰（渐变亮端） */
+  --ink:          #2d3436;                 /* 主文字（深色） */
+  --text:         #4b5568;                 /* 正文灰蓝 */
+  --muted:        #5b6577;                 /* 次要文字（浅色 ≈4.6:1） */
+  --accent:       #5b7cfa;                 /* 低饱和浅蓝（主点缀） */
+  --cyan:         #26c6da;                 /* 青色（次点缀） */
+  --accent-soft:  rgba(91,124,250,.12);    /* 浅蓝薄底 */
+  --cyan-soft:    rgba(38,198,218,.10);    /* 青薄底 */
+  --sh-d:         rgba(163,177,198,.62);   /* 暗影（外 / 内） */
+  --sh-l:         rgba(255,255,255,.90);   /* 亮色高光（外 / 内） */
+  --sh-d-soft:    rgba(163,177,198,.34);   /* 弱暗影（hover 微调） */
+  --sh-l-soft:    rgba(255,255,255,.55);   /* 弱高光 */
+  --radius:       20px;                    /* 标准圆角 */
+  --radius-sm:    16px;                    /* 小卡片圆角 */
+  --radius-lg:    24px;                    /* 大面板圆角 */
+  --radius-pill:  999px;                   /* 药丸形 */
+  --shadow-raised:  8px 8px 16px var(--sh-d), -8px -8px 16px var(--sh-l);
+  --shadow-raised-lg: 12px 12px 24px var(--sh-d), -12px -12px 24px var(--sh-l);
+  --shadow-groove:  inset 5px 5px 10px var(--sh-d), inset -5px -5px 10px var(--sh-l);
+  --shadow-press:   inset 4px 4px 8px var(--sh-d), inset -4px -4px 8px var(--sh-l);
+  --font-sans:  -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+                "Microsoft YaHei", "Noto Sans SC", "Segoe UI", system-ui, sans-serif;
+  --font-mono:  ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
+                "Courier New", monospace;
+}
+
+/* 深色模式：#2d3436 经典新拟物深灰，阴影同色系（黑底暗影 + 微亮高光） */
+body.dark {
+  --bg:           #2d3436;
+  --bg-deep:      #252b2d;
+  --bg-soft:      #3b4347;
+  --ink:          #eef3f7;
+  --text:         #b3bdc8;
+  --muted:        #9aa6b8;                 /* 次要文字（深色 ≈5.2:1） */
+  --accent:       #6d8bff;
+  --cyan:         #43d4e6;
+  --accent-soft:  rgba(109,139,255,.15);
+  --cyan-soft:    rgba(67,212,230,.11);
+  --sh-d:         rgba(0,0,0,.62);
+  --sh-l:         rgba(255,255,255,.07);
+  --sh-d-soft:    rgba(0,0,0,.42);
+  --sh-l-soft:    rgba(255,255,255,.05);
+}
+
+/* ==========================================================================
+   2. 重置与全局
+   ========================================================================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;          /* 锚点平滑滚动 */
+  scroll-padding-top: 96px;         /* 粘性顶栏补偿 */
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--text);
+  line-height: 1.75;
+  overflow-x: hidden;
+  background-color: var(--bg);
+  /* 极淡的双色光晕，打破纯灰的单调（不破坏浮雕同色底） */
+  background-image:
+    radial-gradient(circle at 12% 6%,  var(--accent-soft), transparent 42%),
+    radial-gradient(circle at 92% 96%, var(--cyan-soft),   transparent 42%);
+  transition: background-color .45s ease, color .45s ease;   /* 仅主题切换时跟随滑块渐变 */
+}
+
+h1, h2, h3, h4 { color: var(--ink); line-height: 1.35; font-weight: 800; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+button { font-family: inherit; }
+input { font-family: inherit; }
+
+::selection { background: var(--accent); color: #fff; }
+
+/* 滚动条：新拟物凹槽样式（webkit） */
+::-webkit-scrollbar { width: 12px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--bg-deep);
+  border-radius: 8px;
+  box-shadow: inset 2px 2px 4px var(--sh-d), inset -2px -2px 4px var(--sh-l);
+}
+
+/* ==========================================================================
+   3. 顶栏：品牌 + 凹槽搜索条装饰 + 圆形夜间模式开关
+   ========================================================================== */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: var(--bg);
+  box-shadow: 0 4px 12px var(--sh-d-soft), 0 -4px 12px var(--sh-l-soft);
+  transition: background-color .45s ease;
+}
+.topbar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* 品牌：浮雕小圆徽标 + 标题 */
+.brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.brand-mark {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.brand-name { font-size: 17px; font-weight: 800; color: var(--ink); letter-spacing: .5px; }
+.brand-sub {
+  font-size: 11.5px; color: var(--muted); letter-spacing: 1.2px;
+  font-family: var(--font-mono); margin-top: 1px;
+}
+
+/* 凹槽搜索条（装饰 + 轻量过滤功能：可过滤能力标签与作品） */
+.search {
+  flex: 1;
+  max-width: 460px;
+  margin: 0 auto;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  transition: background-color .45s ease;
+}
+.search .s-icon { font-size: 16px; opacity: .75; flex-shrink: 0; }
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: none; outline: none; background: transparent;
+  color: var(--text); font-size: 14px;
+}
+.search input::placeholder { color: var(--muted); }
+.search-status {
+  font-size: 12px; color: var(--accent); font-family: var(--font-mono);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 0; opacity: 0;
+  transition: max-width .3s ease, opacity .3s ease;
+}
+.search-status.show { max-width: 210px; opacity: 1; }
+
+/* 圆形夜间模式开关：凹槽圆盘 + 浮雕滑块（滑块是唯一允许的过渡动画） */
+.theme-toggle {
+  position: relative;
+  width: 76px; height: 76px;
+  border: none; cursor: pointer;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  flex-shrink: 0;
+  transition: background-color .45s ease;
+}
+.theme-toggle:hover .theme-knob { box-shadow: 6px 6px 14px var(--sh-d), -6px -6px 14px var(--sh-l); }
+.theme-knob {
+  position: absolute;
+  top: 50%; left: 8px;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 21px;
+  /* —— 唯一允许的过渡动画：夜间模式滑块 —— */
+  transition: transform .5s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease;
+}
+body.dark .theme-knob { transform: translate(16px, -50%); }
+
+/* ==========================================================================
+   4. Hero：浮雕大圆 + 姓名 + 身份标签
+   ========================================================================== */
+.hero {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 72px 24px 44px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+/* 浮雕大圆：中心齿轮 + 内凹环 + 两颗悬浮浮雕小圆 */
+.hero-orb {
+  position: relative;
+  width: 208px; height: 208px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: var(--shadow-raised-lg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 84px;
+}
+.hero-orb::after {
+  content: "";
+  position: absolute; inset: 18px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-groove);
+}
+.orb-chip {
+  position: absolute;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 21px;
+  z-index: 2;
+}
+.orb-chip.c1 { top: -6px;  right: 4px; }
+.orb-chip.c2 { bottom: -4px; left: 0; }
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  font-family: var(--font-mono);
+  font-size: 12px; letter-spacing: 1.4px;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+.hero h1 { font-size: 58px; font-weight: 900; letter-spacing: 4px; }
+.hero .hero-sub {
+  font-size: 21px; font-weight: 700;
+  color: var(--accent);
+  margin: 10px 0 14px;
+}
+.hero .hero-desc { font-size: 16px; color: var(--text); max-width: 560px; }
+.hero-en {
+  font-family: var(--font-mono); font-size: 11.5px;
+  letter-spacing: 1.6px; color: var(--muted);
+  margin-top: 12px;
+}
+
+/* 浮雕信息胶囊 */
+.hero-chips { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  font-size: 13.5px; color: var(--text);
+}
+
+/* 浮雕按钮组 */
+.hero-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 30px; }
+
+/* ==========================================================================
+   5. 通用组件：区块标题 / 浮雕卡 / 凹槽 / 按钮 / 标签 / 进度条
+   ========================================================================== */
+.section { padding: 60px 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+.sec-head { display: flex; align-items: center; gap: 16px; margin-bottom: 40px; }
+.sec-num {
+  width: 46px; height: 46px; flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 14px; font-weight: 700;
+  color: var(--accent);
+}
+.sec-title { font-size: 26px; letter-spacing: 1px; }
+.sec-sub { font-size: 13.5px; color: var(--muted); margin-top: 2px; }
+
+/* 浮雕凸起卡片（无边框，靠双阴影塑形） */
+.card {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow-raised);
+  transition: background-color .45s ease;
+}
+.card-icon {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 23px;
+  margin-bottom: 16px;
+}
+.card h3 { font-size: 18px; margin-bottom: 10px; }
+.card p  { font-size: 14.5px; color: var(--text); margin-bottom: 8px; }
+.card .mono { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+
+/* 凹槽（内嵌）容器 */
+.groove {
+  background: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-groove);
+  transition: background-color .45s ease;
+}
+
+/* 浮雕按钮：默认凸起，:active 阴影反转 = 按下 */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  padding: 13px 26px;
+  border: none; cursor: pointer;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  color: var(--text); font-size: 15px; font-weight: 600;
+  transition: box-shadow .14s ease, transform .14s ease, background-color .45s ease;
+}
+.btn:hover { box-shadow: 10px 10px 20px var(--sh-d), -10px -10px 20px var(--sh-l); }
+.btn:active {
+  box-shadow: var(--shadow-press);           /* 阴影反转：按下 */
+  transform: scale(.97) translateY(1px);
+}
+.btn-primary {
+  background: linear-gradient(145deg, #6d8bff, #4a6cf7);
+  color: #fff;
+  box-shadow: 6px 6px 14px rgba(91,124,250,.38), -6px -6px 14px rgba(255,255,255,.5);
+}
+.btn-primary:hover { box-shadow: 8px 8px 18px rgba(91,124,250,.45), -8px -8px 18px rgba(255,255,255,.55); }
+.btn-primary:active { box-shadow: inset 4px 4px 10px rgba(20,40,120,.45), inset -4px -4px 10px rgba(255,255,255,.18); }
+.btn-lg { padding: 16px 32px; font-size: 16.5px; }
+
+/* 能力标签：浮雕药丸，:active 同样按下反转 */
+.tag {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 12px 22px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  color: var(--text); font-size: 15px; font-weight: 600;
+  transition: box-shadow .14s ease, transform .14s ease;
+}
+.tag:active { box-shadow: var(--shadow-press); transform: scale(.96); }
+
+/* 浮雕槽进度条（内嵌凹槽 + 渐变填充） */
+.plan-bar {
+  position: relative;
+  height: 16px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  overflow: hidden;
+}
+.plan-fill {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 0;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--accent), var(--cyan));
+  box-shadow: 0 3px 8px var(--accent-soft), inset 0 2px 3px rgba(255,255,255,.35);
+  transition: width 1.2s cubic-bezier(.22,.8,.3,1);   /* 进度条动画 */
+}
+
+/* 滚动渐入 */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity .65s ease, transform .65s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+.d1 { transition-delay: .08s; } .d2 { transition-delay: .16s; }
+.d3 { transition-delay: .24s; } .d4 { transition-delay: .32s; }
+.d5 { transition-delay: .40s; } .d6 { transition-delay: .48s; }
+
+/* ==========================================================================
+   6. 关于：浮雕卡片网格（定位 / 画像 / 学习原则 + 学历与背书宽卡）
+   ========================================================================== */
+.about-quote {
+  max-width: 1120px; margin: 0 auto 36px;
+  padding: 24px 28px;
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  text-align: center;
+}
+.about-quote .q { font-size: 21px; font-weight: 800; color: var(--ink); letter-spacing: 2px; }
+.about-quote .q-src {
+  font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+  margin-top: 8px; letter-spacing: 1.5px;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+.about-wide { grid-column: 1 / -1; }
+
+/* 学习原则步骤条（凹槽内嵌，数字浮雕） */
+.steps { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.step {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  font-size: 14px;
+}
+.step .n {
+  width: 30px; height: 30px; flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+  color: var(--accent);
+}
+.step .arr { color: var(--cyan); font-weight: 800; }
+
+/* 学历与背书：内嵌信息格 */
+.edu-line {
+  display: flex; flex-wrap: wrap; gap: 14px 26px;
+  padding: 16px 18px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  font-size: 14px;
+  margin-top: 12px;
+}
+.edu-line b { color: var(--ink); }
+
+/* ==========================================================================
+   7. 关键数字：四列浮雕数字卡（滚动渐入 + 计数动画）
+   ========================================================================== */
+.num-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.num-card {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 30px 16px 26px;
+  box-shadow: var(--shadow-raised);
+  text-align: center;
+  transition: background-color .45s ease;
+}
+.num-card:nth-child(odd)  .num-value { color: var(--accent); }
+.num-card:nth-child(even) .num-value { color: var(--cyan); }
+.num-value {
+  font-size: 46px; font-weight: 900; line-height: 1.15;
+  font-family: var(--font-mono);
+  letter-spacing: -1px;
+}
+.num-suffix { font-size: .45em; font-weight: 800; font-family: var(--font-sans); }
+.num-label { font-size: 13.5px; color: var(--muted); margin-top: 8px; }
+.num-note { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+
+/* ==========================================================================
+   8. 能力标签：八个浮雕药丸，可被顶栏搜索过滤
+   ========================================================================== */
+.skills { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+.skills-count { text-align: center; margin-bottom: 26px; }
+.skills-count .c {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  font-family: var(--font-mono); font-size: 12.5px; color: var(--muted);
+}
+.skills-count .c b { color: var(--accent); font-size: 15px; }
+
+/* ==========================================================================
+   9. 职业履历：中线凹槽 + 左右交替凹槽内嵌面板（5 段 + 学历补记）
+   ========================================================================== */
+.timeline { position: relative; max-width: 920px; margin: 0 auto; padding: 10px 0; }
+.timeline::before {
+  content: "";
+  position: absolute; left: 50%; top: 0; bottom: 0;
+  width: 8px;
+  transform: translateX(-50%);
+  border-radius: 8px;
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+}
+.tl-item { position: relative; width: 50%; padding: 0 44px 36px 0; }
+.tl-item:nth-child(even) { margin-left: 50%; padding: 0 0 36px 44px; }
+
+/* 时间轴节点：浮雕圆 + 内嵌色点 */
+.tl-dot {
+  position: absolute; top: 4px; right: -14px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2;
+}
+.tl-dot::after {
+  content: "";
+  position: absolute; inset: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: .9;
+}
+.tl-item:last-child .tl-dot::after { background: var(--cyan); }
+.tl-item:nth-child(even) .tl-dot { right: auto; left: -14px; }
+
+/* 凹槽内嵌面板（履历卡片） */
+.tl-card {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 26px;
+  box-shadow: var(--shadow-groove);
+  transition: background-color .45s ease;
+}
+.tl-period {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.tl-company { font-size: 19px; font-weight: 800; color: var(--ink); }
+.tl-role { font-size: 14px; color: var(--muted); margin: 2px 0 10px; }
+.tl-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.tl-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  font-size: 12.5px; color: var(--muted);
+}
+.tl-points li {
+  display: flex; gap: 10px;
+  padding: 5px 0;
+  font-size: 14.5px;
+}
+.tl-points li::before { content: "▸"; color: var(--cyan); font-weight: 800; flex-shrink: 0; }
+.tl-points b { color: var(--ink); font-family: var(--font-mono); font-size: 14px; }
+
+/* 学历补记：宽凹槽面板（放在时间线之后） */
+.edu-panel {
+  max-width: 920px; margin: 34px auto 0;
+  padding: 22px 28px;
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px;
+}
+.edu-panel .t { font-size: 13px; color: var(--muted); font-family: var(--font-mono); letter-spacing: 1.5px; }
+.edu-panel .e { font-size: 14.5px; }
+.edu-panel .e b { color: var(--ink); }
+
+/* ==========================================================================
+   10. 作品：可按压大按钮卡（点击展开细节，:active 阴影反转 = 按下）
+   ========================================================================== */
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+}
+.work-card {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: var(--shadow-raised);
+  transition: box-shadow .16s ease, transform .16s ease, background-color .45s ease;
+}
+.work-card:hover { box-shadow: 12px 12px 24px var(--sh-d), -12px -12px 24px var(--sh-l); }
+/* 按下 / 展开态：阴影反转（内凹），模拟实体按钮被按下去 */
+.work-card:active {
+  box-shadow: var(--shadow-press);
+  transform: scale(.985) translateY(2px);
+}
+.work-card.open { box-shadow: var(--shadow-press); }
+.work-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.work-icon {
+  width: 54px; height: 54px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 25px;
+}
+.work-index {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 1.5px;
+  color: var(--muted);
+  padding: 5px 13px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+}
+.work-card h3 { font-size: 19px; margin-bottom: 8px; }
+.work-card .work-desc { font-size: 14.5px; color: var(--text); }
+.work-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.work-tag {
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  font-family: var(--font-mono); font-size: 11.5px; color: var(--accent);
+}
+.work-more {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height .5s ease, opacity .45s ease, margin-top .4s ease;
+}
+.work-card.open .work-more { max-height: 520px; opacity: 1; margin-top: 18px; }
+.work-more .inner {
+  padding: 18px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  font-size: 13.5px;
+}
+.work-more .inner ul li { display: flex; gap: 9px; padding: 4px 0; }
+.work-more .inner ul li::before { content: "▪"; color: var(--cyan); flex-shrink: 0; }
+.work-more .inner code {
+  font-family: var(--font-mono); font-size: 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 1px 7px; border-radius: 6px;
+}
+.work-hint {
+  margin-top: 14px;
+  font-family: var(--font-mono); font-size: 11.5px;
+  color: var(--muted); letter-spacing: 1px;
+}
+.work-card.open .work-hint .arrow { display: inline-block; transform: rotate(180deg); }
+
+/* ==========================================================================
+   11. 三年行动纲领 2026-2028：三列浮雕卡 + 浮雕槽进度条 + 心法
+   ========================================================================== */
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+.plan-card {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: var(--shadow-raised);
+  display: flex; flex-direction: column; gap: 16px;
+  transition: background-color .45s ease;
+}
+.plan-year {
+  font-family: var(--font-mono); font-size: 34px; font-weight: 800;
+  color: var(--accent); letter-spacing: 1px; line-height: 1;
+}
+.plan-year .tag-word { font-family: var(--font-sans); font-size: 15px; font-weight: 800; color: var(--ink); margin-left: 8px; }
+.plan-desc { font-size: 14px; color: var(--text); flex: 1; }
+.plan-desc ul li { display: flex; gap: 9px; padding: 5px 0; font-size: 13.8px; }
+.plan-desc ul li::before { content: "▸"; color: var(--cyan); flex-shrink: 0; font-weight: 800; }
+.plan-bar-cap { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); letter-spacing: 1px; }
+
+/* 心法：凹槽条 + 浮雕标语 */
+.plan-mindset {
+  max-width: 1120px; margin: 36px auto 0;
+  padding: 22px 28px;
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 12px 18px;
+}
+.plan-mindset .m-label {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 2px;
+  color: var(--muted);
+}
+.mind-item {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  font-size: 14px; font-weight: 600; color: var(--ink);
+}
+.mind-item .gt { color: var(--cyan); font-weight: 800; }
+
+/* ==========================================================================
+   12. 联系：浮雕按钮（tel: / mailto:）+ 复制邮箱 + 提示浮层
+   ========================================================================== */
+.contact-wrap { max-width: 780px; margin: 0 auto; }
+.contact-card {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  padding: 44px 36px;
+  box-shadow: var(--shadow-raised);
+  text-align: center;
+  transition: background-color .45s ease;
+}
+.contact-card h2 { font-size: 28px; margin-bottom: 8px; }
+.contact-card .sub { color: var(--muted); font-size: 14.5px; margin-bottom: 30px; }
+.contact-actions { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-bottom: 30px; }
+.contact-meta { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+/* 复制成功提示（浮雕浮层） */
+.toast {
+  position: fixed;
+  left: 50%; bottom: 34px;
+  transform: translate(-50%, 20px);
+  z-index: 90;
+  padding: 13px 26px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-raised-lg);
+  color: var(--ink); font-size: 14.5px; font-weight: 600;
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s ease, transform .35s ease;
+  max-width: 88vw; text-align: center;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ==========================================================================
+   13. 页脚
+   ========================================================================== */
+.footer {
+  margin-top: 40px;
+  padding: 44px 24px 56px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.footer-line {
+  width: 180px; height: 8px;
+  margin: 0 auto 26px;
+  border-radius: 8px;
+  background: var(--bg);
+  box-shadow: var(--shadow-groove);
+}
+.footer a.index-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 16px;
+  padding: 11px 26px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  color: var(--ink); font-weight: 700; font-size: 15px;
+  transition: box-shadow .14s ease, transform .14s ease;
+}
+.footer a.index-link:hover { box-shadow: 10px 10px 20px var(--sh-d), -10px -10px 20px var(--sh-l); }
+.footer a.index-link:active { box-shadow: var(--shadow-press); transform: scale(.97); }
+.footer .fine { margin-top: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.2px; }
+
+/* ==========================================================================
+   14. 浮动返回顶部
+   ========================================================================== */
+.to-top {
+  position: fixed; right: 26px; bottom: 26px;
+  width: 52px; height: 52px;
+  border: none; cursor: pointer;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: var(--shadow-raised);
+  font-size: 20px; color: var(--accent);
+  opacity: 0; visibility: hidden;
+  transform: translateY(14px);
+  transition: opacity .3s ease, transform .3s ease, visibility .3s;
+  z-index: 80;
+}
+.to-top.show { opacity: 1; visibility: visible; transform: none; }
+.to-top:active { box-shadow: var(--shadow-press); }
+
+/* ==========================================================================
+   15. 响应式：平板 / 手机（≤768px 网格收敛为单列）
+   ========================================================================== */
+@media (max-width: 960px) {
+  .hero { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 40px; }
+  .hero .hero-desc { margin: 0 auto; }
+  .hero-chips, .hero-actions { justify-content: center; }
+  .about-grid { grid-template-columns: 1fr; }
+  .num-grid { grid-template-columns: repeat(2, 1fr); }
+  .works-grid { grid-template-columns: 1fr; }
+  .plan-grid { grid-template-columns: 1fr; }
+
+  /* 时间线：中线收敛到左侧 */
+  .timeline::before { left: 14px; transform: none; }
+  .tl-item,
+  .tl-item:nth-child(even) { width: 100%; margin-left: 0; padding: 0 0 30px 48px; }
+  .tl-dot,
+  .tl-item:nth-child(even) .tl-dot { left: 0; right: auto; }
+}
+
+@media (max-width: 768px) {
+  .section { padding: 44px 0; }
+  .hero { padding: 56px 20px 32px; }
+  .hero h1 { font-size: 40px; }
+  .hero-orb { width: 150px; height: 150px; font-size: 62px; }
+  .orb-chip { width: 40px; height: 40px; font-size: 18px; }
+
+  .brand-sub { display: none; }
+  .brand-name { font-size: 15px; }
+  .search { max-width: none; padding: 9px 14px; }
+  .search-status.show { max-width: 120px; font-size: 11px; }
+
+  .theme-toggle { width: 62px; height: 62px; }
+  .theme-knob { width: 38px; height: 38px; left: 6px; font-size: 18px; }
+  body.dark .theme-knob { transform: translate(12px, -50%); }
+
+  .num-card { padding: 22px 12px 20px; }
+  .num-value { font-size: 34px; }
+  .sec-head { margin-bottom: 28px; }
+  .contact-card { padding: 32px 22px; }
+  .contact-actions { flex-direction: column; align-items: stretch; }
+  .contact-actions .btn { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 32px; letter-spacing: 2px; }
+  .hero .hero-sub { font-size: 17px; }
+  .hero-orb { width: 124px; height: 124px; font-size: 52px; }
+  .num-grid { gap: 16px; }
+  .num-value { font-size: 28px; }
+  .tag { padding: 10px 16px; font-size: 13.5px; }
+  .wrap { padding: 0 18px; }
+  .topbar-inner { padding: 10px 14px; gap: 10px; }
+  .search .s-icon { font-size: 14px; }
+  .about-quote .q { font-size: 17px; }
+  .footer { padding: 34px 18px 48px; }
+  .to-top { right: 16px; bottom: 16px; width: 46px; height: 46px; }
+}
+
+/* ==========================================================================
+   16. 无障碍与降级：键盘焦点 / 减少动效 / 无 JS 兜底
+   ========================================================================== */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .plan-fill { transition: none; }
+}
+.no-js .reveal { opacity: 1; transform: none; }
+.no-js .plan-fill { width: 100%; }
+/* 无 JS 时数字直接显示 data-target 目标值 */
+.no-js .num-raw { visibility: hidden; }
+.no-js .num-raw::after { visibility: visible; content: attr(data-target); }
+</style>
+</head>
+<body>
+
+<!-- ==================== 顶栏：品牌 + 凹槽搜索条 + 夜间模式开关 ==================== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html" title="返回总览">
+      <span class="brand-mark">⚙️</span>
+      <span>
+        <span class="brand-name">邵汉青</span><br>
+        <span class="brand-sub">NEUMORPHISM · 10 号站</span>
+      </span>
+    </a>
+
+    <!-- 凹槽搜索条：装饰 + 轻量过滤（输入可过滤能力标签与作品） -->
+    <div class="search">
+      <span class="s-icon">🔍</span>
+      <input id="siteSearch" type="text" placeholder="搜索：AI / 标书 / 客户…" aria-label="搜索能力与作品">
+      <span class="search-status" id="searchStatus"></span>
+    </div>
+
+    <!-- 圆形夜间模式开关（滑块 + 唯一允许的过渡动画） -->
+    <button class="theme-toggle" id="themeToggle" type="button"
+            aria-label="切换夜间模式" aria-pressed="false" title="切换夜间模式">
+      <span class="theme-knob" id="themeKnob">🌙</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- ==================== Hero：浮雕大圆 + 姓名 ==================== -->
+  <section class="hero">
+    <div class="hero-orb reveal" aria-hidden="true">
+      ⚙️
+      <span class="orb-chip c1">🏗️</span>
+      <span class="orb-chip c2">🤖</span>
+    </div>
+    <div class="hero-text reveal d1">
+      <span class="hero-tag">个人网站合集 · 10 号站 · 新拟物 NEUMORPHISM</span>
+      <h1>邵汉青</h1>
+      <p class="hero-sub">「既懂销售，又懂AI」</p>
+      <p class="hero-desc">
+        10 年工程机械大客户销售 × AI 重度实践者。现职太原重工 · 工程起重机分公司
+        业务经理 / 大客户销售，深耕高空作业平台（剪叉 4-14m / 臂式 16-60m）湖北市场。
+        一手客户资源与招投标硬功夫，一手自建 AI 技能流水线——把重复的事全部自动化。
+      </p>
+      <p class="hero-en">10 YEARS · HEAVY MACHINERY KEY-ACCOUNT SALES × AI PRACTITIONER</p>
+      <div class="hero-chips">
+        <span class="chip">📍 河南郑州 · 可出差</span>
+        <span class="chip">🎂 32 岁 · 已婚</span>
+        <span class="chip">🏢 太原重工 · 工程起重机分公司</span>
+        <span class="chip">⏱ 重工大客户销售 10 年</span>
+      </div>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contact">📞 联系我</a>
+        <a class="btn" href="#timeline">🗓 查看履历</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 01 关于 ==================== -->
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">01</span>
+        <div>
+          <h2 class="sec-title">关于</h2>
+          <p class="sec-sub">ABOUT · 定位 / 画像 / 学习原则 / 学历与平台背书</p>
+        </div>
+      </div>
+
+      <!-- 座右铭宽幅凹槽条 -->
+      <div class="about-quote reveal">
+        <p class="q">「既懂销售，又懂AI」</p>
+        <p class="q-src">座右铭 · 10 年重工大客户销售 × AI 重度实践者</p>
+      </div>
+
+      <div class="about-grid">
+        <!-- 定位 -->
+        <div class="card reveal">
+          <div class="card-icon">🎯</div>
+          <h3>定位</h3>
+          <p>10 年工程机械大客户销售 × AI 重度实践者，一句话人设：<b style="color:var(--accent)">既懂销售，又懂AI</b>。</p>
+          <p>现职：<b>太原重工 · 工程起重机分公司</b> 业务经理 / 大客户销售，产品为高空作业平台（剪叉 4-14m / 臂式 16-60m）。</p>
+          <p class="mono">BASE 河南郑州 · 可出差 · 32 岁 · 已婚</p>
+        </div>
+
+        <!-- 画像与座右铭 -->
+        <div class="card reveal d1">
+          <div class="card-icon">⚔️</div>
+          <h3>画像与座右铭</h3>
+          <p>气质画像：<b>"直奔结果的实干派"</b>——目标感强、方案制胜，剑指大单。</p>
+          <p>沟通风格：专业干练、直奔结果，少寒暄、多方案。</p>
+          <p class="mono">座右铭：既懂销售，又懂AI</p>
+        </div>
+
+        <!-- 学习原则 -->
+        <div class="card reveal d2">
+          <div class="card-icon">🧭</div>
+          <h3>学习原则</h3>
+          <div class="steps">
+            <div class="step"><span class="n">1</span>结果导向 <span class="arr">→</span></div>
+            <div class="step"><span class="n">2</span>先模仿后创造 <span class="arr">→</span></div>
+            <div class="step"><span class="n">3</span>重复的事自动化 <span class="arr">→</span></div>
+            <div class="step"><span class="n">4</span>小步快跑</div>
+          </div>
+        </div>
+
+        <!-- 学历与背书（宽卡） -->
+        <div class="card about-wide reveal">
+          <div class="card-icon">🏢</div>
+          <h3>学历与平台背书</h3>
+          <div class="edu-line">
+            <span>🎓 本科 · <b>黄淮学院</b> · 汽车服务工程（2015-2017）</span>
+            <span>🎓 大专 · <b>鹤壁职业技术学院</b> · 汽车检测（2012-2015）</span>
+          </div>
+          <div class="edu-line">
+            <span>🏢 <b>太原重工</b>：76 年底蕴 · A 股 600169 · 2025 营收约 103.79 亿</span>
+            <span>🗺 现负责区域：湖北市场（高空作业平台）</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 02 关键数字 ==================== -->
+  <section class="section" id="numbers">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">02</span>
+        <div>
+          <h2 class="sec-title">关键数字</h2>
+          <p class="sec-sub">NUMBERS · 可量化的业绩，全部来自真实履历</p>
+        </div>
+      </div>
+
+      <div class="num-grid">
+        <div class="num-card reveal">
+          <div class="num-value"><span class="num-raw" data-target="10">0</span><span class="num-suffix"> 年</span></div>
+          <p class="num-label">重工大客户销售</p>
+          <p class="num-note">宇通 → 三一 → 中联 → 复盛 → 太重</p>
+        </div>
+        <div class="num-card reveal d1">
+          <div class="num-value"><span class="num-raw" data-target="180">0</span><span class="num-suffix">+</span></div>
+          <p class="num-label">客户开发</p>
+          <p class="num-note">三一：独立开发 0 → 180 家</p>
+        </div>
+        <div class="num-card reveal d2">
+          <div class="num-value"><span class="num-raw" data-target="35">0</span><span class="num-suffix"> 份</span></div>
+          <p class="num-label">独立完成标书</p>
+          <p class="num-note">复盛空压机 · 协助投标 19 项</p>
+        </div>
+        <div class="num-card reveal d3">
+          <div class="num-value"><span class="num-raw" data-target="1.2" data-decimals="1">0</span><span class="num-suffix"> 亿</span></div>
+          <p class="num-label">意向价值</p>
+          <p class="num-note">太重湖北市场</p>
+        </div>
+        <div class="num-card reveal">
+          <div class="num-value"><span class="num-raw" data-target="1500">0</span><span class="num-suffix"> 万</span></div>
+          <p class="num-label">已完成订单</p>
+          <p class="num-note">太重湖北市场</p>
+        </div>
+        <div class="num-card reveal d1">
+          <div class="num-value"><span class="num-raw" data-target="1">0</span><span class="num-suffix"> 亿</span></div>
+          <p class="num-label">协助意向订单</p>
+          <p class="num-note">太重湖北市场</p>
+        </div>
+        <div class="num-card reveal d2">
+          <div class="num-value"><span class="num-raw" data-target="1400">0</span><span class="num-suffix"> 万</span></div>
+          <p class="num-label">协助完成订单</p>
+          <p class="num-note">太重湖北市场</p>
+        </div>
+        <div class="num-card reveal d1">
+          <div class="num-value"><span class="num-raw" data-target="113">0</span><span class="num-suffix"> 条</span></div>
+          <p class="num-label">湖北客户线索</p>
+          <p class="num-note">拓展 113 条 · 新增 74 条</p>
+        </div>
+        <div class="num-card reveal d2">
+          <div class="num-value"><span class="num-raw" data-target="92">0</span><span class="num-suffix"> 条</span></div>
+          <p class="num-label">空压机报备意向</p>
+          <p class="num-note">复盛河南区域</p>
+        </div>
+        <div class="num-card reveal d3">
+          <div class="num-value"><span class="num-raw" data-target="8">0</span><span class="num-suffix"> 个</span></div>
+          <p class="num-label">AI 定制技能</p>
+          <p class="num-note">WorkBuddy 自建技能库</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 03 能力标签 ==================== -->
+  <section class="section" id="skills">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">03</span>
+        <div>
+          <h2 class="sec-title">能力标签</h2>
+          <p class="sec-sub">SKILLS · 8 项核心能力 · 可被顶栏搜索过滤</p>
+        </div>
+      </div>
+
+      <div class="skills-count reveal">
+        <span class="c">共 <b>8</b> 项能力标签 · 点击有按压反馈 · 顶栏可搜索</span>
+      </div>
+      <div class="skills">
+        <span class="tag reveal" data-name="大客户经营">🤝 大客户经营</span>
+        <span class="tag reveal d1" data-name="区域0到1开拓">🧭 区域 0→1 开拓</span>
+        <span class="tag reveal d2" data-name="招投标标书">📄 招投标 / 标书</span>
+        <span class="tag reveal d3" data-name="融资租赁方案设计">💰 融资租赁方案设计</span>
+        <span class="tag reveal d4" data-name="应收账款风控">🛡️ 应收账款风控</span>
+        <span class="tag reveal d5" data-name="客户成功续约">🔁 客户成功 / 续约</span>
+        <span class="tag reveal d6" data-name="ai提效">🤖 AI 提效</span>
+        <span class="tag reveal" data-name="可量化业绩">📈 可量化业绩</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 04 职业履历（5 段 + 学历补记） ==================== -->
+  <section class="section" id="timeline">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">04</span>
+        <div>
+          <h2 class="sec-title">职业履历</h2>
+          <p class="sec-sub">JOURNEY · 2017 → 至今 · 五段重工大客户销售实战</p>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <!-- 第 1 段：宇通重工 -->
+        <div class="tl-item reveal">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="tl-card">
+            <span class="tl-period">2017.10 — 2021.03</span>
+            <h3 class="tl-company">宇通重工</h3>
+            <p class="tl-role">旋挖钻机 / 履带吊 · 销售</p>
+            <div class="tl-chips">
+              <span class="tl-chip">📍 粤东区域</span>
+              <span class="tl-chip">🚜 旋挖钻机 / 履带吊</span>
+            </div>
+            <ul class="tl-points">
+              <li>目标客户从 <b>40</b> 家拓展到 <b>132</b> 家</li>
+              <li>年业绩 <b>600–1000</b> 万</li>
+              <li>同批 <b>60+</b> 名新人中最早转正</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 第 2 段：三一重工 -->
+        <div class="tl-item reveal d1">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="tl-card">
+            <span class="tl-period">2021.04 — 2023.06</span>
+            <h3 class="tl-company">三一重工</h3>
+            <p class="tl-role">旋挖钻机 · 销售</p>
+            <div class="tl-chips">
+              <span class="tl-chip">📍 河南区域</span>
+              <span class="tl-chip">🚜 旋挖钻机</span>
+            </div>
+            <ul class="tl-points">
+              <li>独立开发市场：客户 <b>0 → 180</b> 家</li>
+              <li>年均销售 <b>1500</b> 万</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 第 3 段：中联重科 -->
+        <div class="tl-item reveal">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="tl-card">
+            <span class="tl-period">2023.07 — 2024.10</span>
+            <h3 class="tl-company">中联重科</h3>
+            <p class="tl-role">旋挖钻机 · 销售</p>
+            <div class="tl-chips">
+              <span class="tl-chip">📍 河南区域</span>
+              <span class="tl-chip">🚜 旋挖钻机</span>
+            </div>
+            <ul class="tl-points">
+              <li>完善客户信息 <b>112</b> 条</li>
+              <li>主导应收账款催收与风险评估</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 第 4 段：复盛实业 -->
+        <div class="tl-item reveal d1">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="tl-card">
+            <span class="tl-period">2025.05 — 2025.12</span>
+            <h3 class="tl-company">复盛实业（上海）</h3>
+            <p class="tl-role">空压机 · 销售</p>
+            <div class="tl-chips">
+              <span class="tl-chip">📍 河南区域</span>
+              <span class="tl-chip">💨 空压机</span>
+            </div>
+            <ul class="tl-points">
+              <li>报备意向 <b>92</b> 条</li>
+              <li>独立完成标书 <b>35</b> 份</li>
+              <li>协助投标 <b>19</b> 项</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 第 5 段：太原重工（现职） -->
+        <div class="tl-item reveal">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="tl-card">
+            <span class="tl-period">2025.12 — 至今</span>
+            <h3 class="tl-company">太原重工 · 工程起重机分公司</h3>
+            <p class="tl-role">业务经理 / 大客户销售 · 高空作业平台</p>
+            <div class="tl-chips">
+              <span class="tl-chip">📍 湖北市场</span>
+              <span class="tl-chip">🛠 剪叉 4-14m / 臂式 16-60m</span>
+              <span class="tl-chip">⭐ 现职</span>
+            </div>
+            <ul class="tl-points">
+              <li>拓展客户 <b>113</b> 条、新增 <b>74</b> 条</li>
+              <li>意向价值 <b>1.2</b> 亿</li>
+              <li>已完成订单 <b>1500万</b></li>
+              <li>协助意向订单 <b>1亿</b></li>
+              <li>协助完成订单 <b>1400万</b></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 学历补记 -->
+      <div class="edu-panel reveal">
+        <span class="t">EDUCATION · 学历补记</span>
+        <span class="e">🎓 本科 · <b>黄淮学院</b> · 汽车服务工程（2015-2017）</span>
+        <span class="e">🎓 大专 · <b>鹤壁职业技术学院</b> · 汽车检测（2012-2015）</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 05 代表作品（可按压大按钮卡） ==================== -->
+  <section class="section" id="works">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">05</span>
+        <div>
+          <h2 class="sec-title">代表作品</h2>
+          <p class="sec-sub">WORKS · 4 个真实作品 · 点击卡片展开细节（按压有反馈）</p>
+        </div>
+      </div>
+
+      <div class="works-grid">
+        <!-- 作品 1：高机销售资料库 -->
+        <article class="work-card reveal" data-name="高机销售资料库" tabindex="0" role="button"
+                 aria-label="高机销售资料库，点击展开详情">
+          <div class="work-top">
+            <span class="work-icon">📚</span>
+            <span class="work-index">作品 01 / 04</span>
+          </div>
+          <h3>高机销售资料库</h3>
+          <p class="work-desc">湖北市场开发工具箱：产品推介、市场开发、融资租赁、客户运营、行业资讯等 6 类归档，沉淀 1000+ 份销售资料。</p>
+          <div class="work-tags">
+            <span class="work-tag">6 类归档</span>
+            <span class="work-tag">1000+ 资料</span>
+            <span class="work-tag">湖北市场</span>
+          </div>
+          <div class="work-more">
+            <div class="inner">
+              <ul>
+                <li>归档分类：<code>产品推介</code> <code>市场开发</code> <code>融资租赁</code> <code>客户运营</code> <code>行业资讯</code> 共 6 类</li>
+                <li>定位：区域开发工具箱，让每一次客户拜访、投标、方案讲解都有弹药可查</li>
+              </ul>
+            </div>
+          </div>
+          <p class="work-hint">点击展开 <span class="arrow">▾</span></p>
+        </article>
+
+        <!-- 作品 2：AI 技能库 -->
+        <article class="work-card reveal d1" data-name="ai技能库" tabindex="0" role="button"
+                 aria-label="AI 技能库，点击展开详情">
+          <div class="work-top">
+            <span class="work-icon">🤖</span>
+            <span class="work-index">作品 02 / 04</span>
+          </div>
+          <h3>AI 技能库</h3>
+          <p class="work-desc">在 WorkBuddy 上自建的 8 个定制技能，把区域开发、客户采集、作战地图、执行体系与简报流水线全部自动化。</p>
+          <div class="work-tags">
+            <span class="work-tag">8 个定制技能</span>
+            <span class="work-tag">WorkBuddy</span>
+            <span class="work-tag">每月 5 日自动</span>
+          </div>
+          <div class="work-more">
+            <div class="inner">
+              <ul>
+                <li><code>market-dev-kit</code> 区域开发总入口</li>
+                <li><code>amap-poi-collector</code> 高德客户线索采集</li>
+                <li><code>customer-geo-viz</code> 客户热力作战图</li>
+                <li><code>sales-lead-workbook</code> 销售执行体系</li>
+                <li><code>sales-pitch-ppt</code> 高转化 14 页推介 PPT</li>
+                <li><code>wechat-addfriend</code> 微信获客助手</li>
+                <li><code>secure-html-deploy</code> 加密部署</li>
+                <li><code>industry-briefing</code> 行业简报流水线（每月 5 日自动）</li>
+              </ul>
+            </div>
+          </div>
+          <p class="work-hint">点击展开 <span class="arrow">▾</span></p>
+        </article>
+
+        <!-- 作品 3：汉青职业工作台 -->
+        <article class="work-card reveal" data-name="汉青职业工作台" tabindex="0" role="button"
+                 aria-label="汉青职业工作台，点击展开详情">
+          <div class="work-top">
+            <span class="work-icon">🧰</span>
+            <span class="work-index">作品 03 / 04</span>
+          </div>
+          <h3>汉青职业工作台</h3>
+          <p class="work-desc">Career Workbench · 单文件 HTML 效率应用——6 大模块：学习 / 积累 / 记录 / 提高 / 事项安排 / 自我进化；localStorage 持久化 + JSON 导入导出；jsdom 功能自检 10 项全 PASS。</p>
+          <div class="work-tags">
+            <span class="work-tag">6 大模块</span>
+            <span class="work-tag">localStorage</span>
+            <span class="work-tag">JSON 导入导出</span>
+            <span class="work-tag">自检 10 PASS</span>
+          </div>
+          <div class="work-more">
+            <div class="inner">
+              <ul>
+                <li>6 大模块：<code>学习</code> <code>积累</code> <code>记录</code> <code>提高</code> <code>事项安排</code> <code>自我进化</code></li>
+                <li>技术：<code>localStorage</code> 持久化 · <code>JSON</code> 导入导出 · 单文件 HTML 应用</li>
+                <li>质量：jsdom 功能自检 <code>10</code> 项全 PASS</li>
+              </ul>
+            </div>
+          </div>
+          <p class="work-hint">点击展开 <span class="arrow">▾</span></p>
+        </article>
+
+        <!-- 作品 4：微信获客助手 -->
+        <article class="work-card reveal d1" data-name="微信获客助手" tabindex="0" role="button"
+                 aria-label="微信获客助手，点击展开详情">
+          <div class="work-top">
+            <span class="work-icon">📱</span>
+            <span class="work-index">作品 04 / 04</span>
+          </div>
+          <h3>微信获客助手</h3>
+          <p class="work-desc">状态机 + CSV 备份 + 加密的单文件获客工具，内置每日 25–30 条客户触达节奏的 SOP，让客户触达成为可管理、可追踪的流程。</p>
+          <div class="work-tags">
+            <span class="work-tag">状态机</span>
+            <span class="work-tag">CSV 备份</span>
+            <span class="work-tag">加密</span>
+          </div>
+          <div class="work-more">
+            <div class="inner">
+              <ul>
+                <li>核心机制：<code>状态机</code> 管理触达进度，杜绝重复与遗漏</li>
+                <li>数据安全：<code>CSV 备份</code> + <code>加密</code>，本地留档不外泄</li>
+                <li>SOP：每日 <code>25–30</code> 条客户触达节奏，稳定可持续</li>
+              </ul>
+            </div>
+          </div>
+          <p class="work-hint">点击展开 <span class="arrow">▾</span></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 06 三年行动纲领 2026-2028 ==================== -->
+  <section class="section" id="plan">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">06</span>
+        <div>
+          <h2 class="sec-title">三年行动纲领</h2>
+          <p class="sec-sub">PLAN 2026-2028 · 动身 → 定盘 → 上阶</p>
+        </div>
+      </div>
+
+      <div class="plan-grid">
+        <!-- 2026 动身求职 -->
+        <div class="plan-card reveal">
+          <p class="plan-year">2026<span class="tag-word">动身求职</span></p>
+          <div class="plan-desc">
+            <ul>
+              <li>秋金月（8-11 月）发力，签约窗口：10 月下旬 - 11 月中旬</li>
+              <li>主攻：工业互联网 SaaS 行业销售 / 客户成功（树根互联、徐工汉云、卡奥斯、腾讯云工业、华为云）</li>
+              <li>保底：融资租赁客户经理（远东宏信、平安租赁、厂商金融）</li>
+              <li>近选：高机头部厂销售管理岗（临工 / 星邦 / 鼎力）</li>
+            </ul>
+          </div>
+          <div class="plan-bar" aria-hidden="true">
+            <div class="plan-fill" data-width="33"></div>
+          </div>
+          <p class="plan-bar-cap">节奏示意：秋金月窗口 8-11 月（约全年 1/3）</p>
+        </div>
+
+        <!-- 2027 定盘 -->
+        <div class="plan-card reveal d1">
+          <p class="plan-year">2027<span class="tag-word">定盘</span></p>
+          <div class="plan-desc">
+            <ul>
+              <li>名分落实：站上新平台，把岗位、title、薪酬结构全部落地</li>
+              <li>业绩年：用可量化的数字说话，大客户经营全面展开</li>
+              <li>把 2026 的求职窗口经验沉淀为可复制的方法论</li>
+            </ul>
+          </div>
+          <div class="plan-bar" aria-hidden="true">
+            <div class="plan-fill" data-width="100"></div>
+          </div>
+          <p class="plan-bar-cap">节奏示意：全年定盘 · 业绩年</p>
+        </div>
+
+        <!-- 2028 上阶 -->
+        <div class="plan-card reveal d2">
+          <p class="plan-year">2028<span class="tag-word">上阶</span></p>
+          <div class="plan-desc">
+            <ul>
+              <li>争取带团队：从"个人业绩"升级为"团队产能"</li>
+              <li>复制区域 0→1 与 AI 提效体系，放大组织战斗力</li>
+              <li>持续用 AI 技能库武装团队，让重复的事全部自动化</li>
+            </ul>
+          </div>
+          <div class="plan-bar" aria-hidden="true">
+            <div class="plan-fill" data-width="40"></div>
+          </div>
+          <p class="plan-bar-cap">节奏示意：上阶目标 · 争取带团队</p>
+        </div>
+      </div>
+
+      <!-- 心法 -->
+      <div class="plan-mindset reveal">
+        <span class="m-label">心法 · MINDSET</span>
+        <span class="mind-item">内推 <span class="gt">＞</span> 海投</span>
+        <span class="mind-item">卖方案 <span class="gt">＞</span> 卖力气</span>
+        <span class="mind-item">攻坚大单 <span class="gt">必</span> 组队</span>
+        <span class="mind-item">赚大钱之前 <span class="gt">先</span> 站上大平台</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 07 联系方式 ==================== -->
+  <section class="section" id="contact">
+    <div class="wrap">
+      <div class="contact-wrap">
+        <div class="contact-card reveal">
+          <h2>欢迎交流</h2>
+          <p class="sub">工程机械 × AI · 求职 / 合作 / 行业交流皆可，直奔结果。</p>
+          <div class="contact-actions">
+            <a class="btn btn-primary btn-lg" href="tel:17772118785">📞 177-7211-8785</a>
+            <a class="btn btn-lg" href="mailto:1820688914@qq.com">✉️ 1820688914@qq.com</a>
+            <button class="btn btn-lg" id="copyEmail" type="button">📋 复制邮箱</button>
+          </div>
+          <div class="contact-meta">
+            <span class="chip">📍 河南郑州 · 可出差</span>
+            <span class="chip">🏢 太原重工 · 工程起重机分公司</span>
+            <span class="chip">⏱ 10 年大客户销售</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ==================== 页脚 ==================== -->
+<footer class="footer">
+  <div class="footer-line" aria-hidden="true"></div>
+  <p>© 2026 邵汉青 · 个人网站合集 · 10 号站 · 新拟物 NEUMORPHISM</p>
+  <a class="index-link" href="index.html">⬅ 返回总览</a>
+  <p class="fine">单文件 · 零依赖 · 纯 CSS 绘制 · 双击即可运行 · 数据为真实个人履历</p>
+</footer>
+
+<!-- 浮动返回顶部 -->
+<button class="to-top" id="toTop" type="button" aria-label="返回顶部" title="返回顶部">↑</button>
+
+<!-- 复制提示浮层 -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<noscript>
+  <p style="text-align:center;padding:16px;font-family:sans-serif;color:#4b5568;">
+    请启用 JavaScript 以体验完整交互（夜间模式 / 渐入 / 计数 / 进度条 / 复制邮箱）。
+  </p>
+</noscript>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ====================================================================
+     1. 夜间模式开关
+     滑块（theme-knob）是唯一允许的过渡动画元素；
+     偏好写入 localStorage，首次访问跟随系统 prefers-color-scheme。
+     ==================================================================== */
+  var toggle = document.getElementById('themeToggle');
+  var knob   = document.getElementById('themeKnob');
+  var KEY    = 'sq-neu-theme-10';
+
+  function applyTheme(mode) {
+    var dark = mode === 'dark';
+    document.body.classList.toggle('dark', dark);
+    knob.textContent = dark ? '☀️' : '🌙';          // 滑块图标指向"点击后的模式"
+    toggle.setAttribute('aria-pressed', dark ? 'true' : 'false');
+  }
+
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) { saved = null; }
+
+  var prefersDark = false;
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    prefersDark = true;
+  }
+
+  applyTheme(saved ? (saved === 'dark' ? 'dark' : 'light') : (prefersDark ? 'dark' : 'light'));
+
+  toggle.addEventListener('click', function () {
+    var dark = document.body.classList.toggle('dark');
+    knob.textContent = dark ? '☀️' : '🌙';
+    toggle.setAttribute('aria-pressed', dark ? 'true' : 'false');
+    try { localStorage.setItem(KEY, dark ? 'dark' : 'light'); } catch (e) { /* file:// 下存储不可用时静默 */ }
+  });
+
+  /* ====================================================================
+     2. 滚动渐入：IntersectionObserver 一次性触发 .visible
+     ==================================================================== */
+  var reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var revealIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('visible');
+          revealIO.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(function (el) { revealIO.observe(el); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add('visible'); });
+  }
+
+  /* ====================================================================
+     3. 关键数字计数：进入视口后从 0 缓动到目标值（easeOutCubic）
+     ==================================================================== */
+  function animateCount(el) {
+    var target = parseFloat(el.getAttribute('data-target')) || 0;
+    var dec    = parseInt(el.getAttribute('data-decimals') || '0', 10);
+    var dur    = 1100;
+    var start  = null;
+
+    function frame(now) {
+      if (start === null) start = now;
+      var p = Math.min(1, (now - start) / dur);
+      var eased = 1 - Math.pow(1 - p, 3);            /* easeOutCubic */
+      el.textContent = (target * eased).toFixed(dec);
+      if (p < 1) { requestAnimationFrame(frame); }
+      else { el.textContent = target.toFixed(dec); }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  var nums = document.querySelectorAll('.num-raw[data-target]');
+  if ('IntersectionObserver' in window) {
+    var numIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          animateCount(en.target);
+          numIO.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    nums.forEach(function (n) { numIO.observe(n); });
+  } else {
+    nums.forEach(function (n) {
+      n.textContent = parseFloat(n.getAttribute('data-target')).toFixed(
+        parseInt(n.getAttribute('data-decimals') || '0', 10));
+    });
+  }
+
+  /* ====================================================================
+     4. 浮雕槽进度条动画：进入视口后宽度 0 → data-width
+     ==================================================================== */
+  var fills = document.querySelectorAll('.plan-fill');
+  if ('IntersectionObserver' in window) {
+    var barIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.style.width = en.target.getAttribute('data-width') + '%';
+          barIO.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    fills.forEach(function (b) { barIO.observe(b); });
+  } else {
+    fills.forEach(function (b) {
+      b.style.width = b.getAttribute('data-width') + '%';
+    });
+  }
+
+  /* ====================================================================
+     5. 顶栏搜索：轻量过滤能力标签与作品卡片（装饰条 + 真实功能）
+     ==================================================================== */
+  var search  = document.getElementById('siteSearch');
+  var status  = document.getElementById('searchStatus');
+  var tags    = document.querySelectorAll('.tag[data-name]');
+  var workCards = document.querySelectorAll('.work-card[data-name]');
+
+  search.addEventListener('input', function () {
+    var q = this.value.trim().toLowerCase();
+    var t = 0, w = 0;
+
+    tags.forEach(function (el) {
+      var on = !q || el.getAttribute('data-name').indexOf(q) !== -1;
+      el.style.display = on ? '' : 'none';
+      if (on) t++;
+    });
+    workCards.forEach(function (el) {
+      var on = !q || el.getAttribute('data-name').indexOf(q) !== -1;
+      el.style.display = on ? '' : 'none';
+      if (on) w++;
+    });
+
+    if (q) {
+      status.textContent = '找到 ' + t + ' 个标签、' + w + ' 个作品';
+      status.classList.add('show');
+    } else {
+      status.textContent = '';
+      status.classList.remove('show');
+    }
+  });
+
+  /* ====================================================================
+     6. 作品卡：点击展开 / 收起（:active 阴影反转 + open 内凹态）
+        键盘可达：Enter / 空格同样触发
+     ==================================================================== */
+  workCards.forEach(function (card) {
+    card.addEventListener('click', function () {
+      this.classList.toggle('open');
+    });
+    card.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.classList.toggle('open');
+      }
+    });
+  });
+
+  /* ====================================================================
+     7. 复制邮箱：优先 navigator.clipboard，file:// 降级 execCommand
+     ==================================================================== */
+  var copyBtn = document.getElementById('copyEmail');
+  var toast   = document.getElementById('toast');
+  var EMAIL   = '1820688914@qq.com';
+  var toastTimer = null;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2200);
+  }
+
+  function legacyCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) { /* 忽略 */ }
+    document.body.removeChild(ta);
+  }
+
+  copyBtn.addEventListener('click', function () {
+    function done() { showToast('已复制邮箱：' + EMAIL); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(EMAIL).then(done, function () {
+        legacyCopy(EMAIL);
+        done();
+      });
+    } else {
+      legacyCopy(EMAIL);
+      done();
+    }
+  });
+
+  /* ====================================================================
+     8. 浮动返回顶部：滚动超过阈值显示，点击平滑回顶
+     ==================================================================== */
+  var toTop = document.getElementById('toTop');
+
+  window.addEventListener('scroll', function () {
+    toTop.classList.toggle('show', window.scrollY > 420);
+  }, { passive: true });
+
+  toTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+</body>
+</html>

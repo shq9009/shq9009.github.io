@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="邵汉青 · 个人网站合集 04 赛博霓虹 · 10年工程机械大客户销售 × AI重度实践者">
+<title>邵汉青 · 赛博霓虹 CYBERPUNK · 个人网站合集 04</title>
+<style>
+/* ==========================================================================
+   04 赛博霓虹 CYBERPUNK —— 邵汉青个人站
+   暗黑霓虹 · 矩阵代码雨 · 3D透视网格地板 · HUD 全息面板
+   样式分区：00 变量与重置 | 01 背景层 | 02 HUD框架 | 03 辉光与Glitch
+             04 全息面板 | 05 板块组件 | 06 入侵彩蛋 | 07 关键帧 | 08 响应式
+   ========================================================================== */
+
+/* ==================== 00 变量与重置 ==================== */
+:root {
+  --bg:#05060f; --cyan:#00f0ff; --magenta:#ff00aa; --yellow:#ffee00;
+  --text:#c9f6ff; --dim:#6fb3c4; --line:rgba(0,240,255,.25);
+  --mono:"SF Mono","Cascadia Mono",Consolas,"Liberation Mono","Courier New",monospace;
+  --sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--text); font-family:var(--sans); font-size:16px; line-height:1.75; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+a { color:var(--cyan); text-decoration:none; }
+a:hover { color:var(--yellow); }
+ul { list-style:none; }
+button { font-family:var(--mono); cursor:pointer; }
+::selection { background:rgba(255,0,170,.45); color:#fff; }
+::-webkit-scrollbar { width:9px; height:9px; }
+::-webkit-scrollbar-track { background:#070a18; }
+::-webkit-scrollbar-thumb { background:linear-gradient(180deg,var(--cyan),var(--magenta)); border-radius:4px; }
+
+/* ==================== 01 背景层 ==================== */
+/* 1.1 矩阵代码雨画布（固定全屏、最底层） */
+#matrixRain { position:fixed; inset:0; z-index:0; opacity:.55; pointer-events:none; }
+
+/* 1.2 3D 透视网格地板（固定底部，滚动视差由 JS 驱动） */
+.grid-floor {
+  position:fixed; left:-25%; right:-25%; bottom:-12%; height:62vh; z-index:1; opacity:.5;
+  transform:perspective(430px) rotateX(63deg); transform-origin:bottom center;
+  background:
+    repeating-linear-gradient(90deg,rgba(0,240,255,.38) 0 1px,transparent 1px 56px),
+    repeating-linear-gradient(0deg,rgba(0,240,255,.30) 0 1px,transparent 1px 56px),
+    linear-gradient(180deg,rgba(5,6,15,0) 0%,rgba(0,240,255,.07) 55%,rgba(255,0,170,.10) 100%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 30%,#000 100%);
+          mask-image:linear-gradient(180deg,transparent 0%,#000 30%,#000 100%);
+  pointer-events:none; animation:gridGlow 6s ease-in-out infinite alternate;
+}
+
+/* 1.3 CRT 扫描线（叠于内容之上） */
+.scanlines { position:fixed; inset:0; z-index:50; opacity:.5; pointer-events:none; background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px); }
+
+/* 1.4 噪点颗粒（纯 CSS，随 keyframes 抖动模拟胶片噪点） */
+.noise {
+  position:fixed; inset:0; z-index:51; opacity:.34; pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.16) 1px,transparent 1.4px),radial-gradient(rgba(0,240,255,.12) 1px,transparent 1.6px);
+  background-size:3px 3px,5px 5px; animation:noiseJitter .42s steps(4) infinite;
+}
+
+/* 1.5 CRT 曲率与暗角（椭圆径向渐变模拟轻微屏幕弯曲） */
+.crt-curve { position:fixed; inset:0; z-index:52; pointer-events:none; background:radial-gradient(ellipse 125% 95% at 50% 50%,rgba(0,0,0,0) 58%,rgba(0,0,0,.28) 82%,rgba(0,0,0,.58) 100%); }
+
+/* 1.6 自上而下的扫描光带 */
+.scan-bar { position:fixed; left:0; right:0; height:130px; z-index:49; pointer-events:none; background:linear-gradient(180deg,transparent,rgba(0,240,255,.055),transparent); animation:scanMove 9s linear infinite; }
+
+/* ==================== 02 HUD 框架 ==================== */
+/* 2.1 顶部状态栏：系统状态 / 时钟 / 伪随机坐标 */
+.hud-top {
+  position:fixed; top:0; left:0; right:0; height:46px; z-index:40;
+  display:flex; align-items:center; justify-content:space-between; padding:0 16px 0 256px;
+  font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--cyan);
+  background:rgba(5,6,15,.78); border-bottom:1px solid var(--line);
+  box-shadow:0 0 18px rgba(0,240,255,.12); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+}
+.hud-left, .hud-mid, .hud-right { display:flex; align-items:center; gap:10px; white-space:nowrap; }
+.hud-sep { color:var(--magenta); }
+.led { width:8px; height:8px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan),0 0 16px rgba(0,240,255,.6); animation:ledBlink 2.2s steps(1) infinite; }
+#hudTime { font-size:14px; color:var(--yellow); text-shadow:0 0 8px rgba(255,238,0,.8); }
+
+/* 2.2 侧边 HUD 菜单（桌面端） */
+.hud-side {
+  position:fixed; top:46px; left:0; bottom:0; width:240px; z-index:39;
+  display:flex; flex-direction:column; padding:22px 16px 16px;
+  background:rgba(7,10,24,.85); border-right:1px solid var(--line);
+  box-shadow:12px 0 34px rgba(0,240,255,.07);
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+}
+.side-brand { display:flex; align-items:baseline; justify-content:space-between; padding:0 4px 14px; margin-bottom:14px; border-bottom:1px dashed rgba(0,240,255,.3); }
+.brand-mark { font-family:var(--mono); font-size:26px; font-weight:800; letter-spacing:.12em; color:var(--yellow); text-shadow:0 0 10px rgba(255,238,0,.7),0 0 26px rgba(255,0,170,.5); }
+.brand-idx { font-family:var(--mono); font-size:12px; color:var(--dim); }
+.side-nav { display:flex; flex-direction:column; gap:2px; }
+.nav-link { display:flex; align-items:center; gap:10px; padding:9px 12px; font-family:var(--mono); font-size:14px; letter-spacing:.08em; color:var(--dim); border:1px solid transparent; border-radius:4px; transition:color .25s,border-color .25s,background .25s,text-shadow .25s; }
+.nav-link .nav-idx { font-size:11px; color:var(--magenta); min-width:26px; }
+.nav-link:hover { color:var(--cyan); text-shadow:0 0 10px rgba(0,240,255,.8); border-color:rgba(0,240,255,.35); background:rgba(0,240,255,.06); }
+.nav-link.active { color:var(--yellow); text-shadow:0 0 10px rgba(255,238,0,.8); border-color:rgba(255,238,0,.45); background:rgba(255,238,0,.06); }
+.nav-link.nav-back { margin-top:8px; border-top:1px dashed rgba(255,0,170,.35); border-radius:0; padding-top:12px; color:var(--magenta); }
+.nav-link.nav-back:hover { color:var(--yellow); text-shadow:0 0 10px rgba(255,238,0,.8); }
+
+/* 侧栏装饰性系统负载条 */
+.side-sys { margin-top:auto; padding:14px 8px 0; border-top:1px dashed rgba(0,240,255,.3); font-family:var(--mono); font-size:11px; color:var(--dim); }
+.sys-row { display:flex; justify-content:space-between; margin-bottom:4px; }
+.sys-row span:last-child { color:var(--cyan); }
+.sys-track { height:4px; margin-bottom:12px; border-radius:2px; background:rgba(0,240,255,.12); overflow:hidden; }
+.sys-track i { display:block; height:100%; border-radius:2px; background:linear-gradient(90deg,var(--cyan),var(--magenta)); box-shadow:0 0 8px rgba(0,240,255,.7); transition:width .9s ease; }
+.side-foot { margin-top:10px; text-align:center; font-family:var(--mono); font-size:10px; letter-spacing:.2em; color:rgba(111,179,196,.5); }
+
+/* 2.3 移动端顶部 Tab 导航（窄屏替代侧栏） */
+.mobile-nav { display:none; position:fixed; top:46px; left:0; right:0; z-index:38; padding:8px 10px; background:rgba(5,6,15,.92); border-bottom:1px solid var(--line); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); overflow-x:auto; white-space:nowrap; scrollbar-width:none; }
+.mobile-nav::-webkit-scrollbar { display:none; }
+.m-link { display:inline-block; padding:6px 12px; margin-right:6px; font-family:var(--mono); font-size:12px; color:var(--dim); border:1px solid rgba(0,240,255,.25); border-radius:20px; transition:all .25s; }
+.m-link.active { color:var(--bg); background:var(--cyan); border-color:var(--cyan); box-shadow:0 0 14px rgba(0,240,255,.6); }
+.m-link.m-back { border-color:rgba(255,0,170,.5); color:var(--magenta); }
+.m-link.m-back.active { background:var(--magenta); color:#fff; border-color:var(--magenta); }
+
+/* 2.4 悬浮控制舱：矩阵开关 / 密度滑杆 / 入侵按钮 */
+.control-pod { position:fixed; left:252px; bottom:18px; z-index:38; display:flex; align-items:center; gap:10px; padding:10px 14px; font-family:var(--mono); font-size:12px; background:rgba(7,10,24,.88); border:1px solid var(--line); border-radius:8px; box-shadow:0 0 22px rgba(0,240,255,.15); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); }
+.pod-btn { padding:7px 12px; font-size:12px; letter-spacing:.06em; color:var(--cyan); background:rgba(0,240,255,.08); border:1px solid rgba(0,240,255,.45); border-radius:4px; transition:all .25s; }
+.pod-btn:hover { background:rgba(0,240,255,.2); box-shadow:0 0 14px rgba(0,240,255,.5); }
+.pod-btn.on { color:var(--yellow); border-color:var(--yellow); box-shadow:0 0 14px rgba(255,238,0,.45); }
+.pod-intr { color:var(--magenta); border-color:rgba(255,0,170,.55); background:rgba(255,0,170,.08); }
+.pod-intr:hover { background:rgba(255,0,170,.2); box-shadow:0 0 14px rgba(255,0,170,.55); }
+.pod-slider { display:flex; align-items:center; gap:8px; color:var(--dim); }
+.pod-slider input[type="range"] { -webkit-appearance:none; appearance:none; width:110px; height:4px; border-radius:2px; background:linear-gradient(90deg,var(--cyan),var(--magenta)); outline:none; }
+.pod-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:14px; height:14px; border-radius:50%; background:var(--yellow); border:2px solid #05060f; box-shadow:0 0 10px var(--yellow); cursor:pointer; }
+.pod-slider input[type="range"]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--yellow); border:2px solid #05060f; box-shadow:0 0 10px var(--yellow); cursor:pointer; }
+#densityVal { min-width:28px; color:var(--yellow); text-align:right; }
+
+/* 2.5 屏幕四角 HUD 角标 */
+.hud-corner { position:fixed; z-index:41; font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:rgba(0,240,255,.55); pointer-events:none; text-shadow:0 0 8px rgba(0,240,255,.4); }
+.hc-tl { top:54px; left:10px; }
+.hc-tr { top:54px; right:10px; text-align:right; }
+.hc-bl { bottom:10px; left:10px; }
+.hc-br { bottom:10px; right:10px; text-align:right; }
+
+/* 章节切换全屏闪光 */
+.flash { position:fixed; inset:0; z-index:90; opacity:0; pointer-events:none; background:linear-gradient(180deg,transparent,rgba(0,240,255,.10),rgba(255,0,170,.12),transparent); }
+.flash.show { animation:flashAnim .55s ease-out; }
+
+/* ==================== 03 辉光排版与 Glitch ==================== */
+/* 多层 text-shadow 辉光工具类 */
+.glow-cyan { color:var(--cyan); text-shadow:0 0 6px rgba(0,240,255,.9),0 0 18px rgba(0,240,255,.55),0 0 42px rgba(0,240,255,.3); }
+.glow-magenta { color:var(--magenta); text-shadow:0 0 6px rgba(255,0,170,.9),0 0 18px rgba(255,0,170,.55),0 0 42px rgba(255,0,170,.3); }
+.glow-yellow { color:var(--yellow); text-shadow:0 0 6px rgba(255,238,0,.9),0 0 18px rgba(255,238,0,.5),0 0 40px rgba(255,238,0,.28); }
+.dim { color:var(--dim); font-size:.92em; }
+
+/* Glitch 主标题：伪元素红/青错位 + clip-path 分片抖动 */
+.glitch { position:relative; display:inline-block; isolation:isolate; }
+.glitch::before, .glitch::after { content:attr(data-text); position:absolute; inset:0; opacity:0; pointer-events:none; }
+.glitch::before { color:var(--magenta); z-index:-1; animation:glitchA 3.4s infinite steps(1); }
+.glitch::after { color:var(--cyan); z-index:-2; animation:glitchB 2.8s infinite steps(1); }
+/* 文字 hover 触发快速 glitch 抖动 */
+.glitch-hover:hover { animation:hoverJitter .32s steps(2) infinite; }
+
+/* ==================== 04 全息面板 ==================== */
+/* 4.1 全息面板：渐变描边流动 + 半透明内部 + 悬浮扫光 */
+.holo {
+  position:relative; border:1px solid transparent; border-radius:10px; overflow:hidden;
+  background:
+    linear-gradient(rgba(8,14,30,.72),rgba(8,14,30,.72)) padding-box,
+    linear-gradient(120deg,var(--cyan),rgba(0,240,255,.04) 28%,var(--magenta) 55%,var(--yellow) 82%,var(--cyan)) border-box;
+  background-size:100% 100%,320% 100%;
+  -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px);
+  box-shadow:0 0 26px rgba(0,240,255,.10),inset 0 0 60px rgba(0,240,255,.04);
+  animation:borderFlow 9s linear infinite;
+}
+.holo::after { content:""; position:absolute; top:-20%; left:-135%; width:55%; height:140%; background:linear-gradient(100deg,transparent,rgba(0,240,255,.16),transparent); transform:skewX(-22deg); transition:left .75s ease; pointer-events:none; }
+.holo:hover::after { left:175%; }
+/* 迷你面板（卡片用，更细更透明） */
+.holo-mini {
+  position:relative; border:1px solid transparent; border-radius:8px; overflow:hidden;
+  background:
+    linear-gradient(rgba(9,15,33,.62),rgba(9,15,33,.62)) padding-box,
+    linear-gradient(120deg,rgba(0,240,255,.8),rgba(0,240,255,.05) 30%,rgba(255,0,170,.7) 60%,rgba(255,238,0,.6)) border-box;
+  background-size:100% 100%,300% 100%;
+  -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);
+  box-shadow:0 0 16px rgba(0,240,255,.07); animation:borderFlow 8s linear infinite;
+  transition:box-shadow .35s,transform .35s;
+}
+.holo-mini:hover { box-shadow:0 0 26px rgba(0,240,255,.28); transform:translateY(-3px); }
+
+/* 4.2 章节头 */
+.sec-head { display:flex; align-items:baseline; gap:18px; padding:26px 30px 0; }
+.sec-kicker { font-family:var(--mono); font-size:12px; letter-spacing:.24em; color:var(--magenta); text-shadow:0 0 10px rgba(255,0,170,.6); white-space:nowrap; }
+.sec-head h2 { font-size:30px; font-weight:700; letter-spacing:.14em; color:var(--cyan); text-shadow:0 0 8px rgba(0,240,255,.85),0 0 26px rgba(0,240,255,.45); }
+.sec-body { padding:18px 30px 30px; }
+.sec-divider { height:1px; margin:0 30px 26px; background:linear-gradient(90deg,transparent,var(--cyan),var(--magenta),transparent); box-shadow:0 0 12px rgba(0,240,255,.35); }
+
+/* ==================== 05 板块组件 ==================== */
+/* 5.1 舞台容器：为侧栏让出左侧空间 */
+.stage { max-width:1040px; margin:0 auto; padding:96px 22px 40px; position:relative; z-index:10; }
+/* 平板/笔记本宽：为 240px 固定侧栏让位，避免遮挡主内容 */
+@media (min-width:769px){
+  .stage{ margin-left:max(240px, calc((100vw - 1040px)/2)); }
+}
+/* 锚点跳转避开固定顶栏（桌面 70px / 移动 130px） */
+section[id],#hero{ scroll-margin-top:130px; }
+@media (min-width:769px){ section[id],#hero{ scroll-margin-top:70px; } }
+/* 极窄屏：Hero 副标题换行居中，避免横向截断 */
+@media (max-width:480px){
+  .hero-sub{ flex-wrap:wrap; justify-content:center; gap:8px 12px; letter-spacing:.08em; }
+}
+.section { margin-bottom:34px; }
+/* 章节进入动画（JS 添加 .visible 触发；无 JS 时内容始终可见） */
+.js-anim .section { opacity:0; transform:translateY(32px); transition:opacity .75s ease,transform .75s ease; }
+.js-anim .section.visible { opacity:1; transform:none; }
+/* 卡片入场错峰动画（与描边流动动画叠加，保持边框持续流动） */
+.js-anim .section.visible .stat-card, .js-anim .section.visible .tl-card, .js-anim .section.visible .work-card,
+.js-anim .section.visible .proto-year, .js-anim .section.visible .proto-xinfa, .js-anim .section.visible .skill-chip,
+.js-anim .section.visible .contact-item, .js-anim .section.visible .edu-box, .js-anim .section.visible .bazi-box,
+.js-anim .section.visible .learn-box, .js-anim .section.visible .about-line { animation:cardIn .6s both, borderFlow 8s linear infinite; }
+.js-anim .section.visible .stat-card:nth-child(2) { animation-delay:.05s; }
+.js-anim .section.visible .stat-card:nth-child(3) { animation-delay:.10s; }
+.js-anim .section.visible .stat-card:nth-child(4) { animation-delay:.15s; }
+.js-anim .section.visible .stat-card:nth-child(5) { animation-delay:.20s; }
+.js-anim .section.visible .stat-card:nth-child(6) { animation-delay:.25s; }
+.js-anim .section.visible .stat-card:nth-child(7) { animation-delay:.30s; }
+.js-anim .section.visible .stat-card:nth-child(8) { animation-delay:.35s; }
+
+/* 5.2 HERO 首页区 */
+.hero { min-height:calc(100vh - 46px); display:flex; flex-direction:column; justify-content:center; padding:40px 8px 30px; position:relative; z-index:10; }
+.hero-tag { font-family:var(--mono); font-size:13px; letter-spacing:.3em; color:var(--dim); margin-bottom:18px; }
+.hero-name { font-size:clamp(64px,13vw,148px); font-weight:900; line-height:1.05; letter-spacing:.1em; color:var(--text); text-shadow:0 0 10px rgba(0,240,255,.9),0 0 30px rgba(0,240,255,.5),0 0 70px rgba(255,0,170,.4); margin-bottom:8px; }
+.hero-sub { display:flex; align-items:center; gap:16px; font-family:var(--mono); font-size:clamp(15px,2.2vw,22px); letter-spacing:.18em; margin-bottom:16px; }
+.hero-slash { color:var(--magenta); text-shadow:0 0 12px rgba(255,0,170,.8); }
+.hero-line { width:min(420px,80%); height:2px; margin-bottom:16px; background:linear-gradient(90deg,var(--cyan),var(--magenta),transparent); box-shadow:0 0 16px rgba(0,240,255,.6); transform-origin:left; }
+.hero-tagline { font-size:clamp(16px,2.4vw,21px); color:var(--text); margin-bottom:26px; }
+.hero-tagline b { color:var(--yellow); text-shadow:0 0 10px rgba(255,238,0,.6); }
+/* 终端打字机盒子 */
+.terminal { width:min(640px,96%); margin-bottom:30px; font-family:var(--mono); font-size:13.5px; background:rgba(5,8,20,.85); border:1px solid rgba(0,240,255,.35); border-radius:8px; box-shadow:0 0 24px rgba(0,240,255,.12),inset 0 0 40px rgba(0,240,255,.04); }
+.term-head { display:flex; justify-content:space-between; align-items:center; padding:8px 14px; font-size:12px; color:var(--dim); border-bottom:1px solid rgba(0,240,255,.2); background:rgba(0,240,255,.05); }
+.term-dot { color:var(--yellow); animation:ledBlink 1.4s steps(1) infinite; }
+.term-body { min-height:120px; padding:12px 14px; white-space:pre-wrap; word-break:break-all; color:var(--cyan); text-shadow:0 0 8px rgba(0,240,255,.7); }
+.term-body::after { content:"▊"; color:var(--yellow); animation:ledBlink 1s steps(1) infinite; }
+/* CTA 按钮组 */
+.hero-cta { display:flex; flex-wrap:wrap; gap:16px; align-items:center; }
+.btn-intr { padding:13px 26px; font-size:15px; letter-spacing:.12em; color:#fff; background:linear-gradient(120deg,rgba(255,0,170,.85),rgba(0,240,255,.85)); background-size:200% 100%; border:none; border-radius:6px; box-shadow:0 0 22px rgba(255,0,170,.5); animation:btnHue 4s linear infinite alternate; transition:transform .2s,box-shadow .2s; }
+.btn-intr:hover { transform:translateY(-2px); box-shadow:0 0 34px rgba(0,240,255,.7); }
+.btn-intr:active { transform:translateY(0) scale(.98); }
+.btn-ghost { padding:12px 24px; font-family:var(--mono); font-size:14px; letter-spacing:.1em; color:var(--cyan); border:1px solid rgba(0,240,255,.5); border-radius:6px; transition:all .25s; }
+.btn-ghost:hover { color:var(--bg); background:var(--cyan); box-shadow:0 0 20px rgba(0,240,255,.6); }
+.hero-scroll { margin-top:34px; font-family:var(--mono); font-size:12px; letter-spacing:.3em; color:var(--dim); animation:scrollHint 2.2s ease-in-out infinite; }
+
+/* 5.3 关于 IDENTITY */
+.about-grid { display:grid; grid-template-columns:1.15fr 1fr; gap:22px; }
+.about-col { display:flex; flex-direction:column; gap:14px; }
+.about-line { display:grid; grid-template-columns:92px 1fr; gap:12px; padding:10px 14px; border-left:2px solid rgba(0,240,255,.5); background:rgba(0,240,255,.045); border-radius:0 6px 6px 0; }
+.about-line .k { font-family:var(--mono); font-size:12px; letter-spacing:.16em; color:var(--magenta); padding-top:2px; }
+.about-line .v { font-size:15px; }
+.box-tag { font-family:var(--mono); font-size:11px; letter-spacing:.22em; color:var(--yellow); margin-bottom:10px; text-shadow:0 0 8px rgba(255,238,0,.5); }
+.edu-box, .bazi-box, .learn-box { padding:16px 18px; }
+.edu-item { font-size:14.5px; margin-bottom:6px; }
+.edu-item b { color:var(--cyan); }
+.bazi-quote { margin:8px 0; font-size:15.5px; letter-spacing:.06em; }
+.learn-box ul { display:flex; flex-wrap:wrap; gap:8px; }
+.learn-box li { padding:4px 12px; font-size:13px; color:var(--cyan); border:1px dashed rgba(0,240,255,.4); border-radius:20px; }
+
+/* 5.4 关键数字 DATA */
+.stat-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; }
+.stat-card { padding:22px 16px 18px; text-align:center; }
+.stat-num { font-family:var(--mono); font-size:clamp(30px,3.6vw,44px); font-weight:800; color:var(--cyan); text-shadow:0 0 10px rgba(0,240,255,.85),0 0 30px rgba(0,240,255,.4); line-height:1.2; }
+.stat-num .unit { font-size:.45em; color:var(--yellow); text-shadow:0 0 10px rgba(255,238,0,.6); margin-left:4px; }
+.stat-label { margin-top:8px; font-size:13px; color:var(--dim); letter-spacing:.06em; }
+
+/* 5.5 职业履历时间线 TIMELINE */
+.timeline { position:relative; padding:8px 0 4px; }
+.timeline::before { content:""; position:absolute; left:50%; top:0; bottom:0; width:2px; transform:translateX(-1px); background:linear-gradient(180deg,var(--cyan),var(--magenta),var(--yellow)); box-shadow:0 0 14px rgba(0,240,255,.6); }
+.tl-item { position:relative; width:50%; padding:0 34px 30px 0; }
+.tl-item:nth-child(even) { margin-left:50%; padding:0 0 30px 34px; }
+.tl-node { position:absolute; top:6px; width:14px; height:14px; border-radius:50%; background:var(--bg); border:3px solid var(--cyan); box-shadow:0 0 12px var(--cyan),0 0 26px rgba(0,240,255,.7); animation:nodePulse 2.6s ease-in-out infinite; }
+.tl-item:nth-child(odd) .tl-node { right:-8px; }
+.tl-item:nth-child(even) .tl-node { left:-7px; }
+.tl-period { font-family:var(--mono); font-size:13px; letter-spacing:.08em; color:var(--yellow); text-shadow:0 0 8px rgba(255,238,0,.5); margin-bottom:8px; }
+.tl-card { padding:16px 20px; }
+.tl-card h3 { font-size:19px; color:var(--cyan); text-shadow:0 0 10px rgba(0,240,255,.6); margin-bottom:2px; }
+.tl-tag { font-size:12px; color:var(--magenta); letter-spacing:.1em; margin-left:8px; }
+.tl-role { font-family:var(--mono); font-size:12.5px; color:var(--dim); margin-bottom:10px; letter-spacing:.05em; }
+.tl-card li { position:relative; padding-left:18px; margin-bottom:5px; font-size:14.5px; }
+.tl-card li::before { content:"▸"; position:absolute; left:0; color:var(--magenta); }
+.tl-card b { color:var(--yellow); font-family:var(--mono); }
+
+/* 5.6 能力标签 SKILLS */
+.skill-grid { display:flex; flex-wrap:wrap; gap:14px; }
+.skill-chip { display:inline-flex; align-items:center; gap:10px; padding:12px 20px; font-size:16px; letter-spacing:.1em; color:var(--text); background:rgba(0,240,255,.06); border:1px solid rgba(0,240,255,.4); border-radius:6px; transition:all .25s; }
+.skill-chip .chip-tag { font-family:var(--mono); font-size:11px; color:var(--magenta); letter-spacing:.14em; }
+.skill-chip:hover { color:var(--yellow); border-color:var(--yellow); text-shadow:0 0 10px rgba(255,238,0,.7); box-shadow:0 0 18px rgba(255,238,0,.3); animation:hoverJitter .3s steps(2) infinite; transform:translateY(-2px); }
+
+/* 5.7 作品库 WORKS */
+.work-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+.work-card { padding:22px 22px 18px; }
+.work-icon { font-size:34px; line-height:1; margin-bottom:10px; filter:drop-shadow(0 0 10px rgba(0,240,255,.8)); }
+.work-head { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:8px; }
+.work-head h3 { font-size:19px; color:var(--cyan); text-shadow:0 0 10px rgba(0,240,255,.6); }
+.work-status { font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--yellow); border:1px solid rgba(255,238,0,.45); border-radius:3px; padding:2px 8px; white-space:nowrap; }
+.work-card > p { font-size:14px; color:var(--text); margin-bottom:12px; }
+.work-card > p b { color:var(--yellow); font-family:var(--mono); }
+.work-modules { display:flex; flex-wrap:wrap; gap:6px; }
+.work-modules span { font-family:var(--mono); font-size:11px; padding:3px 9px; color:var(--dim); background:rgba(0,240,255,.06); border:1px dashed rgba(0,240,255,.3); border-radius:3px; transition:color .2s,border-color .2s; }
+.work-modules span:hover { color:var(--cyan); border-color:var(--cyan); }
+
+/* 5.8 三年纲领 PROTOCOL */
+.proto-grid { display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:16px; margin-bottom:16px; }
+.proto-year { padding:20px 22px; }
+.proto-num { font-family:var(--mono); font-size:40px; font-weight:800; color:var(--cyan); text-shadow:0 0 12px rgba(0,240,255,.85),0 0 34px rgba(0,240,255,.4); line-height:1.1; margin-bottom:6px; }
+.y2027 .proto-num { color:var(--yellow); text-shadow:0 0 12px rgba(255,238,0,.8); }
+.y2028 .proto-num { color:var(--magenta); text-shadow:0 0 12px rgba(255,0,170,.8); }
+.proto-year h3 { font-size:18px; color:var(--text); margin-bottom:8px; letter-spacing:.14em; }
+.proto-year p { font-size:14px; margin-bottom:10px; }
+.proto-year p b { color:var(--yellow); font-family:var(--mono); }
+.proto-year li { position:relative; padding-left:16px; margin-bottom:6px; font-size:13.5px; }
+.proto-year li::before { content:"▸"; position:absolute; left:0; color:var(--magenta); }
+.proto-xinfa { padding:18px 24px; }
+.proto-xinfa h3 { font-size:17px; color:var(--yellow); text-shadow:0 0 10px rgba(255,238,0,.55); letter-spacing:.14em; margin-bottom:10px; }
+.proto-xinfa ul { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.proto-xinfa li { text-align:center; padding:10px 6px; font-size:14px; color:var(--cyan); border:1px solid rgba(0,240,255,.3); border-radius:6px; background:rgba(0,240,255,.04); transition:all .25s; }
+.proto-xinfa li:hover { color:var(--bg); background:var(--cyan); box-shadow:0 0 18px rgba(0,240,255,.6); }
+
+/* 5.9 联系方式 CONTACT */
+.contact-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin-bottom:16px; }
+.contact-item { display:flex; flex-direction:column; align-items:center; gap:8px; padding:28px 20px; text-align:center; }
+.c-label { font-family:var(--mono); font-size:12px; letter-spacing:.26em; color:var(--dim); }
+.c-value { font-family:var(--mono); font-size:clamp(19px,3vw,26px); letter-spacing:.06em; word-break:break-all; }
+.c-copy { margin-top:4px; padding:6px 18px; font-size:12px; letter-spacing:.18em; color:var(--yellow); background:rgba(255,238,0,.06); border:1px solid rgba(255,238,0,.45); border-radius:4px; transition:all .25s; }
+.c-copy:hover { color:var(--bg); background:var(--yellow); box-shadow:0 0 16px rgba(255,238,0,.6); }
+.contact-note { text-align:center; font-size:14px; color:var(--dim); font-family:var(--mono); letter-spacing:.1em; }
+.contact-note b { color:var(--cyan); }
+
+/* 5.10 页脚 FOOTER */
+.hud-footer { margin-top:46px; padding:22px 10px 34px; text-align:center; font-size:13.5px; color:var(--dim); border-top:1px solid var(--line); position:relative; z-index:10; }
+.hud-footer::before { content:""; position:absolute; top:-1px; left:10%; right:10%; height:1px; background:linear-gradient(90deg,transparent,var(--magenta),transparent); }
+.hud-footer .f-back { display:inline-block; margin-top:8px; padding:7px 20px; font-family:var(--mono); font-size:13px; letter-spacing:.16em; color:var(--cyan); border:1px solid rgba(0,240,255,.45); border-radius:4px; transition:all .25s; }
+.hud-footer .f-back:hover { color:var(--bg); background:var(--cyan); box-shadow:0 0 18px rgba(0,240,255,.6); }
+
+/* ==================== 06 入侵系统彩蛋 ==================== */
+.intrusion { position:fixed; inset:0; z-index:100; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(2,3,10,.88); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); }
+.intrusion.open { display:flex; animation:fadeIn .3s ease; }
+.intr-shell { width:min(560px,100%); padding:24px 26px; background:rgba(6,9,22,.95); border:1px solid rgba(0,240,255,.4); border-radius:10px; box-shadow:0 0 50px rgba(0,240,255,.25),inset 0 0 60px rgba(255,0,170,.05); font-family:var(--mono); }
+.intr-head { display:flex; justify-content:space-between; font-size:13px; letter-spacing:.2em; color:var(--magenta); margin-bottom:14px; }
+.intr-pct { color:var(--yellow); text-shadow:0 0 10px rgba(255,238,0,.7); }
+.intr-track { height:10px; margin-bottom:16px; border:1px solid rgba(0,240,255,.3); border-radius:5px; overflow:hidden; background:rgba(0,240,255,.05); }
+.intr-bar { height:100%; width:0%; background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--yellow)); background-size:200% 100%; box-shadow:0 0 14px rgba(0,240,255,.8); animation:btnHue 1.2s linear infinite alternate; transition:width .04s linear; }
+.intr-log { height:150px; overflow-y:auto; padding:12px 14px; font-size:13px; color:var(--cyan); background:rgba(0,0,0,.45); border:1px dashed rgba(0,240,255,.25); border-radius:6px; text-shadow:0 0 8px rgba(0,240,255,.6); }
+.intr-log::-webkit-scrollbar { width:5px; }
+.intr-line { margin-bottom:3px; }
+.intr-granted { margin-top:18px; text-align:center; display:none; }
+.intrusion.granted .intr-granted { display:block; animation:fadeUp .6s ease; }
+.intr-granted h2 { font-size:clamp(28px,6vw,44px); letter-spacing:.2em; color:var(--yellow); text-shadow:0 0 12px rgba(255,238,0,.9),0 0 40px rgba(0,240,255,.6); margin-bottom:10px; }
+.intr-granted p { font-size:14.5px; color:var(--text); margin-bottom:18px; letter-spacing:.05em; }
+#intrExit { padding:11px 34px; font-size:14px; letter-spacing:.2em; color:var(--cyan); background:transparent; border:1px solid rgba(0,240,255,.55); border-radius:5px; transition:all .25s; }
+#intrExit:hover { color:var(--bg); background:var(--cyan); box-shadow:0 0 22px rgba(0,240,255,.7); }
+
+/* ==================== 07 关键帧动画 ==================== */
+@keyframes borderFlow { from { background-position:0 0,0% 0; } to { background-position:0 0,300% 0; } }
+@keyframes gridGlow { from { filter:brightness(.85); } to { filter:brightness(1.25); } }
+@keyframes noiseJitter { 0% { background-position:0 0,0 0; } 25% { background-position:1px 2px,-1px 1px; } 50% { background-position:-2px 1px,1px -1px; } 75% { background-position:1px -1px,-2px 2px; } 100% { background-position:0 0,0 0; } }
+@keyframes scanMove { from { top:-18%; } to { top:112%; } }
+@keyframes ledBlink { 0%,100% { opacity:1; } 50% { opacity:.25; } }
+/* Glitch 抖动 A（品红分片） */
+@keyframes glitchA {
+  0%,84%,100% { opacity:0; transform:translate(0,0); clip-path:inset(0 0 0 0); }
+  85% { opacity:.95; transform:translate(-3px,-2px); clip-path:inset(12% 0 58% 0); }
+  87% { opacity:.9; transform:translate(3px,1px); clip-path:inset(68% 0 8% 0); }
+  89% { opacity:.8; transform:translate(-2px,2px); clip-path:inset(30% 0 40% 0); }
+  91% { opacity:.7; transform:translate(2px,-1px); clip-path:inset(5% 0 82% 0); }
+  93% { opacity:0; transform:translate(0,0); clip-path:inset(0 0 0 0); }
+}
+/* Glitch 抖动 B（青色分片，节奏错开） */
+@keyframes glitchB {
+  0%,88%,100% { opacity:0; transform:translate(0,0); clip-path:inset(0 0 0 0); }
+  89% { opacity:.9; transform:translate(3px,2px); clip-path:inset(55% 0 15% 0); }
+  91% { opacity:.85; transform:translate(-3px,-1px); clip-path:inset(8% 0 72% 0); }
+  93% { opacity:.7; transform:translate(1px,1px); clip-path:inset(40% 0 30% 0); }
+  95% { opacity:0; transform:translate(0,0); clip-path:inset(0 0 0 0); }
+}
+@keyframes hoverJitter { 0% { transform:translate(0,0); } 25% { transform:translate(-1.5px,.5px); } 50% { transform:translate(1.5px,-1px); } 75% { transform:translate(-1px,1px); } 100% { transform:translate(0,0); } }
+@keyframes flashAnim { 0% { opacity:0; } 22% { opacity:.95; } 100% { opacity:0; } }
+@keyframes cardIn { from { opacity:0; transform:translateY(20px) scale(.98); } to { opacity:1; transform:none; } }
+@keyframes fadeUp { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:none; } }
+@keyframes growX { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+@keyframes scrollHint { 0%,100% { transform:translateY(0); opacity:.5; } 50% { transform:translateY(6px); opacity:1; } }
+@keyframes nodePulse { 0%,100% { box-shadow:0 0 10px var(--cyan),0 0 22px rgba(0,240,255,.6); } 50% { box-shadow:0 0 18px var(--cyan),0 0 40px rgba(0,240,255,.9); } }
+@keyframes btnHue { from { background-position:0% 50%; } to { background-position:100% 50%; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+/* Hero 进场动画编排（js-anim 存在时启用） */
+.js-anim .hero .hero-tag { animation:fadeUp .7s .05s both; }
+.js-anim .hero .hero-name { animation:fadeUp .8s .20s both; }
+.js-anim .hero .hero-sub { animation:fadeUp .8s .38s both; }
+.js-anim .hero .hero-line { animation:growX .8s .50s both; }
+.js-anim .hero .hero-tagline { animation:fadeUp .8s .58s both; }
+.js-anim .hero .terminal { animation:fadeUp .8s .72s both; }
+.js-anim .hero .hero-cta { animation:fadeUp .8s .88s both; }
+.js-anim .hero .hero-scroll { animation:fadeUp .8s 1.05s both; }
+
+/* ==================== 08 响应式 ≤768px ==================== */
+@media (max-width:768px) {
+  .hud-side { display:none; }
+  .mobile-nav { display:block; }
+  .hud-top { padding:0 10px; justify-content:space-between; }
+  .hud-mid { display:none; }
+  .hud-right { gap:6px; }
+  .hud-right .hud-sep { display:none; }
+  #coordC { display:none; }
+  .hud-corner { display:none; }
+  /* 控制舱改为底部通栏小面板 */
+  .control-pod { left:10px; right:10px; bottom:10px; flex-wrap:wrap; justify-content:center; padding:8px 10px; font-size:11px; }
+  .pod-slider input[type="range"] { width:84px; }
+  /* 降低网格地板与噪点可见度 */
+  .grid-floor { opacity:.26; }
+  .noise { opacity:.18; }
+  .scanlines { opacity:.35; }
+  /* 舞台让出顶部导航空间 */
+  .stage { padding:132px 14px 100px; }
+  .sec-head { padding:20px 18px 0; flex-wrap:wrap; gap:8px; }
+  .sec-head h2 { font-size:23px; }
+  .sec-body { padding:14px 18px 22px; }
+  .sec-divider { margin:0 18px 20px; }
+  /* 关于：单列 */
+  .about-grid { grid-template-columns:1fr; }
+  /* 关键数字：两列 */
+  .stat-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+  .stat-num { font-size:30px; }
+  /* 时间线：轴线移到左侧 */
+  .timeline::before { left:12px; }
+  .tl-item, .tl-item:nth-child(even) { width:100%; margin-left:0; padding:0 0 26px 40px; }
+  .tl-item:nth-child(odd) .tl-node, .tl-item:nth-child(even) .tl-node { left:6px; right:auto; }
+  /* 作品：单列 */
+  .work-grid { grid-template-columns:1fr; }
+  /* 纲领：纵向堆叠 */
+  .proto-grid { grid-template-columns:1fr; }
+  .proto-xinfa ul { grid-template-columns:repeat(2,1fr); }
+  /* 联系：单列 */
+  .contact-grid { grid-template-columns:1fr; }
+  .terminal { font-size:12.5px; }
+  .intr-shell { padding:18px; }
+}
+/* 极窄屏进一步压缩 */
+@media (max-width:400px) {
+  .hero-name { font-size:58px; }
+  .hero-cta { flex-direction:column; align-items:stretch; }
+  .btn-intr, .btn-ghost { text-align:center; }
+  .stat-num { font-size:26px; }
+  .work-head { flex-direction:column; align-items:flex-start; gap:4px; }
+}
+/* 减少动效偏好 */
+@media (prefers-reduced-motion:reduce) {
+  *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ================ 背景层 ================ -->
+<canvas id="matrixRain"></canvas>
+<div class="grid-floor"></div>
+<div class="scanlines"></div>
+<div class="noise"></div>
+<div class="crt-curve"></div>
+<div class="scan-bar"></div>
+
+<!-- ================ HUD 顶栏：系统状态 / 时钟 / 伪随机坐标 ================ -->
+<header class="hud-top">
+  <div class="hud-left"><span class="led"></span><span>SYS.ONLINE</span><span class="hud-sep">//</span><span>邵汉青节点</span></div>
+  <div class="hud-mid"><span id="hudTime">--:--:--</span><span class="hud-sep">|</span><span id="hudDate">----/--/--</span></div>
+  <div class="hud-right"><span id="coordA">X:0000</span><span id="coordB">Y:0000</span><span id="coordC">Z:0000</span><span class="hud-sep">//</span><span id="hudStatus">LINK STABLE</span></div>
+</header>
+
+<!-- ================ HUD 侧栏菜单（桌面端） ================ -->
+<aside class="hud-side">
+  <div class="side-brand"><span class="brand-mark">SHQ</span><span class="brand-idx">NODE.04 // CYBERPUNK</span></div>
+  <nav class="side-nav" id="sideNav">
+    <a class="nav-link" href="#hero" data-target="hero"><span class="nav-idx">00</span> 入口</a>
+    <a class="nav-link" href="#about" data-target="about"><span class="nav-idx">01</span> 关于</a>
+    <a class="nav-link" href="#data" data-target="data"><span class="nav-idx">02</span> 关键数字</a>
+    <a class="nav-link" href="#timeline" data-target="timeline"><span class="nav-idx">03</span> 职业履历</a>
+    <a class="nav-link" href="#skills" data-target="skills"><span class="nav-idx">04</span> 能力标签</a>
+    <a class="nav-link" href="#works" data-target="works"><span class="nav-idx">05</span> 作品库</a>
+    <a class="nav-link" href="#protocol" data-target="protocol"><span class="nav-idx">06</span> 三年纲领</a>
+    <a class="nav-link" href="#contact" data-target="contact"><span class="nav-idx">07</span> 联系</a>
+    <a class="nav-link nav-back" href="index.html"><span class="nav-idx">⇠</span> 返回总览</a>
+  </nav>
+  <div class="side-sys">
+    <div class="sys-row"><span>LINK.STABILITY</span><span id="sysLink">--</span></div>
+    <div class="sys-track"><i id="sysLinkBar"></i></div>
+    <div class="sys-row"><span>NEURAL.SYNC</span><span id="sysNeural">--</span></div>
+    <div class="sys-track"><i id="sysNeuralBar"></i></div>
+    <div class="sys-row"><span>SYS.LOAD</span><span id="sysLoad">--</span></div>
+    <div class="sys-track"><i id="sysLoadBar"></i></div>
+  </div>
+  <div class="side-foot">HUD v4.0 // NEON THEME</div>
+</aside>
+
+<!-- ================ 移动端顶部 Tab 导航（≤768px 显示） ================ -->
+<nav class="mobile-nav" id="mobileNav">
+  <a class="m-link active" href="#hero">00 入口</a>
+  <a class="m-link" href="#about">01 关于</a>
+  <a class="m-link" href="#data">02 数字</a>
+  <a class="m-link" href="#timeline">03 履历</a>
+  <a class="m-link" href="#skills">04 能力</a>
+  <a class="m-link" href="#works">05 作品</a>
+  <a class="m-link" href="#protocol">06 纲领</a>
+  <a class="m-link" href="#contact">07 联系</a>
+  <a class="m-link m-back" href="index.html">⇠ 总览</a>
+</nav>
+
+<!-- ================ 悬浮控制舱：矩阵开关 / 密度滑杆 / 入侵按钮 ================ -->
+<div class="control-pod">
+  <button class="pod-btn on" id="matrixToggle">MATRIX:ON</button>
+  <div class="pod-slider"><span class="pod-label">RAIN.DENSITY</span><input id="density" type="range" min="10" max="100" value="60" aria-label="矩阵雨密度"><span id="densityVal">60</span></div>
+  <button class="pod-btn pod-intr intr-trigger">⚡ 入侵系统</button>
+</div>
+
+<!-- ================ 屏幕四角 HUD 角标 ================ -->
+<div class="hud-corner hc-tl">◤ SEC.AUTHORIZED: LEVEL-01</div>
+<div class="hud-corner hc-tr">◥ 个人网站合集 // 04 赛博霓虹 ◥</div>
+<div class="hud-corner hc-bl">◣ ZONE: HENAN.CN // 河南郑州</div>
+<div class="hud-corner hc-br">◢ NODE: SHQ-04 // ONLINE ◢</div>
+
+<!-- ================ 章节切换闪光 ================ -->
+<div class="flash" id="flash"></div>
+
+<!-- ================ 主舞台 ================ -->
+<main class="stage">
+
+  <!-- ================= HERO 入口 ================= -->
+  <section id="hero" class="hero">
+    <div class="hero-tag">个人网站合集 // 04 赛博霓虹 CYBERPUNK</div>
+    <h1 class="glitch hero-name" data-text="邵汉青">邵汉青</h1>
+    <div class="hero-sub"><span class="glow-cyan">SHAO HANQING</span><span class="hero-slash">//</span><span class="glow-magenta">CYBER SALES ENGINEER</span></div>
+    <div class="hero-line"></div>
+    <p class="hero-tagline">10年工程机械大客户销售 × <b>AI重度实践者</b> —— 既懂销售，又懂AI</p>
+    <div class="terminal">
+      <div class="term-head"><span>shq@node-04:~</span><span class="term-dot">● REC</span></div>
+      <div class="term-body" id="termBody"></div>
+    </div>
+    <div class="hero-cta">
+      <button class="btn-intr intr-trigger">⚡ 入侵系统 / INTRUDE</button>
+      <a class="btn-ghost" href="#about">ENTER // 进入展厅 ↓</a>
+    </div>
+    <div class="hero-scroll">▼ SCROLL TO DECRYPT ▼</div>
+  </section>
+
+  <!-- ================= 01 关于 IDENTITY ================= -->
+  <section id="about" class="section holo">
+    <div class="sec-head"><span class="sec-kicker">SYS.01 // IDENTITY</span><h2 class="glitch glitch-hover" data-text="关于 · ABOUT">关于 · ABOUT</h2></div>
+    <div class="sec-divider"></div>
+    <div class="sec-body about-grid">
+      <div class="about-col">
+        <div class="about-line"><span class="k">姓名</span><span class="v glow-cyan">邵汉青</span></div>
+        <div class="about-line"><span class="k">定位</span><span class="v">10年工程机械大客户销售 × AI重度实践者</span></div>
+        <div class="about-line"><span class="k">人设</span><span class="v">「既懂销售，又懂AI」</span></div>
+        <div class="about-line"><span class="k">现职</span><span class="v">太原重工 · 工程起重机分公司 业务经理 / 大客户销售<br>高空作业平台：剪叉 4-14m / 臂式 16-60m</span></div>
+        <div class="about-line"><span class="k">base</span><span class="v">河南郑州（可出差）· 32岁 · 已婚</span></div>
+        <div class="about-line"><span class="k">沟通风格</span><span class="v">专业干练、直奔结果</span></div>
+        <div class="about-line"><span class="k">公司背书</span><span class="v">太原重工 · 76年底蕴 · A股600169 · 2025营收约103.79亿</span></div>
+      </div>
+      <div class="about-col">
+        <div class="holo-mini edu-box">
+          <div class="box-tag">EDU // 学历档案</div>
+          <div class="edu-item"><b>本科</b> · 黄淮学院 · 汽车服务工程 <span class="dim">(2015-2017)</span></div>
+          <div class="edu-item"><b>大专</b> · 鹤壁职业技术学院 · 汽车检测 <span class="dim">(2012-2015)</span></div>
+        </div>
+        <div class="holo-mini bazi-box">
+          <div class="box-tag">MOTTO // 座右铭</div>
+          <p class="dim">10年重工大客户销售 × AI重度实践者</p>
+          <p class="bazi-quote glow-magenta">「既懂销售，又懂AI」</p>
+          <p class="dim">太原重工 · 工程起重机分公司 业务经理 / 大客户销售</p>
+        </div>
+        <div class="holo-mini learn-box">
+          <div class="box-tag">PRINCIPLE // 学习原则</div>
+          <ul><li>结果导向</li><li>先模仿后创造</li><li>重复的事自动化</li><li>小步快跑</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 02 关键数字 DATA ================= -->
+  <section id="data" class="section holo">
+    <div class="sec-head"><span class="sec-kicker">SYS.02 // DATA</span><h2 class="glitch glitch-hover" data-text="关键数字 · DATA">关键数字 · DATA</h2></div>
+    <div class="sec-divider"></div>
+    <div class="sec-body">
+      <div class="stat-grid">
+        <div class="stat-card holo-mini"><div class="stat-num"><span data-count="10">0</span><span class="unit">年</span></div><div class="stat-label">重工大客户销售</div></div>
+        <div class="stat-card holo-mini"><div class="stat-num"><span data-count="180">0</span><span class="unit">+</span></div><div class="stat-label">客户开发（三一 0→180）</div></div>
+        <div class="stat-card holo-mini"><div class="stat-num"><span data-count="35">0</span><span class="unit">份</span></div><div class="stat-label">独立标书</div></div>
+        <div class="stat-card holo-mini"><div class="stat-num"><span data-count="1.2" data-decimals="1">0</span><span class="unit">亿</span></div><div class="stat-label">意向价值（太重湖北）</div></div>
+        <div class="stat-card holo-mini"><div class="stat-num"><span data-count="1500">0</span><span class="unit">万</span></div><div class="stat-label">已完成订单</div></div>
+        <div class="stat-card holo-mini"><div class="stat-num"><span data-count="1">0</span><span class="unit">亿</span></div><div class="stat-label">协助意向订单</div></div>
+        <div class="stat-card holo-mini"><div class="stat-num"><span data-count="1400">0</span><span class="unit">万</span></div><div class="stat-label">协助完成订单</div></div>
+        <div class="stat-card holo-mini"><div class="stat-num"><span data-count="113">0</span><span class="unit">条</span></div><div class="stat-label">湖北客户线索</div></div>
+        <div class="stat-card holo-mini"><div class="stat-num"><span data-count="92">0</span><span class="unit">条</span></div><div class="stat-label">空压机报备意向</div></div>
+        <div class="stat-card holo-mini"><div class="stat-num"><span data-count="8">0</span><span class="unit">个</span></div><div class="stat-label">AI定制技能</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 职业履历时间线 TIMELINE ================= -->
+  <section id="timeline" class="section holo">
+    <div class="sec-head"><span class="sec-kicker">SYS.03 // TIMELINE</span><h2 class="glitch glitch-hover" data-text="职业履历 · TIMELINE">职业履历 · TIMELINE</h2></div>
+    <div class="sec-divider"></div>
+    <div class="sec-body">
+      <div class="timeline">
+        <!-- 履历 1：宇通重工 -->
+        <div class="tl-item">
+          <div class="tl-node"></div>
+          <div class="tl-period">2017.10 — 2021.03</div>
+          <div class="tl-card holo-mini">
+            <h3>宇通重工<span class="tl-tag">旋挖钻机 / 履带吊</span></h3>
+            <div class="tl-role">粤东区域 · 大客户销售</div>
+            <ul>
+              <li>目标客户 <b>40 → 132</b> 家</li>
+              <li>年业绩 <b>600-1000万</b></li>
+              <li>同批 <b>60+</b> 新人中最早转正</li>
+            </ul>
+          </div>
+        </div>
+        <!-- 履历 2：三一重工 -->
+        <div class="tl-item">
+          <div class="tl-node"></div>
+          <div class="tl-period">2021.04 — 2023.06</div>
+          <div class="tl-card holo-mini">
+            <h3>三一重工<span class="tl-tag">旋挖钻机</span></h3>
+            <div class="tl-role">河南区域 · 独立开发市场</div>
+            <ul>
+              <li>客户 <b>0 → 180</b> 家</li>
+              <li>年均销售 <b>1500万</b></li>
+            </ul>
+          </div>
+        </div>
+        <!-- 履历 3：中联重科 -->
+        <div class="tl-item">
+          <div class="tl-node"></div>
+          <div class="tl-period">2023.07 — 2024.10</div>
+          <div class="tl-card holo-mini">
+            <h3>中联重科<span class="tl-tag">旋挖钻机</span></h3>
+            <div class="tl-role">河南区域 · 大客户销售</div>
+            <ul>
+              <li>完善客户信息 <b>112</b> 条</li>
+              <li>主导应收账款催收与风险评估</li>
+            </ul>
+          </div>
+        </div>
+        <!-- 履历 4：复盛实业 -->
+        <div class="tl-item">
+          <div class="tl-node"></div>
+          <div class="tl-period">2025.05 — 2025.12</div>
+          <div class="tl-card holo-mini">
+            <h3>复盛实业（上海）<span class="tl-tag">空压机</span></h3>
+            <div class="tl-role">河南区域 · 大客户销售</div>
+            <ul>
+              <li>报备意向 <b>92</b> 条</li>
+              <li>独立完成标书 <b>35</b> 份</li>
+              <li>协助投标 <b>19</b> 项</li>
+            </ul>
+          </div>
+        </div>
+        <!-- 履历 5：太原重工 · 工程起重机分公司（当前） -->
+        <div class="tl-item">
+          <div class="tl-node"></div>
+          <div class="tl-period">2025.12 — 至今</div>
+          <div class="tl-card holo-mini">
+            <h3>太原重工 · 工程起重机分公司<span class="tl-tag">高空作业平台</span></h3>
+            <div class="tl-role">湖北市场 · 业务经理 / 大客户销售</div>
+            <ul>
+              <li>拓展客户 <b>113</b> 条、新增 <b>74</b> 条</li>
+              <li>意向价值 <b>1.2亿</b></li>
+              <li>已完成订单 <b>1500万</b></li>
+              <li>协助意向订单 <b>1亿</b></li>
+              <li>协助完成订单 <b>1400万</b></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 04 能力标签 SKILLS ================= -->
+  <section id="skills" class="section holo">
+    <div class="sec-head"><span class="sec-kicker">SYS.04 // SKILLS</span><h2 class="glitch glitch-hover" data-text="能力标签 · SKILLS">能力标签 · SKILLS</h2></div>
+    <div class="sec-divider"></div>
+    <div class="sec-body">
+      <div class="skill-grid">
+        <div class="skill-chip"><span class="chip-tag">S.01</span>大客户经营</div>
+        <div class="skill-chip"><span class="chip-tag">S.02</span>区域 0→1 开拓</div>
+        <div class="skill-chip"><span class="chip-tag">S.03</span>招投标 · 标书</div>
+        <div class="skill-chip"><span class="chip-tag">S.04</span>融资租赁方案设计</div>
+        <div class="skill-chip"><span class="chip-tag">S.05</span>应收账款风控</div>
+        <div class="skill-chip"><span class="chip-tag">S.06</span>客户成功 · 续约</div>
+        <div class="skill-chip"><span class="chip-tag">S.07</span>AI 提效</div>
+        <div class="skill-chip"><span class="chip-tag">S.08</span>可量化业绩</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 05 作品库 WORKS ================= -->
+  <section id="works" class="section holo">
+    <div class="sec-head"><span class="sec-kicker">SYS.05 // ARSENAL</span><h2 class="glitch glitch-hover" data-text="作品库 · WORKS">作品库 · WORKS</h2></div>
+    <div class="sec-divider"></div>
+    <div class="sec-body">
+      <div class="work-grid">
+        <!-- 作品 1：高机销售资料库 -->
+        <div class="work-card holo-mini">
+          <div class="work-icon">📦</div>
+          <div class="work-head"><h3>高机销售资料库</h3><span class="work-status">FIELD: 湖北市场</span></div>
+          <p>湖北市场开发工具箱：产品推介 / 市场开发 / 融资租赁 / 客户运营 / 行业资讯 6类归档，<b>1000+</b> 销售资料。</p>
+          <div class="work-modules"><span>产品推介</span><span>市场开发</span><span>融资租赁</span><span>客户运营</span><span>行业资讯</span><span>6类归档</span></div>
+        </div>
+        <!-- 作品 2：AI 技能库 -->
+        <div class="work-card holo-mini">
+          <div class="work-icon">🤖</div>
+          <div class="work-head"><h3>AI 技能库</h3><span class="work-status">PLATFORM: WorkBuddy</span></div>
+          <p>WorkBuddy 上自建的 <b>8</b> 个定制技能，覆盖线索采集 → 客户画像 → 销售执行 → 内容输出全链路。</p>
+          <div class="work-modules"><span>market-dev-kit · 区域开发总入口</span><span>amap-poi-collector · 高德客户线索采集</span><span>customer-geo-viz · 客户热力作战图</span><span>sales-lead-workbook · 销售执行体系</span><span>sales-pitch-ppt · 高转化14页推介PPT</span><span>wechat-addfriend · 微信获客助手</span><span>secure-html-deploy · 加密部署</span><span>industry-briefing · 行业简报流水线（每月5日自动）</span></div>
+        </div>
+        <!-- 作品 3：汉青职业工作台 -->
+        <div class="work-card holo-mini">
+          <div class="work-icon">🧭</div>
+          <div class="work-head"><h3>汉青职业工作台</h3><span class="work-status">CAREER WORKBENCH</span></div>
+          <p>单文件 HTML 效率应用——6 大模块：学习 / 积累 / 记录 / 提高 / 事项安排 / 自我进化；localStorage 持久化 + JSON 导入导出；jsdom 功能自检 10 项全 PASS。</p>
+          <div class="work-modules"><span>学习</span><span>积累</span><span>记录</span><span>提高</span><span>事项安排</span><span>自我进化</span><span>localStorage 持久化</span><span>JSON 导入导出</span><span>单文件应用</span><span>jsdom 自检 10/10</span></div>
+        </div>
+        <!-- 作品 4：微信获客助手 -->
+        <div class="work-card holo-mini">
+          <div class="work-icon">📲</div>
+          <div class="work-head"><h3>微信获客助手</h3><span class="work-status">SOP: 每日 25–30 条客户触达节奏</span></div>
+          <p>状态机 + CSV 备份 + 加密的单文件获客工具，按 <b>每日 25–30 条客户触达节奏</b> 的标准作业流程执行。</p>
+          <div class="work-modules"><span>状态机</span><span>CSV 备份</span><span>加密</span><span>单文件工具</span><span>25–30条触达/日 SOP</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 06 三年纲领 PROTOCOL ================= -->
+  <section id="protocol" class="section holo">
+    <div class="sec-head"><span class="sec-kicker">SYS.06 // PROTOCOL 2026-2028</span><h2 class="glitch glitch-hover" data-text="三年行动纲领 · PROTOCOL">三年行动纲领 · PROTOCOL</h2></div>
+    <div class="sec-divider"></div>
+    <div class="sec-body">
+      <div class="proto-grid">
+        <div class="proto-year holo-mini y2026">
+          <div class="proto-num">2026</div>
+          <h3>动身求职</h3>
+          <p>秋金月（8-11月）发力，<b>10月下旬-11月中旬</b> 为签约窗口。</p>
+          <ul>
+            <li>主攻：工业互联网 SaaS 行业 销售 / 客户成功 —— 树根互联、徐工汉云、卡奥斯、腾讯云工业、华为云</li>
+            <li>保底：融资租赁客户经理 —— 远东宏信、平安租赁、厂商金融</li>
+            <li>近选：高机头部厂销售管理岗 —— 临工 / 星邦 / 鼎力</li>
+          </ul>
+        </div>
+        <div class="proto-year holo-mini y2027">
+          <div class="proto-num">2027</div>
+          <h3>定盘</h3>
+          <p>名分落实，业绩年。</p>
+        </div>
+        <div class="proto-year holo-mini y2028">
+          <div class="proto-num">2028</div>
+          <h3>上阶</h3>
+          <p>争取带团队。</p>
+        </div>
+      </div>
+      <div class="proto-xinfa holo-mini">
+        <h3>心法 // 作战准则</h3>
+        <ul>
+          <li>内推 ＞ 海投</li>
+          <li>卖方案，不卖力气</li>
+          <li>攻坚大单，必组队</li>
+          <li>赚大钱之前，先站上大平台</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 07 联系方式 CONTACT ================= -->
+  <section id="contact" class="section holo">
+    <div class="sec-head"><span class="sec-kicker">SYS.07 // CONTACT</span><h2 class="glitch glitch-hover" data-text="联系方式 · CONTACT">联系方式 · CONTACT</h2></div>
+    <div class="sec-divider"></div>
+    <div class="sec-body">
+      <div class="contact-grid">
+        <div class="contact-item holo-mini">
+          <span class="c-label">PHONE // 电话</span>
+          <span class="c-value glow-cyan">177-7211-8785</span>
+          <button class="c-copy" data-copy="177-7211-8785">COPY</button>
+        </div>
+        <div class="contact-item holo-mini">
+          <span class="c-label">EMAIL // 邮箱</span>
+          <span class="c-value glow-cyan">1820688914@qq.com</span>
+          <button class="c-copy" data-copy="1820688914@qq.com">COPY</button>
+        </div>
+      </div>
+      <p class="contact-note">BASE: <b>河南郑州</b>（可出差）· 32岁 · 已婚 · 期待一次直接、高效的对话</p>
+    </div>
+  </section>
+
+  <!-- ================= 页脚 ================= -->
+  <footer class="hud-footer">
+    <div>© 2026 邵汉青 · 个人网站合集 · 04 赛博霓虹 CYBERPUNK</div>
+    <a class="f-back" href="index.html">⇠ 返回总览</a>
+  </footer>
+
+</main>
+
+<!-- ================ 入侵系统彩蛋 ================ -->
+<div class="intrusion" id="intrusion" aria-hidden="true">
+  <div class="intr-shell">
+    <div class="intr-head"><span>NODE INTRUSION // 入侵系统</span><span class="intr-pct" id="intrPct">0%</span></div>
+    <div class="intr-track"><div class="intr-bar" id="intrBar"></div></div>
+    <div class="intr-log" id="intrLog"></div>
+    <div class="intr-granted" id="intrGranted">
+      <h2 class="glitch" data-text="ACCESS GRANTED">ACCESS GRANTED</h2>
+      <p>权限已授予 —— 欢迎进入邵汉青的赛博展厅。<br>「既懂销售，又懂AI」的销售工程师，等你来连线。</p>
+      <button id="intrExit">EXIT // 退出系统</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   04 赛博霓虹 —— 交互脚本
+   模块：0 辅助 | 1 矩阵代码雨 | 2 HUD时钟/坐标/状态 | 3 导航与章节动画
+         4 数字计数 | 5 终端打字机 | 6 复制 | 7 入侵彩蛋 | 8 网格视差 | 9 启动
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  document.documentElement.classList.add('js-anim');
+
+  /* ---------------- 0. 辅助函数 ---------------- */
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var rand = function (a, b) { return a + Math.random() * (b - a); };
+  var randInt = function (a, b) { return Math.floor(rand(a, b + 1)); };
+  var pad = function (n, w) { w = w || 2; return ('0000' + n).slice(-w); };
+  var isMobile = function () { return window.innerWidth <= 768; };
+
+  /* ================ 1. 矩阵代码雨 ================ */
+  var cvs = $('#matrixRain');
+  var ctx = cvs.getContext('2d');
+  var CHARS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEF#$%&+=<>/;:';
+  var mFont = 16, mStep = 20, mCols = 0, mDrops = [], mRun = true, mWasRunning = false;
+
+  /* 按视口尺寸与密度滑杆重建雨幕 */
+  function mRebuild() {
+    var d = parseInt($('#density').value, 10) || 60;
+    if (isMobile() && d > 45) { /* 窄屏自动降密度 */
+      d = 45;
+      $('#density').value = d;
+      $('#densityVal').textContent = d;
+    }
+    mStep = Math.max(9, Math.round(mFont * (2.4 - d / 68)));
+    mCols = Math.ceil(cvs.width / mStep) + 2;
+    mDrops = [];
+    for (var i = 0; i < mCols; i++) { mDrops.push(rand(-60, 0)); }
+  }
+
+  function mSetup() {
+    cvs.width = window.innerWidth;
+    cvs.height = window.innerHeight;
+    mFont = isMobile() ? 12 : 16;
+    mRebuild();
+  }
+
+  /* 一帧：淡出拖尾 + 逐列绘制字符 */
+  function mDraw() {
+    ctx.fillStyle = 'rgba(5, 6, 15, 0.14)';
+    ctx.fillRect(0, 0, cvs.width, cvs.height);
+    ctx.font = mFont + 'px monospace';
+    for (var i = 0; i < mCols; i++) {
+      var ch = CHARS.charAt(Math.floor(Math.random() * CHARS.length));
+      var x = i * mStep;
+      var y = mDrops[i] * mFont;
+      var r = Math.random();
+      if (r < 0.05) { ctx.fillStyle = '#ffee00'; }
+      else if (r < 0.14) { ctx.fillStyle = '#ff00aa'; }
+      else { ctx.fillStyle = '#00f0ff'; }
+      ctx.fillText(ch, x, y);
+      if (y > cvs.height && Math.random() > 0.976) { mDrops[i] = rand(-10, 0); }
+      mDrops[i] += 1;
+    }
+    if (mRun) { window.requestAnimationFrame(mDraw); }
+  }
+
+  function mStart() { if (!mRun) { mRun = true; mDraw(); } }
+  function mStop() { mRun = false; }
+
+  /* 矩阵雨开关 */
+  $('#matrixToggle').addEventListener('click', function () {
+    if (mRun) {
+      mStop();
+      this.classList.remove('on');
+      this.textContent = 'MATRIX:OFF';
+    } else {
+      mStart();
+      this.classList.add('on');
+      this.textContent = 'MATRIX:ON';
+    }
+  });
+
+  /* 密度滑杆 */
+  var densityInput = $('#density');
+  densityInput.addEventListener('input', function () {
+    $('#densityVal').textContent = this.value;
+    mRebuild();
+  });
+
+  /* 窗口尺寸变化重建雨幕 */
+  window.addEventListener('resize', function () { mSetup(); }, { passive: true });
+
+  /* 标签页隐藏时暂停雨幕，节省性能 */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      mWasRunning = mRun;
+      mStop();
+    } else if (mWasRunning) {
+      mStart();
+    }
+  });
+
+  /* ================ 2. HUD 时钟 / 坐标 / 状态 ================ */
+  var WEEK = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  var STATUS_POOL = ['LINK STABLE', 'NEURAL SYNC', 'SCAN ACTIVE', 'PROXY OK', 'TRACE CLEANED', 'GHOST MODE'];
+
+  /* 系统时钟 */
+  function hudClock() {
+    var n = new Date();
+    $('#hudTime').textContent = pad(n.getHours()) + ':' + pad(n.getMinutes()) + ':' + pad(n.getSeconds());
+    $('#hudDate').textContent = n.getFullYear() + '-' + pad(n.getMonth() + 1) + '-' + pad(n.getDate()) + ' // ' + WEEK[n.getDay()];
+  }
+
+  /* 伪随机坐标 + 状态文本（HUD 装饰） */
+  function hudCoords() {
+    $('#coordA').textContent = 'X:' + pad(randInt(0, 4095), 4);
+    $('#coordB').textContent = 'Y:' + pad(randInt(0, 4095), 4);
+    $('#coordC').textContent = 'Z:' + pad(randInt(0, 4095), 4);
+    $('#hudStatus').textContent = STATUS_POOL[randInt(0, STATUS_POOL.length - 1)];
+  }
+
+  /* 侧栏装饰性系统负载条（HUD 装饰，非业务数据） */
+  function hudBars() {
+    var link = randInt(78, 99), neural = randInt(45, 92), load = randInt(18, 71);
+    $('#sysLink').textContent = link + '%'; $('#sysLinkBar').style.width = link + '%';
+    $('#sysNeural').textContent = neural + '%'; $('#sysNeuralBar').style.width = neural + '%';
+    $('#sysLoad').textContent = load + '%'; $('#sysLoadBar').style.width = load + '%';
+  }
+
+  hudClock();
+  setInterval(hudClock, 1000);
+  hudCoords();
+  setInterval(hudCoords, 1600);
+  hudBars();
+  setInterval(hudBars, 2400);
+
+  /* ================ 3. 导航高亮 / 章节切换动画 ================ */
+  var navLinks = $$('.nav-link');
+  var mLinks = $$('.m-link');
+  var sections = $$('main .section');
+  var flashEl = $('#flash');
+
+  /* 章节切换时的全屏闪光 */
+  function flash() {
+    flashEl.classList.remove('show');
+    void flashEl.offsetWidth; /* 强制重排以重启动画 */
+    flashEl.classList.add('show');
+  }
+
+  /* 设置当前激活的导航项 */
+  function setActive(id) {
+    navLinks.forEach(function (l) {
+      l.classList.toggle('active', l.getAttribute('data-target') === id);
+    });
+    mLinks.forEach(function (l) {
+      l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+    });
+  }
+
+  /* 侧栏导航点击：平滑滚动 + 闪光 + 高亮 */
+  navLinks.forEach(function (l) {
+    l.addEventListener('click', function (e) {
+      var t = l.getAttribute('data-target');
+      if (!t) { return; } /* 返回总览等外链直接放行 */
+      e.preventDefault();
+      flash();
+      var el = document.getElementById(t);
+      if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      setActive(t);
+    });
+  });
+
+  /* 移动端 Tab 导航点击 */
+  mLinks.forEach(function (l) {
+    l.addEventListener('click', function (e) {
+      var href = l.getAttribute('href');
+      if (href.charAt(0) !== '#') { return; } /* 返回总览放行 */
+      e.preventDefault();
+      flash();
+      var id = href.slice(1);
+      var el = document.getElementById(id);
+      if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      setActive(id);
+    });
+  });
+
+  /* 章节进入视口动画（只触发一次；不支持 IO 时直接全显） */
+  function initReveal() {
+    var revealObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('visible');
+          revealObs.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    sections.forEach(function (s) { revealObs.observe(s); });
+  }
+  function fallbackReveal() {
+    sections.forEach(function (s) { s.classList.add('visible'); });
+    $$('[data-count]').forEach(function (el) { el.textContent = el.getAttribute('data-count'); });
+  }
+  if ('IntersectionObserver' in window) { initReveal(); } else { fallbackReveal(); }
+
+  /* 滚动监听：高亮当前章节对应的导航项 */
+  var spyTargets = sections.concat([document.getElementById('hero')]);
+  if ('IntersectionObserver' in window) {
+    var spyObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { setActive(en.target.id); }
+      });
+    }, { rootMargin: '-35% 0px -55% 0px' });
+    spyTargets.forEach(function (s) {
+      if (s) { spyObs.observe(s); }
+    });
+  }
+
+  /* ================ 4. 关键数字滚动计数 ================ */
+  function animateCount(el) {
+    var target = parseFloat(el.getAttribute('data-count'));
+    var dec = parseInt(el.getAttribute('data-decimals') || '0', 10);
+    var dur = 1500;
+    var t0 = null;
+    function step(ts) {
+      if (!t0) { t0 = ts; }
+      var p = Math.min((ts - t0) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      var val = target * eased;
+      el.textContent = dec > 0 ? val.toFixed(dec) : Math.round(val).toLocaleString('en-US');
+      if (p < 1) { window.requestAnimationFrame(step); }
+    }
+    window.requestAnimationFrame(step);
+  }
+
+  var countObs = null;
+  if ('IntersectionObserver' in window) {
+    countObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          animateCount(en.target);
+          countObs.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    $$('[data-count]').forEach(function (el) { countObs.observe(el); });
+  }
+
+  /* ================ 5. 终端打字机 ================ */
+  var TERM_LINES = [
+    '> boot sequence initiated ...',
+    '> 身份识别: 邵汉青 / SHAO HANQING',
+    '> 定位: 10年工程机械大客户销售 × AI重度实践者',
+    '> 人设: 「既懂销售，又懂AI」',
+    '> 现职: 太原重工 · 工程起重机分公司 · 高空作业平台',
+    '> 系统就绪. ACCESS LEVEL: 01'
+  ];
+  var termBody = $('#termBody');
+  var termLine = 0, termChar = 0, termDone = false;
+
+  function typeTick() {
+    if (termDone) { return; }
+    if (termLine >= TERM_LINES.length) { termDone = true; return; }
+    var line = TERM_LINES[termLine];
+    if (termChar < line.length) {
+      termChar++;
+      termBody.textContent = TERM_LINES.slice(0, termLine).join('\n') + '\n' + line.slice(0, termChar);
+      setTimeout(typeTick, 18);
+    } else {
+      termChar = 0;
+      termLine++;
+      termBody.textContent = TERM_LINES.slice(0, termLine).join('\n') + '\n';
+      setTimeout(typeTick, 320);
+    }
+  }
+
+  /* ================ 6. 联系方式复制 ================ */
+  $$('.c-copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var val = btn.getAttribute('data-copy');
+      var ok = false;
+      function done() {
+        var old = btn.textContent;
+        btn.textContent = ok ? 'COPIED ✓' : 'FAILED ✗';
+        setTimeout(function () { btn.textContent = old; }, 1400);
+      }
+      function fallback() {
+        /* file:// 下 clipboard API 不可用时的兜底方案 */
+        var ta = document.createElement('textarea');
+        ta.value = val;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); ok = true; } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+        done();
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(val).then(function () { ok = true; done(); }, fallback);
+      } else {
+        fallback();
+      }
+    });
+  });
+
+  /* ================ 7. 入侵系统彩蛋 ================ */
+  var intr = $('#intrusion');
+  var intrLog = $('#intrLog');
+  var intrBar = $('#intrBar');
+  var intrPct = $('#intrPct');
+  var intrGranted = $('#intrGranted');
+  var INTR_MSGS = [
+    '> 绕过防火墙 v7.2 ...',
+    '> 解密载荷 payload.bin ...',
+    '> 注入 NEON 内核 ...',
+    '> 夺取控制权 ...',
+    '> 校验 ROOT 权限 ...',
+    '> 系统已接管. 欢迎进入. '
+  ];
+  var intrState = 'idle';
+
+  function pushMsg(txt) {
+    var line = document.createElement('div');
+    line.className = 'intr-line';
+    line.textContent = txt;
+    intrLog.appendChild(line);
+    intrLog.scrollTop = intrLog.scrollHeight;
+  }
+
+  function finishIntrusion() {
+    intrState = 'granted';
+    intr.classList.add('granted');
+    intrGranted.classList.remove('hide');
+  }
+
+  function closeIntrusion() {
+    intrState = 'idle';
+    intr.classList.remove('open', 'granted');
+  }
+
+  /* 充能动画：进度条 + 逐步输出日志 → ACCESS GRANTED */
+  function openIntrusion() {
+    if (intrState !== 'idle') { return; }
+    intrState = 'charging';
+    intr.classList.add('open');
+    intr.classList.remove('granted');
+    intrGranted.classList.add('hide');
+    intrBar.style.width = '0%';
+    intrPct.textContent = '0%';
+    intrLog.textContent = '';
+    var pct = 0, msgIdx = 0;
+    var timer = setInterval(function () {
+      pct = Math.min(100, pct + randInt(2, 5));
+      intrBar.style.width = pct + '%';
+      intrPct.textContent = pct + '%';
+      var idx = Math.min(INTR_MSGS.length - 1, Math.floor(pct / 18));
+      while (msgIdx <= idx) {
+        pushMsg(INTR_MSGS[msgIdx]);
+        msgIdx++;
+      }
+      if (pct >= 100) {
+        clearInterval(timer);
+        setTimeout(finishIntrusion, 380);
+      }
+    }, 45);
+  }
+
+  /* 触发按钮（hero 与控制舱共用 .intr-trigger） */
+  $$('.intr-trigger').forEach(function (b) {
+    b.addEventListener('click', openIntrusion);
+  });
+
+  $('#intrExit').addEventListener('click', closeIntrusion);
+
+  /* ESC 退出彩蛋 */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && intrState === 'granted') { closeIntrusion(); }
+  });
+
+  /* ================ 8. 网格地板滚动视差 ================ */
+  var floor = $('.grid-floor');
+  window.addEventListener('scroll', function () {
+    var y = Math.round(window.scrollY);
+    /* 背景 Y 偏移 = 滚动量 × 0.16，周期对齐 112px（2×56px 网格周期） */
+    floor.style.backgroundPositionY = (y * 0.16 % 112) + 'px';
+    /* 向下滚动时地板渐隐 */
+    floor.style.opacity = Math.max(0.18, 0.5 - y / 4200);
+  }, { passive: true });
+
+  /* ================ 9. 启动引导 ================ */
+  mSetup();
+  mDraw();
+
+  window.addEventListener('load', function () {
+    setTimeout(typeTick, 500);
+  });
+
+})();
+</script>
+</body>
+</html>
