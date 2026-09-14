@@ -19,7 +19,7 @@
          → 履历（凹槽内嵌面板列表）
          → 作品（可按压大按钮卡，active 阴影反转 = 按下）
          → 三年纲领（三列浮雕卡 + 浮雕槽进度条）
-         → 联系（浮雕按钮 tel: / mailto: + 复制邮箱）
+         → 联系（浮雕按钮 mailto: + 复制邮箱）
    交互：按钮按压（:active 阴影反转）、右上角圆形夜间模式开关
          （滑块 + 唯一允许的过渡动画）、进度条动画、滚动渐入
    零外部依赖：无 CDN / 无外链字体图片 JS CSS / 无 fetch / file:// 可直接运行
@@ -716,7 +716,7 @@ body.dark .theme-knob { transform: translate(16px, -50%); }
 .mind-item .gt { color: var(--cyan); font-weight: 800; }
 
 /* ==========================================================================
-   12. 联系：浮雕按钮（tel: / mailto:）+ 复制邮箱 + 提示浮层
+   12. 联系：浮雕按钮（mailto:）+ 复制邮箱 + 提示浮层
    ========================================================================== */
 .contact-wrap { max-width: 780px; margin: 0 auto; }
 .contact-card {
@@ -1422,7 +1422,6 @@ body.dark .theme-knob { transform: translate(16px, -50%); }
           <h2>欢迎交流</h2>
           <p class="sub">工程机械 × AI · 求职 / 合作 / 行业交流皆可，直奔结果。</p>
           <div class="contact-actions">
-            <a class="btn btn-primary btn-lg" href="tel:17772118785">📞 177-7211-8785</a>
             <a class="btn btn-lg" href="mailto:1820688914@qq.com">✉️ 1820688914@qq.com</a>
             <button class="btn btn-lg" id="copyEmail" type="button">📋 复制邮箱</button>
           </div>

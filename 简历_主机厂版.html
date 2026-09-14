@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="邵汉青">
+<meta name="description" content="邵汉青 · 工程机械大客户销售 · 区域销售经理 / 大客户经理（高空作业平台方向）· 主机厂版简历">
+<title>邵汉青 · 简历（主机厂版）· 区域销售经理 / 大客户经理</title>
+
+<style>
+/* ==========================================================================
+   邵汉青 · 简历 V1 主机厂版 —— 单文件样式表
+   设计目标：白底深字（打印优先）· 稳重专业的工业制造风 · 零外部依赖
+   主色：深蓝 #123a63 / 石墨灰 #2f3a45 · 正文基准 14px · 行高 1.75
+   分区索引：
+     01 设计变量与全局重置      09 项目与作品
+     02 页面容器与版心          10 教育背景
+     03 顶部固定工具条          11 求职意向
+     04 个人信息头部            12 紧凑版（切换密度）
+     05 通用板块标题            13 响应式（≤768px）
+     06 核心能力摘要            14 打印样式 @media print
+     07 关键业绩数字卡          15 细节与无障碍兜底
+     08 工作经历
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   01 设计变量与全局重置 / Design Tokens & Reset
+   -------------------------------------------------------------------------- */
+:root {
+  /* 文字色阶：全部在白底上对比度 ≥ 4.5:1 */
+  --ink: #16202b;          /* 主文字   对比度 ≈ 15.2:1 */
+  --ink-2: #3d4b5a;        /* 次级文字 对比度 ≈ 8.9:1 */
+  --ink-3: #5b6a79;        /* 辅助文字 对比度 ≈ 5.5:1 */
+  --brand: #123a63;        /* 深蓝主色 对比度 ≈ 11.6:1 */
+  --brand-2: #1d5c96;      /* 亮深蓝   对比度 ≈ 6.9:1 */
+  --graphite: #2f3a45;     /* 石墨灰 */
+  --line: #d7dee6;         /* 细分隔线 */
+  --line-strong: #a9b8c6;  /* 强化分隔线 */
+  --bg: #ffffff;           /* 页面底色：纯白，打印友好 */
+  --bg-soft: #f5f7fa;      /* 卡片浅底 */
+  --bg-softer: #fafbfc;    /* 更浅的分区底 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+               "Liberation Mono", "Courier New", monospace;
+  --radius: 3px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-size: 14px;                 /* 固定基准，避免缩放导致版式抖动 */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0 0 48px 0;
+  background: #eef1f5;             /* 屏幕预览底：衬托白色"纸张" */
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.75;               /* 行高 ≥ 1.6，保证阅读舒适 */
+  letter-spacing: 0.01em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: 600; line-height: 1.45; color: var(--ink); }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: normal; font-weight: 600; color: var(--brand); }
+
+/* --------------------------------------------------------------------------
+   02 页面容器与版心 / Page Shell
+   -------------------------------------------------------------------------- */
+.page {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 40px 44px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  box-shadow: 0 2px 14px rgba(18, 58, 99, 0.08);
+}
+
+.section { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.section:first-of-type { border-top: none; }
+.section-body { margin-top: 12px; }
+
+/* --------------------------------------------------------------------------
+   03 顶部固定工具条 / Sticky Toolbar（打印时隐藏）
+   -------------------------------------------------------------------------- */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 2px 8px rgba(18, 58, 99, 0.07);
+}
+
+.toolbar-hint { font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+.toolbar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: #ffffff;                  /* 白字 + 深蓝底：对比度 ≈ 11.6:1 */
+  background: var(--brand);
+  border: 1px solid var(--brand);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn:hover { background: var(--brand-2); border-color: var(--brand-2); }
+.btn:focus-visible { outline: 2px solid var(--brand-2); outline-offset: 2px; }
+.btn-secondary { color: var(--brand); background: #ffffff; border: 1px solid var(--line-strong); }
+.btn-secondary:hover { color: #ffffff; background: var(--graphite); border-color: var(--graphite); }
+
+/* --------------------------------------------------------------------------
+   04 个人信息头部 / Resume Header
+   -------------------------------------------------------------------------- */
+.resume-head { padding-bottom: 18px; border-bottom: 3px solid var(--brand); }
+.head-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.name { font-size: 30px; font-weight: 700; letter-spacing: 0.06em; color: var(--brand); }
+
+.name-en {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-left: 10px;
+}
+
+.head-badge {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--graphite);
+  padding: 3px 10px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.headline { margin-top: 10px; font-size: 15px; font-weight: 600; line-height: 1.7; color: var(--brand); }
+/* 分隔符按文字处理：颜色用 --ink-3（白底对比度 ≈ 5.5:1），不使用装饰性浅灰 */
+.headline .sep { margin: 0 8px; color: var(--ink-3); font-weight: 400; }
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 26px;
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--ink-2);
+}
+
+.contact-item { display: flex; gap: 8px; align-items: baseline; min-width: 0; }
+.contact-key { flex: 0 0 auto; min-width: 74px; color: var(--ink-3); font-size: 13px; }
+.contact-val { color: var(--ink-2); word-break: break-all; }
+.contact-val.mono { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.02em; }
+
+/* --------------------------------------------------------------------------
+   05 通用板块标题 / Section Titles
+   -------------------------------------------------------------------------- */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--brand);
+}
+
+/* 标题左侧的深蓝竖条：工业风的视觉锚点 */
+.section-title::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 17px;
+  background: var(--brand);
+  border-radius: 1px;
+}
+
+.section-title .title-note { font-size: 13px; font-weight: 400; line-height: 1.6; letter-spacing: 0; color: var(--ink-3); }
+
+/* --------------------------------------------------------------------------
+   06 核心能力摘要 / Core Strengths
+   -------------------------------------------------------------------------- */
+.ability-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 22px; }
+
+.ability-item {
+  position: relative;
+  padding: 8px 0 8px 16px;
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--ink-2);
+  border-left: 2px solid var(--line-strong);
+}
+
+.ability-item::before { content: ""; position: absolute; left: 0; top: 16px; width: 6px; height: 2px; background: var(--brand); }
+.ability-title { display: block; font-size: 14px; font-weight: 600; color: var(--ink); }
+.ability-desc { display: block; margin-top: 2px; color: var(--ink-2); }
+
+.ability-desc .num {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--brand);
+  letter-spacing: 0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   07 关键业绩数字卡 / KPI Cards（数字用等宽字体，tabular-nums 对齐）
+   -------------------------------------------------------------------------- */
+.kpi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+
+.kpi {
+  padding: 12px 14px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--brand);
+  border-radius: var(--radius);
+}
+
+.kpi-num {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--brand);
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-unit { font-family: var(--font-sans); font-size: 13px; font-weight: 600; line-height: 1.6; margin-left: 3px; color: var(--brand-2); }
+.kpi-label { margin-top: 4px; font-size: 13px; font-weight: 600; line-height: 1.65; color: var(--ink); }
+.kpi-note { margin-top: 3px; font-size: 13px; line-height: 1.65; color: var(--ink-3); }
+.kpi-note .qualifier { font-weight: 600; color: var(--brand-2); }
+
+/* --------------------------------------------------------------------------
+   08 工作经历 / Work Experience（5 段倒序 · 左侧时间轴）
+   -------------------------------------------------------------------------- */
+.job-list { display: flex; flex-direction: column; gap: 16px; }
+
+.job {
+  position: relative;
+  padding: 0 0 14px 16px;
+  border-left: 2px solid var(--line);
+}
+
+/* 时间轴节点：白心深蓝圆环 */
+.job::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 7px;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border: 2px solid var(--brand);
+  border-radius: 50%;
+}
+
+.job:last-child { padding-bottom: 0; border-left-color: transparent; }
+.job-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 14px; }
+.job-company { font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: 0.01em; }
+.job-index {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--graphite);
+  padding: 1px 6px;
+  border-radius: 2px;
+  margin-right: 8px;
+  vertical-align: 2px;
+}
+
+.job-period {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.job-role { margin-top: 3px; font-size: 13px; font-weight: 600; color: var(--brand-2); }
+
+.job-meta {
+  margin-top: 7px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+
+.job-meta li { display: flex; gap: 7px; align-items: baseline; }
+
+.meta-k {
+  flex: 0 0 auto;
+  color: var(--ink-3);
+  font-size: 13px;
+  padding: 1px 7px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+}
+
+.meta-v { color: var(--ink-2); }
+.job-block { margin-top: 9px; }
+
+.block-title {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--graphite);
+  letter-spacing: 0.04em;
+  padding-bottom: 1px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.block-body { margin-top: 5px; font-size: 13px; line-height: 1.8; color: var(--ink-2); }
+.ach-list { margin-top: 5px; display: flex; flex-direction: column; gap: 3px; }
+
+.ach-list li {
+  position: relative;
+  padding-left: 15px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--ink-2);
+}
+
+.ach-list li::before { content: "▪"; position: absolute; left: 2px; top: 0; color: var(--brand-2); font-size: 13px; }
+
+.ach-list .figure {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--brand);
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 口径限定词标签：在跟进 / 参与协同推进 / 协同支持 */
+.qualifier-tag {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-2);
+  background: #edf3f9;
+  border: 1px solid #cfe0ee;
+  border-radius: 2px;
+  padding: 0 5px;
+  margin-right: 4px;
+  line-height: 1.6;
+}
+
+.honest-note {
+  margin-top: 7px;
+  padding: 7px 10px;
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--ink-2);
+  background: var(--bg-softer);
+  border-left: 3px solid var(--line-strong);
+}
+
+.honest-note .note-key { font-weight: 600; color: var(--graphite); }
+
+/* --------------------------------------------------------------------------
+   09 项目与作品 / Projects & Deliverables
+   -------------------------------------------------------------------------- */
+.project-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+
+.project {
+  padding: 10px 13px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--brand);
+  border-radius: var(--radius);
+}
+
+.project-title { display: flex; align-items: baseline; gap: 7px; font-size: 14px; font-weight: 600; color: var(--ink); }
+.proj-no { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--brand); }
+.project-desc { margin-top: 4px; font-size: 13px; line-height: 1.75; color: var(--ink-2); }
+
+.project-tag {
+  display: inline-block;
+  width: 100%;
+  margin-top: 6px;
+  padding-top: 5px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-3);
+  border-top: 1px dashed var(--line);
+}
+
+/* --------------------------------------------------------------------------
+   10 教育背景 / Education
+   -------------------------------------------------------------------------- */
+.edu-list { display: flex; flex-direction: column; gap: 7px; }
+
+.edu-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 7px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.edu-item:last-child { border-bottom: none; }
+.edu-main { font-size: 13px; line-height: 1.75; color: var(--ink-2); }
+.edu-degree { font-weight: 700; color: var(--ink); margin-right: 10px; }
+.edu-school { font-weight: 600; color: var(--brand); margin-right: 8px; }
+.edu-major { color: var(--ink-2); }
+
+.edu-period {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-3);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   11 求职意向 / Job Intention
+   -------------------------------------------------------------------------- */
+.intent {
+  padding: 14px 16px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--brand);
+  border-radius: var(--radius);
+}
+
+.intent-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 26px; }
+.intent-item { font-size: 13px; line-height: 1.75; color: var(--ink-2); }
+.intent-key { display: block; font-size: 13px; font-weight: 600; color: var(--ink-3); letter-spacing: 0.04em; }
+.intent-val { display: block; margin-top: 1px; font-size: 13px; font-weight: 600; color: var(--ink); }
+.intent-val .em { color: var(--brand); }
+
+.intent-foot {
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px dashed var(--line-strong);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-3);
+}
+
+.intent-foot .ref-key { font-weight: 600; color: var(--ink-2); }
+
+.foot-note {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-3);
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   12 紧凑版（切换密度）/ Compact Density Mode
+   注意：字号仍 ≥13px、行高仍 ≥1.6，密度变化只作用于留白与字号档位
+   -------------------------------------------------------------------------- */
+body.compact { font-size: 13px; line-height: 1.6; }
+body.compact .page { padding: 22px 30px 30px; }
+body.compact .section { margin-top: 16px; padding-top: 14px; }
+body.compact .section-body { margin-top: 9px; }
+body.compact .resume-head { padding-bottom: 12px; }
+body.compact .name { font-size: 26px; }
+body.compact .contact-grid { line-height: 1.6; }
+body.compact .kpi { padding: 9px 11px; }
+body.compact .kpi-num { font-size: 20px; }
+body.compact .job-list { gap: 11px; }
+body.compact .job { padding-bottom: 10px; }
+body.compact .job-block { margin-top: 6px; }
+body.compact .project,
+body.compact .intent { padding: 9px 11px; }
+body.compact .foot-note { margin-top: 14px; padding-top: 9px; }
+
+body.compact .ability-item,
+body.compact .ach-list li,
+body.compact .block-body,
+body.compact .project-desc,
+body.compact .edu-main,
+body.compact .intent-item { line-height: 1.6; }
+
+/* --------------------------------------------------------------------------
+   13 响应式（≤768px 可读）/ Responsive
+   -------------------------------------------------------------------------- */
+@media screen and (max-width: 768px) {
+  body { padding-bottom: 24px; font-size: 13px; }
+  .page { max-width: none; margin: 0 8px; padding: 18px 16px 26px; border-radius: 3px; }
+  .toolbar { max-width: none; margin: 0 8px; padding: 8px 12px; }
+  .toolbar-hint { display: none; }
+  .btn { padding: 7px 12px; }
+  .name { font-size: 24px; }
+  .headline { font-size: 14px; }
+  .kpi-num { font-size: 20px; }
+  .job { padding-left: 13px; }
+  .job-period { white-space: normal; }
+  .contact-key { min-width: 62px; }
+
+  /* 多栏一律塌缩成单栏，避免横向溢出 */
+  .contact-grid,
+  .ability-list,
+  .kpi-grid,
+  .project-grid,
+  .intent-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   14 打印样式 / @media print（A4 单栏 · 白底黑字 · 避免分页断裂）
+   -------------------------------------------------------------------------- */
+@page { size: A4 portrait; margin: 12mm 11mm; }
+
+@media print {
+  html { font-size: 11pt; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt;
+    line-height: 1.6;
+  }
+
+  /* 打印时隐藏整条工具条与所有交互控件 */
+  .toolbar, .btn, .no-print { display: none !important; }
+
+  .page {
+    max-width: none;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: #ffffff !important;
+  }
+
+  /* 打印一律按展开版式输出，忽略屏幕上的紧凑切换 */
+  body.compact .page { padding: 0; }
+
+  .section { margin-top: 9pt; padding-top: 8pt; border-top: 0.6pt solid #b8c2cc; }
+  .resume-head { padding-bottom: 6pt; border-bottom: 1.6pt solid #123a63; }
+  .name { font-size: 20pt; color: #123a63 !important; }
+  .headline { font-size: 11pt; color: #123a63 !important; }
+  .section-title { font-size: 12pt; color: #123a63 !important; }
+  .section-title::before { background: #123a63 !important; }
+
+  /* 浅底一律还原为白底，避免打印出灰块与浪费墨粉 */
+  .kpi,
+  .project,
+  .intent,
+  .honest-note,
+  .meta-k,
+  .head-badge {
+    background: #ffffff !important;
+    border-color: #b8c2cc !important;
+  }
+
+  .kpi-num,
+  .ach-list .figure,
+  .job-period,
+  .ability-desc .num { color: #0f3157 !important; }
+
+  .qualifier-tag {
+    color: #0f3157 !important;
+    background: #ffffff !important;
+    border: 0.6pt solid #b8c2cc !important;
+  }
+
+  /* 深底元素保留反白，但强制打印背景色 */
+  .job-index {
+    color: #ffffff !important;
+    background: #2f3a45 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 避免板块与条目在分页处被切断 */
+  .section,
+  .job,
+  .kpi,
+  .project,
+  .edu-item,
+  .intent {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .section-title, .job-head, .block-title { break-after: avoid; page-break-after: avoid; }
+  h1, h2, h3, h4 { break-after: avoid; }
+
+  .job::before { background: #ffffff !important; border-color: #123a63 !important; }
+  .foot-note { margin-top: 10pt; padding-top: 6pt; }
+}
+
+/* --------------------------------------------------------------------------
+   15 细节与无障碍兜底 / Details & A11y
+   -------------------------------------------------------------------------- */
+::selection { background: #cfe0ee; color: var(--ink); }
+.btn:active { transform: translateY(1px); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+</style>
+<!-- COMPACT_PRINT_BEGIN -->
+<style>
+/* ===== 紧凑打印补丁（由 tools/compact_resume_print.py 生成，勿手改）===== */
+@media print {
+  @page { size: A4; margin: 10mm 11mm 10mm 11mm; }
+
+  /* --- 字号与行高 --- */
+  html { font-size: 10.0pt !important; }
+  body {
+    font-size: 10.0pt !important;
+    line-height: 1.42 !important;
+    background: #fff !important;
+    margin: 0 !important; padding: 0 !important;
+  }
+  p, li, dd, dt, blockquote { font-size: 10.0pt !important; line-height: 1.42 !important; }
+  td, th { font-size: 10.0pt !important; line-height: 1.42 !important; }
+  h1 { font-size: 15.5pt !important; margin: 0 0 1.5pt !important; line-height: 1.1 !important; }
+  h2 { font-size: 10.4pt !important; margin: 0 0 2.5pt !important; line-height: 1.15 !important; }
+  h3 { font-size: 9.9pt !important; margin: 0 0 1pt !important; line-height: 1.2 !important; }
+  h4, h5 { font-size: 9.5pt !important; margin: 0 0 1pt !important; line-height: 1.2 !important; }
+  .small, .muted, .sub, .hint, .meta, .note, .period, .job-period, .time, .date,
+  .tag, .chip, .badge, .label, .kpi-note, .desc-sm, .cap, .caption, .kicker, .eyebrow,
+  .sec-no, .sec-en, .proj-badge, .num-scope, .num-label, .kpi-label, .meta-k, .meta-v {
+    font-size: 8.6pt !important; line-height: 1.3 !important;
+  }
+
+  /* --- 外壳去留白：打印时不要"文档查看器"式外边距与阴影 --- */
+  .page, main, .sheet, .wrap, .container, .resume, .doc {
+    max-width: none !important; width: auto !important;
+    margin: 0 !important; padding: 0 !important;
+    border: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+  }
+
+  /* --- 板块与卡片间距压缩 --- */
+  section, .sec, .block, .module, .group {
+    padding: 6pt 0 !important; margin: 0 !important;
+    border-top-width: 0.6pt !important;
+  }
+  .card, .kpi, .kpi-card, .project, .job, .job-block, .item, .entry,
+  .edu-item, .intent-item, .stat, .metric, .box, .num, .num-card, .cap-item, .qual {
+    padding: 5pt 7pt !important;
+    margin: 0 0 2.5pt !important;
+    border-radius: 0 !important; box-shadow: none !important;
+  }
+  ul, ol { padding-left: 11pt !important; margin: 0.5pt 0 !important; }
+  li { margin: 0 !important; padding: 0 !important; }
+  hr { margin: 3pt 0 !important; }
+
+  /* --- 网格并排：纵向省高度 --- */
+  .g2, .two-col, .grid-2, .kpi-grid, .num-grid, .stats-grid, .cols-2 {
+    display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 3pt 9pt !important;
+  }
+  .g3, .g4, .grid, .grid-3, .grid-4, .cards, .stats, .projects, .project-grid,
+  .kpi-list, .metrics, .cap-grid, .ability-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 3pt 9pt !important;
+  }
+
+  /* --- 隐藏纯装饰与非打印元素 --- */
+  .toolbar, .no-print, .print-hide, .deco, .ornament, .blob, .glow, .grain,
+  .noise, .bg-grid, .scroll-hint, .progress-bar {
+    display: none !important;
+  }
+
+  /* --- 打印裁剪（max）：只保留最有说服力的前若干条，把页数压到 2–3 页 --- */
+  .ability-item:nth-child(n+5), .cap:nth-child(n+5), .cap-item:nth-child(n+5),
+  .strength:nth-child(n+5), .skill:nth-child(n+5),
+  .kpi:nth-child(n+4), .num:nth-child(n+4), .kpi-card:nth-child(n+4),
+  .num-card:nth-child(n+4), .stat:nth-child(n+4), .metric:nth-child(n+4),
+  .project:nth-child(n+4), .work:nth-child(n+4), .portfolio-item:nth-child(n+4) {
+    display: none !important;
+  }
+  .proj-table tr:nth-child(n+4) { display: none !important; }
+  .job li:nth-child(n+3), .job-block li:nth-child(n+3), .job-body li:nth-child(n+3),
+  .entry li:nth-child(n+3), .exp li:nth-child(n+3) {
+    display: none !important;
+  }
+
+  /* --- 分页控制（重要：别改回所有块都 avoid，会白白多出一页）--- */
+  .section, .sec, .block, .module, .group, section,
+  .job, .job-block, .entry, .card {
+    break-inside: auto !important; page-break-inside: auto !important;
+  }
+  /* 只保护矮块不被切断 */
+  .kpi, .kpi-card, .num, .num-card, .cap, .cap-item, .ability-item, .stat,
+  .metric, .edu-item, .intent-item, .project, .item, .psr {
+    break-inside: avoid !important; page-break-inside: avoid !important;
+  }
+  /* 标题不要孤零零留在一页末尾 */
+  h2, h3, h4, .job-head, .job-header, .sec-title, .section-title, .block-title {
+    break-after: avoid !important; page-break-after: avoid !important;
+  }
+}
+</style>
+<style>
+/* ===== 移动端横向溢出修复（由 tools/compact_resume_print.py 生成）===== */
+@media screen and (max-width: 768px) {
+  html, body { overflow-x: hidden; }
+  .page, main.page, main, .sheet, .wrap {
+    width: auto !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  .toolbar { margin-left: 0 !important; margin-right: 0 !important; }
+}
+</style>
+
+<!-- COMPACT_PRINT_END -->
+
+</head>
+
+<body>
+
+<!-- ==========================================================================
+     顶部固定工具条（打印时由 @media print 隐藏）
+     ========================================================================== -->
+<div class="toolbar no-print" role="toolbar" aria-label="简历工具条">
+  <span class="toolbar-hint">提示：本页为打印友好版式，可直接「打印 / 导出 PDF」后投递。</span>
+  <div class="toolbar-actions">
+    <button id="btnPrint" class="btn" type="button" onclick="window.print()" aria-label="打印或导出 PDF">
+      🖨 打印 / 导出 PDF
+    </button>
+    <button id="btnCompact" class="btn btn-secondary" type="button" aria-pressed="false" aria-label="切换紧凑版排版">
+      切换紧凑版
+    </button>
+  </div>
+</div>
+
+<main class="page" id="resume">
+
+  <!-- ======================================================================
+       板块 0：姓名 + 一句话定位 + 联系方式
+       ====================================================================== -->
+  <header class="resume-head" id="sec-head">
+    <div class="head-top">
+      <h1 class="name">邵汉青<span class="name-en">Shao Hanqing</span></h1>
+      <span class="head-badge">本科 · 32 岁 · 已婚 · 可全国驻外</span>
+    </div>
+
+    <p class="headline">
+      10 年工程机械大客户销售<span class="sep">|</span>区域市场 0→1 开拓<span class="sep">|</span>单省独立签约 1500 万
+    </p>
+
+    <div class="contact-grid">
+      <div class="contact-item">
+        <span class="contact-key">邮箱</span>
+        <span class="contact-val mono">1820688914@qq.com</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-key">现居 / 意向 base</span>
+        <span class="contact-val">河南郑州（可接受全国驻外、可全家搬迁）</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-key">最高学历</span>
+        <span class="contact-val">本科 · 黄淮学院 · 汽车服务工程</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       板块 1：核心能力摘要
+       ====================================================================== -->
+  <section class="section" id="sec-ability" aria-labelledby="t-ability">
+    <h2 class="section-title" id="t-ability">
+      核心能力摘要<span class="title-note">区域开拓 · 大客户经营 · 招投标 · 融资测算</span>
+    </h2>
+
+    <div class="section-body">
+      <div class="ability-list">
+
+        <div class="ability-item">
+          <span class="ability-title">区域市场 0→1 开拓</span>
+          <span class="ability-desc">
+            三次从零搭建客户池：粤东目标客户 <span class="num">40→132</span>、河南旋挖钻客户信息
+            <span class="num">0→180 条</span>、湖北高空作业平台客户信息 <span class="num">113 条</span>。
+          </span>
+        </div>
+
+        <div class="ability-item">
+          <span class="ability-title">大客户经营与复购</span>
+          <span class="ability-desc">
+            客户分级与决策链分析、长期战略合作计划制定，聚焦大客户复购与客户成功式续约经营。
+          </span>
+        </div>
+
+        <div class="ability-item">
+          <span class="ability-title">招投标全流程</span>
+          <span class="ability-desc">
+            独立完成标书 <span class="num">35 份</span>、协助团队完成重点项目投标
+            <span class="num">19 项</span>，熟悉报价函、投标报价文件与招投标信息收集全链条。
+          </span>
+        </div>
+
+        <div class="ability-item">
+          <span class="ability-title">应收账款催收与客户经营风险评估</span>
+          <span class="ability-desc">
+            完成客户设备及经营能力信息核实 <span class="num">112 条</span>，在行业下行周期中承担催收与风险核实主责。
+          </span>
+        </div>
+
+        <div class="ability-item">
+          <span class="ability-title">融资租赁方案配合（差异化加分）</span>
+          <span class="ability-desc">
+            IRR / 回本周期测算、分期与全款口径对比、放款资料准备，用采购决策口径支撑客户签约。
+          </span>
+        </div>
+
+        <div class="ability-item">
+          <span class="ability-title">工业品大客户销售 + AI 工具实操</span>
+          <span class="ability-desc">
+            覆盖工程机械、建筑设备、工业设备（高空作业平台 / 旋挖钻机 / 空压机 / 履带吊）；
+            用 AI 工具做客户线索自动化采集与销售材料自动化生成。
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       板块 2：关键业绩数字卡（口径分级标注，不做抬升）
+       ====================================================================== -->
+  <section class="section" id="sec-kpi" aria-labelledby="t-kpi">
+    <h2 class="section-title" id="t-kpi">
+      关键业绩数字<span class="title-note">每张卡片均标注统计期间与口径限定词</span>
+    </h2>
+
+    <div class="section-body">
+      <div class="kpi-grid">
+
+        <div class="kpi">
+          <div class="kpi-num">113<span class="kpi-unit">条</span></div>
+          <div class="kpi-label">湖北区域客户信息拓展收录</div>
+          <div class="kpi-note">其中新增客户 74 条 · 太原重工期间</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-num">1500<span class="kpi-unit">万元</span></div>
+          <div class="kpi-label">个人独立签约额</div>
+          <div class="kpi-note">从线索到签约到回款全程负责 · 太原重工期间</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-num">1.2<span class="kpi-unit">亿元</span></div>
+          <div class="kpi-label">区域在跟进意向信息总额</div>
+          <div class="kpi-note">
+            <span class="qualifier">在跟进</span>（12000 万元，非已签约）· 湖北市场
+          </div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-num">180<span class="kpi-unit">条</span></div>
+          <div class="kpi-label">河南旋挖钻客户信息 0→180 条</div>
+          <div class="kpi-note">走访工地、陌拜客户，独立开发河南剩余市场 · 三一重工期间</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-num">35<span class="kpi-unit">份</span></div>
+          <div class="kpi-label">独立完成标书</div>
+          <div class="kpi-note">另协助团队完成重点项目投标 19 项 · 复盛实业期间</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-num">40<span class="kpi-unit">→132</span></div>
+          <div class="kpi-label">粤东目标客户数增长</div>
+          <div class="kpi-note">拓展维护客户信息 400 余条 · 宇通重工期间</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       板块 3：工作经历（5 段 · 倒序 · 重点放太重与三一）
+       ====================================================================== -->
+  <section class="section" id="sec-exp" aria-labelledby="t-exp">
+    <h2 class="section-title" id="t-exp">
+      工作经历<span class="title-note">5 段 · 均为工程机械大客户销售岗 · 倒序排列</span>
+    </h2>
+
+    <div class="section-body">
+      <div class="job-list">
+
+        <!-- ① 太原重工（2025.12 – 至今）-->
+        <article class="job">
+          <div class="job-head">
+            <h3 class="job-company">
+              <span class="job-index">01</span>太原重工 · 工程起重机分公司（工起营销中心）
+            </h3>
+            <span class="job-period">2025.12 – 至今</span>
+          </div>
+          <p class="job-role">大客户销售 / 业务经理</p>
+
+          <ul class="job-meta">
+            <li><span class="meta-k">产品</span><span class="meta-v">高空作业平台（剪叉式 4–14m / 臂式 16–60m）</span></li>
+            <li><span class="meta-k">区域</span><span class="meta-v">湖北市场（12 个地市）</span></li>
+          </ul>
+
+          <div class="job-block">
+            <h4 class="block-title">职责</h4>
+            <p class="block-body">
+              区域市场开拓、新客户开发、客户关系管理、招投标与报价、融资租赁方案配合、应收账款跟进。
+            </p>
+          </div>
+
+          <div class="job-block">
+            <h4 class="block-title">业绩（分级口径表述）</h4>
+            <ul class="ach-list">
+              <li>
+                拓展收录客户信息 <span class="figure">113 条</span>，其中新增客户
+                <span class="figure">74 条</span>。
+              </li>
+              <li>
+                <span class="qualifier-tag">在跟进</span>
+                区域在跟进意向信息总额 <span class="figure">1.2 亿元</span>（12000 万元；"在跟进"，非已签约）。
+              </li>
+              <li>
+                个人独立签约 <span class="figure">1500 万元</span>（从线索到签约到回款全程负责）。
+              </li>
+              <li>
+                <span class="qualifier-tag">参与协同推进</span>
+                参与协同推进的区域意向池约 <span class="figure">1 亿元</span>
+                ——本人承担其中部分客户的方案、报价与融资测算。
+              </li>
+              <li>
+                <span class="qualifier-tag">协同支持</span>
+                协同支持成交 <span class="figure">1400 万元</span>。
+              </li>
+            </ul>
+          </div>
+
+          <div class="job-block">
+            <h4 class="block-title">方法与工具（已脱敏）</h4>
+            <p class="block-body">
+              把区域市场开发做成"按图作业"：客户线索批量采集与分级、客户热力分布图、
+              投标报价与推介材料自动化、行业信息定期简报。
+            </p>
+          </div>
+        </article>
+
+        <!-- ② 复盛实业（2025.05 – 2025.12）-->
+        <article class="job">
+          <div class="job-head">
+            <h3 class="job-company">
+              <span class="job-index">02</span>复盛实业（上海）有限公司
+            </h3>
+            <span class="job-period">2025.05 – 2025.12</span>
+          </div>
+          <p class="job-role">大客户销售</p>
+
+          <ul class="job-meta">
+            <li><span class="meta-k">产品</span><span class="meta-v">空压机</span></li>
+            <li><span class="meta-k">区域</span><span class="meta-v">河南</span></li>
+          </ul>
+
+          <div class="job-block">
+            <h4 class="block-title">职责</h4>
+            <p class="block-body">
+              河南区域空压机销售、新市场开拓、行业信息收集分析、客户档案建立、
+              招投标信息收集与标书制作。
+            </p>
+          </div>
+
+          <div class="job-block">
+            <h4 class="block-title">业绩</h4>
+            <ul class="ach-list">
+              <li>报备意向信息 <span class="figure">92 条</span>。</li>
+              <li>独立完成标书 <span class="figure">35 份</span>。</li>
+              <li>协助团队完成重点项目投标 <span class="figure">19 项</span>。</li>
+            </ul>
+          </div>
+
+          <div class="honest-note">
+            <span class="note-key">客观说明：</span>
+            该段工作以招投标为主，客户资产积累与新品类客户池重合度低。
+          </div>
+        </article>
+
+        <!-- ③ 中联重科（2023.07 – 2024.10）-->
+        <article class="job">
+          <div class="job-head">
+            <h3 class="job-company"><span class="job-index">03</span>中联重科</h3>
+            <span class="job-period">2023.07 – 2024.10</span>
+          </div>
+          <p class="job-role">大客户销售</p>
+
+          <ul class="job-meta">
+            <li><span class="meta-k">产品</span><span class="meta-v">旋挖钻机</span></li>
+            <li><span class="meta-k">区域</span><span class="meta-v">河南</span></li>
+          </ul>
+
+          <div class="job-block">
+            <h4 class="block-title">职责</h4>
+            <p class="block-body">
+              区域销售与推广、市场信息收集分析、客户关系与长期合作计划、
+              应收账款催收与客户风险评估。
+            </p>
+          </div>
+
+          <div class="job-block">
+            <h4 class="block-title">业绩（含行业下行周期说明）</h4>
+            <ul class="ach-list">
+              <li>
+                该期间河南旋挖钻市场大幅缩水、以二手设备销售为主，业绩量较少
+                （总体不足 <span class="figure">300 万元</span>）。
+              </li>
+              <li>
+                主要工作重点为老客户信息完善与应收账款催收，完成客户设备及经营能力信息核实
+                <span class="figure">112 条</span>。
+              </li>
+            </ul>
+          </div>
+
+          <div class="honest-note">
+            <span class="note-key">诚实表述：</span>
+            不回避这段业绩低的事实——处在行业下行周期，我的价值在于把存量客户盘清、
+            把应收账款催回来、把客户经营风险核实到位，为后续市场回暖留住了客户基础。
+          </div>
+        </article>
+
+        <!-- ④ 三一重工（2021.04 – 2023.06）-->
+        <article class="job">
+          <div class="job-head">
+            <h3 class="job-company"><span class="job-index">04</span>三一重工</h3>
+            <span class="job-period">2021.04 – 2023.06</span>
+          </div>
+          <p class="job-role">大客户销售</p>
+
+          <ul class="job-meta">
+            <li><span class="meta-k">产品</span><span class="meta-v">旋挖钻机</span></li>
+            <li><span class="meta-k">区域</span><span class="meta-v">河南</span></li>
+          </ul>
+
+          <div class="job-block">
+            <h4 class="block-title">职责</h4>
+            <p class="block-body">
+              河南区域旋挖钻销售与推广、市场开拓与新客户发展、辖区市场信息收集分析、
+              客户关系与长期战略合作。
+            </p>
+          </div>
+
+          <div class="job-block">
+            <h4 class="block-title">业绩</h4>
+            <ul class="ach-list">
+              <li>
+                独立开发河南剩余市场，通过走访工地、陌拜客户，客户信息从
+                <span class="figure">0 拓展到 180 条</span>。
+              </li>
+              <li>
+                首年促成客户工程合作，客户工程产值 <span class="figure">5000 万元</span>，
+                促成设备销售 <span class="figure">1000 万元</span>。
+              </li>
+              <li>年均销售额约 <span class="figure">1500 万元</span>。</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ⑤ 宇通重工（2017.10 – 2021.03）-->
+        <article class="job">
+          <div class="job-head">
+            <h3 class="job-company"><span class="job-index">05</span>宇通重工</h3>
+            <span class="job-period">2017.10 – 2021.03</span>
+          </div>
+          <p class="job-role">大客户销售</p>
+
+          <ul class="job-meta">
+            <li><span class="meta-k">产品</span><span class="meta-v">旋挖钻机、履带吊</span></li>
+            <li><span class="meta-k">区域</span><span class="meta-v">粤东</span></li>
+          </ul>
+
+          <div class="job-block">
+            <h4 class="block-title">职责</h4>
+            <p class="block-body">
+              区域市场分析维护、产品开发调研反馈、销售策略制定、
+              意向信息收集整理分析与跟踪转化、客户关系管理。
+            </p>
+          </div>
+
+          <div class="job-block">
+            <h4 class="block-title">业绩</h4>
+            <ul class="ach-list">
+              <li>同批 <span class="figure">60 多名</span> 新入职员工中最早结束试用期并成功转正。</li>
+              <li>
+                目标客户从 <span class="figure">40 个增长到 132 个</span>（40→132），
+                拓展维护客户信息 <span class="figure">400 余条</span>。
+              </li>
+              <li>
+                潜在客户价值约 <span class="figure">2000 万元</span>，
+                为其他区域提供有效商机价值 <span class="figure">1200 万元</span>。
+              </li>
+              <li>年业绩 <span class="figure">600–1000 万元</span>。</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       板块 4：项目与作品（全部脱敏，不含客户名称与真实价格）
+       ====================================================================== -->
+  <section class="section" id="sec-proj" aria-labelledby="t-proj">
+    <h2 class="section-title" id="t-proj">
+      项目与作品<span class="title-note">已脱敏 · 可对外表述口径</span>
+    </h2>
+
+    <div class="section-body">
+      <div class="project-grid">
+
+        <div class="project">
+          <h3 class="project-title"><span class="proj-no">01</span>区域市场开拓方案</h3>
+          <p class="project-desc">
+            针对单省高空作业平台市场撰写的开拓策略方案，含市场容量、竞品格局、客户分层与打法节奏。
+          </p>
+          <span class="project-tag">市场策略 / 竞品分析 / 客户分层</span>
+        </div>
+
+        <div class="project">
+          <h3 class="project-title"><span class="proj-no">02</span>客户线索采集与分级体系</h3>
+          <p class="project-desc">
+            用地图 POI 数据批量采集区域潜在客户，去重、分级、标注坐标，形成可执行客户池。
+          </p>
+          <span class="project-tag">线索自动化 / 数据清洗 / 分级标准</span>
+        </div>
+
+        <div class="project">
+          <h3 class="project-title"><span class="proj-no">03</span>客户热力作战图</h3>
+          <p class="project-desc">
+            把客户线索按区域与等级做成热力分布图，用于规划跑动路线与资源投放。
+          </p>
+          <span class="project-tag">数据可视化 / 跑动路线规划</span>
+        </div>
+
+        <div class="project">
+          <h3 class="project-title"><span class="proj-no">04</span>融资租赁测算模型</h3>
+          <p class="project-desc">
+            计算回本周期、IRR、全款与分期对比、出租率敏感性，用于给客户做采购决策支撑。
+          </p>
+          <span class="project-tag">IRR / 回本周期 / 敏感性分析</span>
+        </div>
+
+        <div class="project">
+          <h3 class="project-title"><span class="proj-no">05</span>投标报价与推介材料自动化</h3>
+          <p class="project-desc">
+            把报价表、投标报价函、产品推介材料的制作流程标准化、自动化，
+            单份耗时从小时级压缩到分钟级。
+          </p>
+          <span class="project-tag">流程标准化 / 材料自动化</span>
+        </div>
+
+        <div class="project">
+          <h3 class="project-title"><span class="proj-no">06</span>行业信息简报</h3>
+          <p class="project-desc">定期汇总行业动态与竞品信息，用于团队内部决策参考。</p>
+          <span class="project-tag">行业情报 / 竞品跟踪 / 团队复用</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       板块 5：教育背景
+       ====================================================================== -->
+  <section class="section" id="sec-edu" aria-labelledby="t-edu">
+    <h2 class="section-title" id="t-edu">教育背景</h2>
+
+    <div class="section-body">
+      <div class="edu-list">
+
+        <div class="edu-item">
+          <p class="edu-main">
+            <span class="edu-degree">本科</span><span class="edu-school">黄淮学院</span>
+            <span class="edu-major">汽车服务工程</span>
+          </p>
+          <span class="edu-period">2015.09 – 2017.06</span>
+        </div>
+
+        <div class="edu-item">
+          <p class="edu-main">
+            <span class="edu-degree">大专</span><span class="edu-school">鹤壁职业技术学院</span>
+            <span class="edu-major">汽车检测</span>
+          </p>
+          <span class="edu-period">2012.09 – 2015.06</span>
+        </div>
+
+        <div class="edu-item">
+          <p class="edu-main">
+            <span class="edu-degree">高中</span><span class="edu-school">柘城一高</span>
+          </p>
+          <span class="edu-period">2009 – 2012</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       板块 6：求职意向
+       ====================================================================== -->
+  <section class="section" id="sec-intent" aria-labelledby="t-intent">
+    <h2 class="section-title" id="t-intent">求职意向</h2>
+
+    <div class="section-body">
+      <div class="intent">
+        <div class="intent-grid">
+
+          <div class="intent-item">
+            <span class="intent-key">目标岗位</span>
+            <span class="intent-val">
+              区域销售经理 / 大客户经理<span class="em">（高空作业平台、工程机械、建筑设备）</span>
+            </span>
+          </div>
+
+          <div class="intent-item">
+            <span class="intent-key">期望城市</span>
+            <span class="intent-val">郑州 / 武汉 / 全国驻外均可</span>
+          </div>
+
+          <div class="intent-item">
+            <span class="intent-key">期望年包</span>
+            <span class="intent-val">35–45 万</span>
+          </div>
+
+          <div class="intent-item">
+            <span class="intent-key">现居 / 意向 base</span>
+            <span class="intent-val">河南郑州（可接受全国驻外、可全家搬迁）</span>
+          </div>
+
+        </div>
+
+        <div class="intent-foot">
+          <span class="ref-key">证明人：</span>可提供（历任直属领导）
+          <span class="sep">·</span>
+          到岗沟通：欢迎电话或邮件直接联系，可随时安排面试。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot-note">
+    本简历所有业绩数字均按实际口径分级标注，保留"在跟进""参与协同推进""协同支持"等限定词，未做合并或抬升。
+  </p>
+
+</main>
+
+<script>
+/* ==========================================================================
+   简历 V1 主机厂版 —— 交互脚本（内联；无外部依赖、无网络请求）
+   功能：1) 打印按钮兜底绑定   2) 紧凑版密度切换
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  var printBtn = document.getElementById("btnPrint");
+  var compactBtn = document.getElementById("btnCompact");
+
+  /* 打印：按钮上已写 onclick="window.print()"。
+     若该内联属性被环境剥离（如严格 CSP），此处做一次事件绑定兜底；
+     两者不会同时生效，避免重复弹出打印对话框。 */
+  if (printBtn && !printBtn.hasAttribute("onclick")) {
+    printBtn.addEventListener("click", function () {
+      window.print();
+    });
+  }
+
+  /* 紧凑版切换：只切换 body 上的 class，密度完全由 CSS 控制 */
+  if (compactBtn) {
+    compactBtn.addEventListener("click", function () {
+      var isCompact = document.body.classList.toggle("compact");
+      compactBtn.setAttribute("aria-pressed", isCompact ? "true" : "false");
+      compactBtn.textContent = isCompact ? "切换标准版" : "切换紧凑版";
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

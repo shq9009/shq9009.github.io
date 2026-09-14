@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>邵汉青 · 融资租赁版简历（设备融资租赁 / 厂商金融）</title>
+<!--
+  简历 V2 · 融资租赁版
+  ------------------------------------------------------------------
+  单文件 HTML5 · 零外部依赖 · file:// 双击可直接运行 · 无任何网络请求
+  配色：白底深字（打印友好），深青 / 藏蓝主色，金色仅作点缀
+  目标岗位：设备融资租赁、厂商金融 客户经理 / 区域经理
+  排版约束：正文 ≥ 13px、行高 ≥ 1.6、对比度 ≥ 4.5:1、≤768px 可读
+  所有数字口径均取自《_简历三版制作规范.md》，限定词原样保留
+  ------------------------------------------------------------------
+-->
+<style>
+/* ==========================================================================
+   01. 设计令牌（颜色 / 字体 / 间距）
+   说明：主色为深青 #0F4C5C 与藏蓝 #0B2B3C；金色 #B8860B 只用于装饰线、
+        图标与编号底色，正文中的金色文字统一使用加深后的 #8A6100，
+        以保证在纯白底上的对比度 ≥ 4.5:1。
+   ========================================================================== */
+:root {
+  /* 主色：深青 + 藏蓝 */
+  --ink: #0B2B3C; --teal: #0F4C5C; --teal-deep: #0A3945;
+  --teal-soft: #E7F0F2;
+  /* 点缀：金色系 */
+  --gold: #B8860B; --gold-text: #8A6100; --gold-soft: #FBF3DE;
+  /* 正文与灰阶 */
+  --text: #1B2A32; --text-strong: #12222A; --text-muted: #4A5C66;
+  --line: #D5E0E4; --line-strong: #B9CBD1; --paper: #FFFFFF;
+  --wash: #F5F9FA;
+  /* 语义色（白底可读） */
+  --ok: #1D6B45; --warn: #8A4B00;
+  /* 字号阶梯 */
+  --fs-body: 13.5px; --fs-small: 12.5px; --fs-h1: 30px;
+  --fs-h2: 18px; --fs-num: 22px;
+  /* 行高与间距 */
+  --lh: 1.72; --gap: 18px; --pad-paper: 34px 40px 40px;
+  /* 字体族（全部为系统字体，无外链） */
+  --ff-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+             "Source Han Sans SC", "Noto Sans CJK SC", sans-serif;
+  --ff-num: "SF Mono", "Menlo", "Consolas", "Roboto Mono",
+            "PingFang SC", monospace;
+}
+
+/* ==========================================================================
+   02. 基础重置与页面底色
+   ========================================================================== */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #EDF2F4; -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0; padding: 24px 16px 56px; font-family: var(--ff-sans);
+  font-size: var(--fs-body); line-height: var(--lh); color: var(--text);
+  background: #EDF2F4; text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, p, ul, ol, dl, dd, dt, figure, table {
+  margin: 0; padding: 0;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse; width: 100%;
+}
+
+a {
+  color: var(--teal); text-decoration: none;
+}
+
+/* ==========================================================================
+   03. 顶部固定工具条（打印时整条隐藏）
+   ========================================================================== */
+.toolbar {
+  position: fixed; top: 0; left: 0;
+  right: 0; z-index: 99; display: flex;
+  align-items: center; justify-content: space-between; gap: 12px;
+  flex-wrap: wrap; padding: 10px 18px; background: var(--ink);
+  color: #FFFFFF; box-shadow: 0 2px 10px rgba(11, 43, 60, 0.28);
+}
+
+.tb-left {
+  display: flex; align-items: baseline; gap: 12px;
+  flex-wrap: wrap; min-width: 0;
+}
+
+.tb-title {
+  font-size: 14px; font-weight: 700; letter-spacing: 0.02em;
+}
+
+.tb-hint {
+  font-size: var(--fs-small); color: #B9D3DA;
+}
+
+.tb-right {
+  display: flex; align-items: center; gap: 10px;
+}
+
+.tb-btn {
+  font-family: var(--ff-sans); font-size: 13px; line-height: 1;
+  padding: 9px 14px; border-radius: 4px; border: 1px solid #6E8E97;
+  background: transparent; color: #FFFFFF; cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tb-btn:hover {
+  background: rgba(255, 255, 255, 0.14); border-color: #A9C4CB;
+}
+
+.tb-btn-primary {
+  background: var(--gold); border-color: var(--gold); color: #1B1400;
+  font-weight: 700;
+}
+
+.tb-btn-primary:hover {
+  background: #D19E17; border-color: #D19E17;
+}
+
+/* ==========================================================================
+   04. 纸张容器（模拟 A4 白纸，屏幕上居中）
+   ========================================================================== */
+.paper {
+  position: relative; max-width: 900px; margin: 46px auto 0;
+  background: var(--paper); padding: var(--pad-paper); box-shadow: 0 6px 26px rgba(11, 43, 60, 0.16);
+  border-top: 5px solid var(--teal); border-radius: 2px;
+}
+
+/* ==========================================================================
+   05. 简历头部与一句话定位
+   ========================================================================== */
+.res-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--ink);
+}
+
+.head-main {
+  min-width: 0; flex: 1 1 auto;
+}
+
+.head-name {
+  font-size: var(--fs-h1); line-height: 1.25; letter-spacing: 0.06em;
+  color: var(--ink); font-weight: 700;
+}
+
+.head-name .name-en {
+  display: inline-block; margin-left: 12px; font-family: var(--ff-num);
+  font-size: 13px; letter-spacing: 0.18em; color: var(--text-muted);
+  vertical-align: middle;
+}
+
+.positioning {
+  margin-top: 8px; padding: 8px 12px; font-size: 15px;
+  font-weight: 600; line-height: 1.6; color: var(--teal-deep);
+  background: var(--teal-soft); border-left: 4px solid var(--gold); border-radius: 0 3px 3px 0;
+}
+
+.head-tags {
+  display: flex; flex-wrap: wrap; gap: 6px 8px;
+  margin-top: 12px;
+}
+
+.head-tags li {
+  font-size: var(--fs-small); line-height: 1.5; padding: 3px 9px;
+  color: var(--teal-deep); background: var(--wash); border: 1px solid var(--line);
+  border-radius: 2px;
+}
+
+.head-tags li.tag-key {
+  color: var(--gold-text); background: var(--gold-soft); border-color: #E6D5A8;
+  font-weight: 600;
+}
+
+.head-meta {
+  flex: 0 0 300px; border: 1px solid var(--line-strong); border-top: 3px solid var(--teal);
+  background: var(--wash); padding: 10px 12px;
+}
+
+.meta-row {
+  display: flex; gap: 8px; padding: 4px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.meta-row:last-child {
+  border-bottom: none;
+}
+
+.meta-k {
+  flex: 0 0 46px; font-size: var(--fs-small); color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.meta-v {
+  flex: 1 1 auto; font-size: var(--fs-small); color: var(--text-strong);
+  word-break: break-word;
+}
+
+.meta-v.mono {
+  font-family: var(--ff-num); font-size: 13px; letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   06. 通用板块标题（编号 + 中文名 + 英文小标 + 金色分隔线）
+   ========================================================================== */
+.sec {
+  margin-top: 24px;
+}
+
+.sec-title {
+  display: flex; align-items: center; gap: 10px;
+  padding-bottom: 6px; margin-bottom: 12px; border-bottom: 1px solid var(--line-strong);
+  font-size: var(--fs-h2); font-weight: 700; color: var(--ink);
+  letter-spacing: 0.04em;
+}
+
+.sec-no {
+  flex: 0 0 auto; font-family: var(--ff-num); font-size: 12px;
+  line-height: 1; padding: 5px 7px; color: #FFFFFF;
+  background: var(--teal); border-radius: 2px; letter-spacing: 0.06em;
+}
+
+.sec-en {
+  margin-left: auto; font-family: var(--ff-num); font-size: 12px;
+  letter-spacing: 0.16em; color: var(--text-muted); font-weight: 400;
+  text-transform: uppercase; white-space: nowrap;
+}
+
+.sec-note {
+  margin: -4px 0 12px; font-size: var(--fs-small); color: var(--text-muted);
+}
+
+/* ==========================================================================
+   07. 核心能力（融资测算与风险识别置顶，前两项加金色强调）
+   ========================================================================== */
+.cap-list {
+  display: grid; grid-template-columns: 1fr; gap: 8px;
+}
+
+.cap-item {
+  display: flex; gap: 10px; padding: 9px 12px;
+  background: var(--wash); border-left: 3px solid var(--line-strong); border-radius: 0 3px 3px 0;
+}
+
+.cap-item.cap-prime {
+  background: #F7FBFC; border-left-color: var(--gold); box-shadow: inset 0 0 0 1px #E6EFF1;
+}
+
+.cap-idx {
+  flex: 0 0 22px; font-family: var(--ff-num); font-size: 13px;
+  font-weight: 700; line-height: 1.7; color: var(--teal);
+}
+
+.cap-item.cap-prime .cap-idx {
+  color: var(--gold-text);
+}
+
+.cap-body {
+  flex: 1 1 auto; min-width: 0;
+}
+
+.cap-name {
+  font-weight: 700; color: var(--text-strong);
+}
+
+.cap-name .cap-badge {
+  display: inline-block; margin-left: 6px; padding: 1px 6px;
+  font-size: 12px; font-weight: 600; color: var(--gold-text);
+  background: var(--gold-soft); border: 1px solid #E6D5A8; border-radius: 2px;
+  vertical-align: 1px;
+}
+
+.cap-desc {
+  display: block; margin-top: 2px; font-size: var(--fs-small);
+  color: var(--text-muted); line-height: 1.68;
+}
+
+.cap-desc strong {
+  color: var(--text-strong); font-weight: 600;
+}
+
+/* ==========================================================================
+   08. 关键数字卡（数字用等宽字体、右对齐感、口径标注）
+   ========================================================================== */
+.num-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+}
+
+.num-card {
+  padding: 11px 12px; background: var(--paper); border: 1px solid var(--line-strong);
+  border-top: 3px solid var(--teal); border-radius: 2px;
+}
+
+.num-card.card-gold {
+  border-top-color: var(--gold);
+}
+
+.num-value {
+  font-family: var(--ff-num); font-size: var(--fs-num); font-weight: 700;
+  line-height: 1.2; color: var(--teal-deep); letter-spacing: 0.01em;
+}
+
+.num-card.card-gold .num-value {
+  color: var(--gold-text);
+}
+
+.num-unit {
+  font-size: 13px; font-weight: 600; margin-left: 2px;
+}
+
+.num-label {
+  margin-top: 4px; font-size: 13px; font-weight: 600;
+  color: var(--text-strong); line-height: 1.5;
+}
+
+.num-scope {
+  margin-top: 3px; font-size: 12px; color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.num-scope em {
+  font-style: normal; color: var(--gold-text); font-weight: 600;
+}
+
+/* ==========================================================================
+   09. 工作经历（倒序；表格化职责与业绩，数字右对齐）
+   ========================================================================== */
+.job {
+  margin-bottom: 14px; padding: 12px 14px 10px; border: 1px solid var(--line);
+  border-radius: 2px; background: var(--paper); page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.job:last-child {
+  margin-bottom: 0;
+}
+
+.job-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; padding-bottom: 7px;
+  border-bottom: 1px solid var(--line);
+}
+
+.job-co {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap; min-width: 0;
+}
+
+.co-name {
+  font-size: 15px; font-weight: 700; color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+.co-tag {
+  font-size: 12px; line-height: 1.4; padding: 2px 7px;
+  color: #FFFFFF; background: var(--teal); border-radius: 2px;
+}
+
+.co-tag.tag-gold {
+  color: #1B1400; background: var(--gold); font-weight: 700;
+}
+
+.job-time {
+  font-family: var(--ff-num); font-size: 13px; font-weight: 600;
+  color: var(--text-muted); white-space: nowrap;
+}
+
+.job-role {
+  margin-top: 7px; font-size: var(--fs-small); color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.job-role b {
+  color: var(--text-strong); font-weight: 600;
+}
+
+.job-table {
+  margin-top: 8px; font-size: var(--fs-small);
+}
+
+.job-table th {
+  width: 88px; padding: 5px 8px 5px 0; text-align: left;
+  vertical-align: top; font-weight: 600; color: var(--teal-deep);
+  border-bottom: 1px dashed var(--line); white-space: nowrap;
+}
+
+.job-table td {
+  padding: 5px 0; vertical-align: top; color: var(--text);
+  border-bottom: 1px dashed var(--line); line-height: 1.68;
+}
+
+.job-table tr:last-child th,
+.job-table tr:last-child td {
+  border-bottom: none;
+}
+
+.job-table .fig {
+  font-family: var(--ff-num); font-weight: 700; color: var(--teal-deep);
+  letter-spacing: 0.01em;
+}
+
+.job-table .qual {
+  color: var(--gold-text); font-weight: 600;
+}
+
+.job-table .honest {
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   10. 重点经历前置区块（把中联的催收与风险评估提到最显眼位置）
+   ========================================================================== */
+.spotlight {
+  margin-bottom: 14px; padding: 13px 15px 12px; background: var(--gold-soft);
+  border: 1px solid #E6D5A8; border-left: 5px solid var(--gold); border-radius: 0 3px 3px 0;
+  page-break-inside: avoid; break-inside: avoid;
+}
+
+.spotlight-title {
+  display: flex; align-items: baseline; gap: 10px;
+  flex-wrap: wrap; font-size: 15px; font-weight: 700;
+  color: var(--ink);
+}
+
+.spotlight-title .sp-time {
+  font-family: var(--ff-num); font-size: 12.5px; font-weight: 600;
+  color: var(--text-muted);
+}
+
+.spotlight-sub {
+  margin-top: 2px; font-size: var(--fs-small); color: var(--text-muted);
+}
+
+.spotlight-list {
+  margin-top: 8px; display: grid; gap: 5px;
+}
+
+.spotlight-list li {
+  position: relative; padding-left: 14px; font-size: 13px;
+  line-height: 1.68; color: var(--text);
+}
+
+.spotlight-list li::before {
+  content: "▍"; position: absolute; left: 0;
+  top: 0; color: var(--gold); font-size: 12px;
+  line-height: 1.9;
+}
+
+.spotlight-list .fig {
+  font-family: var(--ff-num); font-weight: 700; color: var(--gold-text);
+}
+
+.spotlight-quote {
+  margin-top: 9px; padding: 8px 11px; font-size: 13px;
+  line-height: 1.7; color: var(--text-strong); background: #FFFFFF;
+  border: 1px solid #E6D5A8; border-radius: 2px;
+}
+
+.spotlight-quote b {
+  color: var(--gold-text);
+}
+
+.job-feature {
+  border-color: #E6D5A8; box-shadow: inset 4px 0 0 var(--gold); background: #FFFDF7;
+}
+
+/* ==========================================================================
+   11. 项目与作品（表格感；融资租赁测算模型置首并展开说明）
+   ========================================================================== */
+.proj-table {
+  font-size: var(--fs-small); border: 1px solid var(--line-strong);
+}
+
+.proj-table thead th {
+  padding: 7px 10px; text-align: left; font-size: 12.5px;
+  font-weight: 700; letter-spacing: 0.06em; color: #FFFFFF;
+  background: var(--teal); border-right: 1px solid #2C6B7A; white-space: nowrap;
+}
+
+.proj-table thead th:last-child {
+  border-right: none;
+}
+
+.proj-table tbody td {
+  padding: 8px 10px; vertical-align: top; border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line); line-height: 1.68;
+}
+
+.proj-table tbody td:last-child {
+  border-right: none;
+}
+
+.proj-table tbody tr:nth-child(even) td {
+  background: var(--wash);
+}
+
+.proj-table tbody tr.row-prime td {
+  background: var(--gold-soft);
+}
+
+.proj-table tbody tr.row-prime .proj-name {
+  color: var(--gold-text);
+}
+
+.proj-table td.col-name {
+  width: 168px; font-weight: 700; color: var(--teal-deep);
+}
+
+.proj-name {
+  display: block;
+}
+
+.proj-badge {
+  display: inline-block; margin-top: 3px; padding: 1px 6px;
+  font-size: 12px; font-weight: 600; color: #FFFFFF;
+  background: var(--gold); border-radius: 2px;
+}
+
+.proj-metrics {
+  display: block; margin-top: 5px; font-family: var(--ff-num);
+  font-size: 12px; color: var(--text-muted); letter-spacing: 0.02em;
+}
+
+.proj-metrics b {
+  color: var(--teal-deep); font-weight: 700;
+}
+
+/* ==========================================================================
+   12. 教育背景
+   ========================================================================== */
+.edu-list {
+  display: grid; gap: 6px;
+}
+
+.edu-item {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; padding: 8px 12px;
+  background: var(--wash); border-left: 3px solid var(--teal); border-radius: 0 3px 3px 0;
+}
+
+.edu-item.edu-top {
+  border-left-color: var(--gold); background: #F7FBFC;
+}
+
+.edu-main {
+  min-width: 0; font-size: 13.5px; color: var(--text-strong);
+}
+
+.edu-main b {
+  font-weight: 700; color: var(--ink);
+}
+
+.edu-main span {
+  color: var(--text-muted);
+}
+
+.edu-time {
+  font-family: var(--ff-num); font-size: 12.5px; color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   13. 求职意向 + 页脚声明
+   ========================================================================== */
+.intent-box {
+  border: 1px solid var(--line-strong); border-top: 3px solid var(--ink); background: var(--wash);
+}
+
+.intent-row {
+  display: flex; gap: 12px; padding: 9px 13px;
+  border-bottom: 1px dashed var(--line); align-items: baseline;
+}
+
+.intent-row:last-child {
+  border-bottom: none;
+}
+
+.intent-k {
+  flex: 0 0 84px; font-size: 13px; font-weight: 700;
+  color: var(--teal-deep); letter-spacing: 0.04em;
+}
+
+.intent-v {
+  flex: 1 1 auto; font-size: 13.5px; color: var(--text-strong);
+}
+
+.intent-v .em {
+  font-family: var(--ff-num); font-weight: 700; color: var(--gold-text);
+}
+
+.res-foot {
+  margin-top: 22px; padding-top: 10px; border-top: 1px solid var(--line-strong);
+  font-size: 12px; line-height: 1.7; color: var(--text-muted);
+}
+
+.res-foot b {
+  color: var(--text-strong); font-weight: 600;
+}
+
+/* ==========================================================================
+   14. 紧凑版（点击工具条按钮切换 body.compact）
+   ========================================================================== */
+body.compact {
+  --lh: 1.5; --gap: 12px; --pad-paper: 22px 26px 26px;
+}
+
+body.compact .sec {
+  margin-top: 15px;
+}
+
+body.compact .job {
+  margin-bottom: 9px; padding: 9px 11px 7px;
+}
+
+body.compact .job-table th,
+body.compact .job-table td {
+  padding: 3px 0; line-height: 1.52;
+}
+
+body.compact .cap-item {
+  padding: 6px 10px;
+}
+
+body.compact .num-card {
+  padding: 8px 10px;
+}
+
+body.compact .num-value {
+  font-size: 19px;
+}
+
+body.compact .num-scope,
+body.compact .cap-desc {
+  line-height: 1.5;
+}
+
+body.compact .proj-table tbody td {
+  padding: 5px 8px; line-height: 1.52;
+}
+
+body.compact .spotlight {
+  padding: 10px 12px 9px;
+}
+
+/* ==========================================================================
+   15. 响应式（≤768px 单列可读，工具条不遮挡内容）
+   ========================================================================== */
+@media (max-width: 768px) {
+  body {
+    padding: 76px 10px 32px; font-size: 13px;
+  }
+
+  .paper {
+    margin-top: 8px; padding: 18px 16px 22px; border-top-width: 4px;
+  }
+
+  .res-head {
+    flex-direction: column; gap: 14px;
+  }
+
+  .head-meta {
+    flex: 1 1 auto; width: 100%;
+  }
+
+  .head-name {
+    font-size: 25px;
+  }
+
+  .head-name .name-en {
+    display: none;
+  }
+
+  .num-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sec-en {
+    display: none;
+  }
+
+  .job-head {
+    flex-direction: column; gap: 4px;
+  }
+
+  .proj-table td.col-name {
+    width: 110px;
+  }
+
+  .intent-row {
+    flex-direction: column; gap: 2px;
+  }
+
+  .intent-k {
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .num-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tb-hint {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   16. 打印（A4 单栏、白底黑字、隐藏工具条、避免分页断裂）
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait; margin: 12mm 11mm;
+  }
+
+  html,
+  body {
+    background: #FFFFFF !important; color: #000000 !important;
+  }
+
+  body {
+    padding: 0 !important; font-size: 12.6px; line-height: 1.6;
+  }
+
+  .toolbar {
+    display: none !important;
+  }
+
+  .paper {
+    max-width: none; margin: 0; padding: 0;
+    border: none; border-top: 3px solid #0F4C5C; border-radius: 0;
+    box-shadow: none;
+  }
+
+  .job,
+  .spotlight,
+  .num-card,
+  .cap-item,
+  .edu-item,
+  .intent-box,
+  .proj-table tr {
+    page-break-inside: avoid; break-inside: avoid;
+  }
+
+  .sec-title {
+    page-break-after: avoid; break-after: avoid;
+  }
+
+  .job-head,
+  .proj-table thead {
+    page-break-after: avoid;
+  }
+
+  .num-card,
+  .cap-item,
+  .edu-item,
+  .job-table td,
+  .proj-table tbody td {
+    background: #FFFFFF !important;
+  }
+
+  .head-tags li,
+  .positioning,
+  .spotlight,
+  .spotlight-quote,
+  .intent-box,
+  .head-meta {
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+
+  .proj-table thead th {
+    background: #0F4C5C !important; color: #FFFFFF !important; -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .res-foot {
+    margin-top: 14px;
+  }
+}
+</style>
+<!-- COMPACT_PRINT_BEGIN -->
+<style>
+/* ===== 紧凑打印补丁（由 tools/compact_resume_print.py 生成，勿手改）===== */
+@media print {
+  @page { size: A4; margin: 10mm 11mm 10mm 11mm; }
+
+  /* --- 字号与行高 --- */
+  html { font-size: 9.2pt !important; }
+  body {
+    font-size: 9.2pt !important;
+    line-height: 1.32 !important;
+    background: #fff !important;
+    margin: 0 !important; padding: 0 !important;
+  }
+  p, li, dd, dt, blockquote { font-size: 9.2pt !important; line-height: 1.32 !important; }
+  td, th { font-size: 9.2pt !important; line-height: 1.32 !important; }
+  h1 { font-size: 15.5pt !important; margin: 0 0 1.5pt !important; line-height: 1.1 !important; }
+  h2 { font-size: 10.4pt !important; margin: 0 0 2.5pt !important; line-height: 1.15 !important; }
+  h3 { font-size: 9.9pt !important; margin: 0 0 1pt !important; line-height: 1.2 !important; }
+  h4, h5 { font-size: 9.5pt !important; margin: 0 0 1pt !important; line-height: 1.2 !important; }
+  .small, .muted, .sub, .hint, .meta, .note, .period, .job-period, .time, .date,
+  .tag, .chip, .badge, .label, .kpi-note, .desc-sm, .cap, .caption, .kicker, .eyebrow,
+  .sec-no, .sec-en, .proj-badge, .num-scope, .num-label, .kpi-label, .meta-k, .meta-v {
+    font-size: 8.0pt !important; line-height: 1.3 !important;
+  }
+
+  /* --- 外壳去留白：打印时不要"文档查看器"式外边距与阴影 --- */
+  .page, main, .sheet, .wrap, .container, .resume, .doc {
+    max-width: none !important; width: auto !important;
+    margin: 0 !important; padding: 0 !important;
+    border: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+  }
+
+  /* --- 板块与卡片间距压缩 --- */
+  section, .sec, .block, .module, .group {
+    padding: 3pt 0 !important; margin: 0 !important;
+    border-top-width: 0.6pt !important;
+  }
+  .card, .kpi, .kpi-card, .project, .job, .job-block, .item, .entry,
+  .edu-item, .intent-item, .stat, .metric, .box, .num, .num-card, .cap-item, .qual {
+    padding: 3pt 5pt !important;
+    margin: 0 0 2.5pt !important;
+    border-radius: 0 !important; box-shadow: none !important;
+  }
+  ul, ol { padding-left: 11pt !important; margin: 0.5pt 0 !important; }
+  li { margin: 0 !important; padding: 0 !important; }
+  hr { margin: 3pt 0 !important; }
+
+  /* --- 网格并排：纵向省高度 --- */
+  .g2, .two-col, .grid-2, .kpi-grid, .num-grid, .stats-grid, .cols-2 {
+    display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 3pt 9pt !important;
+  }
+  .g3, .g4, .grid, .grid-3, .grid-4, .cards, .stats, .projects, .project-grid,
+  .kpi-list, .metrics, .cap-grid, .ability-list {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 3pt 9pt !important;
+  }
+
+  /* --- 隐藏纯装饰与非打印元素 --- */
+  .toolbar, .no-print, .print-hide, .deco, .ornament, .blob, .glow, .grain,
+  .noise, .bg-grid, .scroll-hint, .progress-bar {
+    display: none !important;
+  }
+
+  /* --- 打印裁剪（max）：只保留最有说服力的前若干条，把页数压到 2–3 页 --- */
+  .ability-item:nth-child(n+5), .cap:nth-child(n+5), .cap-item:nth-child(n+5),
+  .strength:nth-child(n+5), .skill:nth-child(n+5),
+  .kpi:nth-child(n+4), .num:nth-child(n+4), .kpi-card:nth-child(n+4),
+  .num-card:nth-child(n+4), .stat:nth-child(n+4), .metric:nth-child(n+4),
+  .project:nth-child(n+4), .work:nth-child(n+4), .portfolio-item:nth-child(n+4) {
+    display: none !important;
+  }
+  .proj-table tr:nth-child(n+4) { display: none !important; }
+  .job li:nth-child(n+3), .job-block li:nth-child(n+3), .job-body li:nth-child(n+3),
+  .entry li:nth-child(n+3), .exp li:nth-child(n+3) {
+    display: none !important;
+  }
+
+  /* --- 分页控制（重要：别改回所有块都 avoid，会白白多出一页）--- */
+  .section, .sec, .block, .module, .group, section,
+  .job, .job-block, .entry, .card {
+    break-inside: auto !important; page-break-inside: auto !important;
+  }
+  /* 只保护矮块不被切断 */
+  .kpi, .kpi-card, .num, .num-card, .cap, .cap-item, .ability-item, .stat,
+  .metric, .edu-item, .intent-item, .project, .item, .psr {
+    break-inside: avoid !important; page-break-inside: avoid !important;
+  }
+  /* 标题不要孤零零留在一页末尾 */
+  h2, h3, h4, .job-head, .job-header, .sec-title, .section-title, .block-title {
+    break-after: avoid !important; page-break-after: avoid !important;
+  }
+}
+</style>
+<style>
+/* ===== 移动端横向溢出修复（由 tools/compact_resume_print.py 生成）===== */
+@media screen and (max-width: 768px) {
+  html, body { overflow-x: hidden; }
+  .page, main.page, main, .sheet, .wrap {
+    width: auto !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  .toolbar { margin-left: 0 !important; margin-right: 0 !important; }
+}
+</style>
+
+<!-- COMPACT_PRINT_END -->
+
+</head>
+<body>
+
+<!-- ==========================================================================
+     顶部固定工具条：打印按钮绑定 window.print()；紧凑版按钮切换 body.compact
+     打印时由 @media print 整条隐藏，不会出现在 PDF 上
+     ========================================================================== -->
+<div class="toolbar" id="toolbar" role="toolbar" aria-label="简历工具条">
+  <div class="tb-left">
+    <span class="tb-title">邵汉青 · 融资租赁版简历（V2）</span>
+    <span class="tb-hint">打印建议：A4 纵向 · 缩放 100% · 勾选「背景图形」</span>
+  </div>
+  <div class="tb-right">
+    <button type="button" class="tb-btn tb-btn-primary" id="btnPrint" onclick="window.print()">🖨 打印 / 导出 PDF</button>
+    <button type="button" class="tb-btn" id="btnCompact" onclick="document.body.classList.toggle('compact'); this.textContent = document.body.classList.contains('compact') ? '切换标准版' : '切换紧凑版';">切换紧凑版</button>
+  </div>
+</div>
+
+<main class="paper" id="resume">
+
+  <!-- ======================================================================
+       板块 1：姓名 + 一句话定位 + 联系方式（V2 定位口径）
+       ====================================================================== -->
+  <header class="res-head">
+    <div class="head-main">
+      <h1 class="head-name">邵汉青<span class="name-en">SHAO HANQING</span></h1>
+      <p class="positioning">设备销售 + 融资租赁方案设计 · 懂设备残值，也懂客户还款能力</p>
+      <ul class="head-tags">
+        <li class="tag-key">IRR / 回本周期测算</li>
+        <li class="tag-key">客户还款能力评估</li>
+        <li>10 年工程机械大客户销售</li>
+        <li>单省独立签约 1500 万元</li>
+        <li>应收账款催收实操</li>
+        <li>招投标与材料全流程</li>
+        <li>可接受全国驻外、可全家搬迁</li>
+      </ul>
+    </div>
+    <div class="head-meta">
+      <div class="meta-row">
+        <span class="meta-k">邮箱</span>
+        <span class="meta-v mono">1820688914@qq.com</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-k">现居地</span>
+        <span class="meta-v">河南郑州（可接受全国驻外、可全家搬迁）</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-k">学历</span>
+        <span class="meta-v">本科 · 黄淮学院 · 汽车服务工程</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-k">基本情况</span>
+        <span class="meta-v">32 岁 · 已婚 · 10 年工程机械一线销售</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       板块 2：核心能力（融资测算与风险识别放最前）
+       ====================================================================== -->
+  <section class="sec" id="core">
+    <h2 class="sec-title">
+      <span class="sec-no">01</span>核心能力
+      <span class="sec-en">Core Capability</span>
+    </h2>
+    <p class="sec-note">按对融资租赁岗位的相关度排序：先讲“怎么算钱、怎么识别风险”，再讲“怎么拿客户、怎么走流程”。</p>
+    <div class="cap-list">
+
+      <div class="cap-item cap-prime">
+        <span class="cap-idx">01</span>
+        <span class="cap-body">
+          <span class="cap-name">融资租赁测算与方案设计<span class="cap-badge">首要能力</span></span>
+          <span class="cap-desc">能独立完成 <strong>IRR</strong>、<strong>回本周期</strong>测算，做<strong>全款与分期口径对比</strong>、<strong>出租率敏感性分析</strong>，并配合<strong>放款资料准备</strong>与业务流程衔接。对客户不是只报一个价格，而是算清楚三件事：每月还多少、几年回本、什么条件下这笔采购不划算。</span>
+        </span>
+      </div>
+
+      <div class="cap-item cap-prime">
+        <span class="cap-idx">02</span>
+        <span class="cap-body">
+          <span class="cap-name">融资租赁风险识别<span class="cap-badge">首要能力</span></span>
+          <span class="cap-desc"><strong>能从设备残值和客户现金流两个角度判断一笔融资租赁业务的风险</strong>：设备好不好处置、二手残值稳不稳、退出通道通不通；客户手里的活够不够、账期长不长、经营现金流能不能覆盖分期还款。风险看不明白的单子，我不靠感觉往前推。</span>
+        </span>
+      </div>
+
+      <div class="cap-item">
+        <span class="cap-idx">03</span>
+        <span class="cap-body">
+          <span class="cap-name">应收账款催收与客户经营能力核实</span>
+          <span class="cap-desc">在行业下行周期把工作重心放在老客户信息完善与<strong>应收账款催收</strong>上，完成客户设备及<strong>经营能力信息核实 112 条</strong>。习惯先核实客户的工程活源、账期结构与还款来源，再谈设备方案。</span>
+        </span>
+      </div>
+
+      <div class="cap-item">
+        <span class="cap-idx">04</span>
+        <span class="cap-body">
+          <span class="cap-name">大客户经营与决策链分析</span>
+          <span class="cap-desc">客户分级、决策链分析、复购与长期合作计划；三次从零建客户池（粤东 <strong>40 → 132</strong>、河南 <strong>0 → 180</strong>、湖北 <strong>113 条</strong>），知道一笔设备采购背后是老板、财务、设备主管的哪几个决策点。</span>
+        </span>
+      </div>
+
+      <div class="cap-item">
+        <span class="cap-idx">05</span>
+        <span class="cap-body">
+          <span class="cap-name">招投标与销售材料全流程</span>
+          <span class="cap-desc">独立完成标书 <strong>35 份</strong>、协助团队完成重点项目投标 <strong>19 项</strong>；报价表、投标报价文件、产品推介材料标准化输出，单份制作耗时从小时级压缩到分钟级。</span>
+        </span>
+      </div>
+
+      <div class="cap-item">
+        <span class="cap-idx">06</span>
+        <span class="cap-body">
+          <span class="cap-name">AI 工具实操与数据化作业</span>
+          <span class="cap-desc">用工具做客户线索批量采集与分级、客户热力作战图、销售材料自动化生成，把跑市场的重复劳动变成可复制的流程，让客户池与风险信息可查、可更新。</span>
+        </span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       板块 3：关键业绩数字（3–6 个数字卡，口径限定词原样保留）
+       ====================================================================== -->
+  <section class="sec" id="numbers">
+    <h2 class="sec-title">
+      <span class="sec-no">02</span>关键数字
+      <span class="sec-en">Key Figures</span>
+    </h2>
+    <p class="sec-note">所有数字均标注口径；「在跟进」「参与协同推进」「协同支持」为过程口径，不按已签约计。</p>
+    <div class="num-grid">
+
+      <div class="num-card card-gold">
+        <div class="num-value">1500<span class="num-unit">万元</span></div>
+        <div class="num-label">个人独立签约</div>
+        <div class="num-scope">太原重工 · 湖北市场；从线索到签约到回款全程负责</div>
+      </div>
+
+      <div class="num-card">
+        <div class="num-value">1.2<span class="num-unit">亿元</span></div>
+        <div class="num-label">区域在跟进意向信息总额</div>
+        <div class="num-scope">约 <em>12000 万元</em>；口径为<em>在跟进</em>，非已签约</div>
+      </div>
+
+      <div class="num-card card-gold">
+        <div class="num-value">112<span class="num-unit">条</span></div>
+        <div class="num-label">客户设备及经营能力信息核实</div>
+        <div class="num-scope">中联重科 · 应收账款催收期间完成</div>
+      </div>
+
+      <div class="num-card">
+        <div class="num-value">5000<span class="num-unit">万元</span></div>
+        <div class="num-label">首年促成客户工程产值</div>
+        <div class="num-scope">三一重工 · 河南剩余市场；同期促成设备销售 <em>1000 万元</em></div>
+      </div>
+
+      <div class="num-card">
+        <div class="num-value">180<span class="num-unit">条</span></div>
+        <div class="num-label">客户信息 0 → 180</div>
+        <div class="num-scope">三一重工 · 靠走访工地与陌拜客户建起的客户池</div>
+      </div>
+
+      <div class="num-card">
+        <div class="num-value">92<span class="num-unit">条</span> / 35<span class="num-unit">份</span></div>
+        <div class="num-label">报备意向信息 / 独立完成标书</div>
+        <div class="num-scope">复盛实业 · 河南；另协助团队重点项目投标 <em>19 项</em></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       板块 4：工作经历（5 段倒序；中联的催收与风险评估前置为最显眼区块）
+       ====================================================================== -->
+  <section class="sec" id="experience">
+    <h2 class="sec-title">
+      <span class="sec-no">03</span>工作经历
+      <span class="sec-en">Experience</span>
+    </h2>
+    <p class="sec-note">5 段经历按时间倒序排列；最上方单独前置一段与融资租赁风控最相关的经历。</p>
+
+    <!-- 重点经历前置：中联重科应收账款催收与客户风险评估 -->
+    <div class="spotlight" id="spotlight-collection">
+      <div class="spotlight-title">
+        重点经历前置｜中联重科 · 应收账款催收与客户风险评估
+        <span class="sp-time">2023.07 – 2024.10</span>
+      </div>
+      <div class="spotlight-sub">融资租赁最看重的一段：在行业下行周期里做催收、做客户经营能力核实</div>
+      <ul class="spotlight-list">
+        <li>市场环境：该期间河南旋挖钻市场大幅缩水，以二手设备销售为主，业绩量较少，<span class="fig">总体不足 300 万元</span>。</li>
+        <li>工作重心转移：把精力从“卖新机”转到两件更靠近资金安全的事——<span class="fig">应收账款催收</span>与<span class="fig">客户经营能力核实</span>。</li>
+        <li>核实成果：逐户核对设备在位情况、经营活源与还款来源，完成客户设备及经营能力信息核实 <span class="fig">112 条</span>，形成可复查的客户台账。</li>
+        <li>能力迁移：这段经历让我判断一笔设备采购时，会先问“客户的钱从哪来、设备将来卖给谁”，而不是只看成色与价格。</li>
+      </ul>
+      <p class="spotlight-quote">我不回避这段业绩低谷：<b>行业下行周期 + 我把工作重心转到应收账款催收和客户经营能力核实（112 条）</b>。市场好的时候比谁卖得多，市场差的时候比谁能把风险和账收住 —— 后者才是融资租赁真正每天在做的活。</p>
+    </div>
+
+    <!-- ① 太原重工 -->
+    <article class="job" id="job-taiyuan">
+      <div class="job-head">
+        <div class="job-co">
+          <span class="co-name">太原重工 · 工程起重机分公司（工起营销中心）</span>
+          <span class="co-tag">最近一段</span>
+        </div>
+        <div class="job-time">2025.12 – 至今</div>
+      </div>
+      <div class="job-role">
+        <b>大客户销售 / 业务经理</b> ｜ 产品：高空作业平台（剪叉式 4–14m / 臂式 16–60m） ｜ 区域：湖北市场（12 个地市）
+      </div>
+      <table class="job-table">
+        <tbody>
+          <tr>
+            <th>职责</th>
+            <td>区域市场开拓、新客户开发、客户关系管理、招投标与报价、融资租赁方案配合、应收账款跟进</td>
+          </tr>
+          <tr>
+            <th>客户池</th>
+            <td>拓展收录客户信息 <span class="fig">113 条</span>，其中新增客户 <span class="fig">74 条</span></td>
+          </tr>
+          <tr>
+            <th>意向口径</th>
+            <td>区域在跟进意向信息总额 <span class="fig">1.2 亿元</span>（口径为<span class="qual">在跟进</span>，非已签约）</td>
+          </tr>
+          <tr>
+            <th>签约</th>
+            <td>个人独立签约 <span class="fig">1500 万元</span>（从线索到签约到回款全程负责）</td>
+          </tr>
+          <tr>
+            <th>协同部分</th>
+            <td><span class="qual">参与协同推进</span>的区域意向池约 <span class="fig">1 亿元</span>（本人承担其中部分客户的方案、报价与融资测算）；<span class="qual">协同支持</span>成交 <span class="fig">1400 万元</span></td>
+          </tr>
+          <tr>
+            <th>融资视角</th>
+            <td>为区域客户配合融资租赁方案：用 <span class="fig">IRR</span> 与<span class="fig">回本周期</span>把<span class="fig">全款与分期</span>两种口径摆在一张表上，结合<span class="fig">出租率敏感性</span>说明不同工况下的还款压力，并参与<span class="fig">放款资料</span>准备与应收账款跟进</td>
+          </tr>
+          <tr>
+            <th>方法工具</th>
+            <td>把区域市场开发做成“按图作业”（已脱敏）：客户线索批量采集与分级、客户热力分布图、投标报价与推介材料自动化、行业信息定期简报</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <!-- ② 复盛实业 -->
+    <article class="job" id="job-fusheng">
+      <div class="job-head">
+        <div class="job-co">
+          <span class="co-name">复盛实业（上海）有限公司</span>
+        </div>
+        <div class="job-time">2025.05 – 2025.12</div>
+      </div>
+      <div class="job-role">
+        <b>大客户销售</b> ｜ 产品：空压机 ｜ 区域：河南
+      </div>
+      <table class="job-table">
+        <tbody>
+          <tr>
+            <th>职责</th>
+            <td>河南区域空压机销售、新市场开拓、行业信息收集分析、客户档案建立、招投标信息收集与标书制作</td>
+          </tr>
+          <tr>
+            <th>业绩</th>
+            <td>报备意向信息 <span class="fig">92 条</span>；独立完成标书 <span class="fig">35 份</span>；协助团队完成重点项目投标 <span class="fig">19 项</span></td>
+          </tr>
+          <tr>
+            <th>说明</th>
+            <td class="honest">该段以招投标为主，客户资产积累与新品类客户池重合度低</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <!-- ③ 中联重科（正文条目，重点区块已在上方前置） -->
+    <article class="job job-feature" id="job-zhonglian">
+      <div class="job-head">
+        <div class="job-co">
+          <span class="co-name">中联重科</span>
+          <span class="co-tag tag-gold">催收与风险评估</span>
+        </div>
+        <div class="job-time">2023.07 – 2024.10</div>
+      </div>
+      <div class="job-role">
+        <b>大客户销售</b> ｜ 产品：旋挖钻机 ｜ 区域：河南
+      </div>
+      <table class="job-table">
+        <tbody>
+          <tr>
+            <th>职责</th>
+            <td>区域销售与推广、市场信息收集分析、客户关系与长期合作计划、<span class="fig">应收账款催收与客户风险评估</span></td>
+          </tr>
+          <tr>
+            <th>催收</th>
+            <td>逐户核对欠款、账期与还款来源，推进老客户回款，按期更新客户经营状态</td>
+          </tr>
+          <tr>
+            <th>核实</th>
+            <td>完成客户设备及经营能力信息核实 <span class="fig">112 条</span>，为后续风险评估与设备处置判断留下依据</td>
+          </tr>
+          <tr>
+            <th>业绩事实</th>
+            <td class="honest">该期间河南旋挖钻市场大幅缩水、以二手设备销售为主，业绩量较少（<span class="fig">总体不足 300 万元</span>）。下行周期里我的产出不在签约额上，而在<span class="qual">催收与风险核实</span>这两件事上</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <!-- ④ 三一重工 -->
+    <article class="job" id="job-sany">
+      <div class="job-head">
+        <div class="job-co">
+          <span class="co-name">三一重工</span>
+        </div>
+        <div class="job-time">2021.04 – 2023.06</div>
+      </div>
+      <div class="job-role">
+        <b>大客户销售</b> ｜ 产品：旋挖钻机 ｜ 区域：河南
+      </div>
+      <table class="job-table">
+        <tbody>
+          <tr>
+            <th>职责</th>
+            <td>河南区域旋挖钻销售与推广、市场开拓与新客户发展、辖区市场信息收集分析、客户关系与长期战略合作</td>
+          </tr>
+          <tr>
+            <th>业绩</th>
+            <td>独立开发河南剩余市场，通过走访工地、陌拜客户，客户信息<span class="fig">从 0 拓展到 180 条</span></td>
+          </tr>
+          <tr>
+            <th>产值与设备</th>
+            <td>首年促成客户工程合作、客户工程产值 <span class="fig">5000 万元</span>，促成设备销售 <span class="fig">1000 万元</span></td>
+          </tr>
+          <tr>
+            <th>年均规模</th>
+            <td>年均销售额约 <span class="fig">1500 万元</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <!-- ⑤ 宇通重工 -->
+    <article class="job" id="job-yutong">
+      <div class="job-head">
+        <div class="job-co">
+          <span class="co-name">宇通重工</span>
+        </div>
+        <div class="job-time">2017.10 – 2021.03</div>
+      </div>
+      <div class="job-role">
+        <b>大客户销售</b> ｜ 产品：旋挖钻机、履带吊 ｜ 区域：粤东
+      </div>
+      <table class="job-table">
+        <tbody>
+          <tr>
+            <th>职责</th>
+            <td>区域市场分析维护、产品开发调研反馈、销售策略制定、意向信息收集整理分析与跟踪转化、客户关系管理</td>
+          </tr>
+          <tr>
+            <th>成长</th>
+            <td>同批 <span class="fig">60 多名</span>新入职员工中最早结束试用期并成功转正</td>
+          </tr>
+          <tr>
+            <th>客户池</th>
+            <td>目标客户<span class="fig">从 40 个增长到 132 个</span>，拓展维护客户信息 <span class="fig">400 余条</span></td>
+          </tr>
+          <tr>
+            <th>价值贡献</th>
+            <td>潜在客户价值约 <span class="fig">2000 万元</span>，为其他区域提供有效商机价值 <span class="fig">1200 万元</span></td>
+          </tr>
+          <tr>
+            <th>年业绩</th>
+            <td><span class="fig">600–1000 万元</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+  </section>
+
+  <!-- ======================================================================
+       板块 5：项目与作品（融资租赁测算模型放第一）
+       ====================================================================== -->
+  <section class="sec" id="projects">
+    <h2 class="sec-title">
+      <span class="sec-no">04</span>项目与作品
+      <span class="sec-en">Projects</span>
+    </h2>
+    <p class="sec-note">全部为本人实操产出，已脱敏：不含客户名称与真实成交价格。</p>
+    <table class="proj-table">
+      <thead>
+        <tr>
+          <th scope="col">作品</th>
+          <th scope="col">说明（可对外表述）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="row-prime">
+          <td class="col-name">
+            <span class="proj-name">融资租赁测算模型</span>
+            <span class="proj-badge">首个作品</span>
+          </td>
+          <td>
+            计算<span class="fig">回本周期</span>、<span class="fig">IRR</span>、<span class="fig">全款与分期对比</span>、<span class="fig">出租率敏感性</span>，用于给客户做采购决策支撑：把“设备多少钱”翻译成“每月还多少、几年回本、出租率掉到多少就不划算”，同时作为<span class="fig">客户还款能力评估</span>与方案谈判的依据。
+            <span class="proj-metrics">测算维度：<b>IRR</b> · <b>回本周期</b> · <b>全款 / 分期口径对比</b> · <b>出租率敏感性</b> · <b>放款资料清单</b></span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-name">区域市场开拓方案</td>
+          <td>针对单省高空作业平台市场撰写的开拓策略方案（含市场容量、竞品格局、客户分层、打法节奏）</td>
+        </tr>
+        <tr>
+          <td class="col-name">客户线索采集与分级体系</td>
+          <td>用地图 POI 数据批量采集区域潜在客户，去重、分级、标注坐标，形成可执行客户池</td>
+        </tr>
+        <tr>
+          <td class="col-name">客户热力作战图</td>
+          <td>把客户线索按区域与等级做成热力分布图，用于规划跑动路线与资源投放</td>
+        </tr>
+        <tr>
+          <td class="col-name">投标报价与推介材料自动化</td>
+          <td>把报价表、投标报价函、产品推介材料的制作流程标准化、自动化，单份耗时从小时级压缩到分钟级</td>
+        </tr>
+        <tr>
+          <td class="col-name">行业信息简报</td>
+          <td>定期汇总行业动态与竞品信息，用于团队内部决策参考</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ======================================================================
+       板块 6：教育背景
+       ====================================================================== -->
+  <section class="sec" id="education">
+    <h2 class="sec-title">
+      <span class="sec-no">05</span>教育背景
+      <span class="sec-en">Education</span>
+    </h2>
+    <div class="edu-list">
+      <div class="edu-item edu-top">
+        <span class="edu-main"><b>黄淮学院</b> · 汽车服务工程 · <span>本科</span></span>
+        <span class="edu-time">2015.09 – 2017.06</span>
+      </div>
+      <div class="edu-item">
+        <span class="edu-main"><b>鹤壁职业技术学院</b> · 汽车检测 · <span>大专</span></span>
+        <span class="edu-time">2012.09 – 2015.06</span>
+      </div>
+      <div class="edu-item">
+        <span class="edu-main"><b>柘城一高</b> · <span>高中</span></span>
+        <span class="edu-time">2009 – 2012</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       板块 7：求职意向
+       ====================================================================== -->
+  <section class="sec" id="intent">
+    <h2 class="sec-title">
+      <span class="sec-no">06</span>求职意向
+      <span class="sec-en">Objective</span>
+    </h2>
+    <div class="intent-box">
+      <div class="intent-row">
+        <span class="intent-k">目标岗位</span>
+        <span class="intent-v">客户经理 / 区域经理（设备融资租赁、厂商金融）</span>
+      </div>
+      <div class="intent-row">
+        <span class="intent-k">期望城市</span>
+        <span class="intent-v">郑州 / 武汉 / 全国（可接受长期驻外，可全家搬迁）</span>
+      </div>
+      <div class="intent-row">
+        <span class="intent-k">期望年包</span>
+        <span class="intent-v"><span class="em">30–45 万元</span>（可面议）</span>
+      </div>
+      <div class="intent-row">
+        <span class="intent-k">证明人</span>
+        <span class="intent-v">可提供（历任直属领导）</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       页脚：口径声明（诚实标注过程口径与实际业绩的区别）
+       ====================================================================== -->
+  <footer class="res-foot">
+    <b>数字口径说明：</b>本简历业绩数字分三档标注 —— 个人独立签约 / 独立完成；<b>参与协同推进</b>、<b>协同支持</b>（团队成果中本人承担部分方案、报价与融资测算）；<b>在跟进</b>意向信息（过程口径，非已签约）。中联重科一段如实标注行业下行周期内的业绩低谷与工作重心转移。所有数字均可提供台账与证明材料。
+  </footer>
+
+</main>
+
+</body>
+</html>

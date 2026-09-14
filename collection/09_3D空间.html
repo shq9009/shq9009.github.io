@@ -48,7 +48,11 @@
    ========================================================================== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;   /* 修复（2026-09-14）：只在 body 上裁切时，手机 390px 视口会漏出约 15px 横向滚动 */
+  overflow-x: clip;
+}
 
 body {
   font-family: var(--font);
@@ -1578,12 +1582,6 @@ ul { list-style: none; }
     </header>
 
     <div class="contact-grid">
-      <a class="contact-card" style="--dz:0px" href="tel:17772118785">
-        <span class="cc-icon">📞</span>
-        <span class="cc-label">Phone</span>
-        <span class="cc-value">177-7211-8785</span>
-        <span class="cc-note">工作时间随时可接，亦可微信同号</span>
-      </a>
       <a class="contact-card" style="--dz:-50px" href="mailto:1820688914@qq.com">
         <span class="cc-icon">✉️</span>
         <span class="cc-label">Email</span>

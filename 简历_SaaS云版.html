@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>邵汉青 · 行业销售 / 客户成功 · 工业互联网与制造业数字化（V3 SaaS 云版）</title>
+<meta name="author" content="邵汉青">
+<meta name="description" content="懂制造业客户的行业销售 · 用 AI 把市场开发做成可复制流程">
+<style>/* ==========================================================================
+   邵汉青 · 简历 V3（SaaS / 云版）
+   设计原则：白底深字（打印友好） + 蓝紫渐变点缀 + 卡片化 + 数据感
+   全部样式内联，零外部依赖，file:// 双击可直接运行
+   ========================================================================== */
+
+/* ===== 01. 设计令牌（颜色 / 字号 / 间距） ===== */
+:root {
+  --ink: #16202e;              /* 主文字：白底对比度 ≈ 14:1 */
+  --ink-2: #3c4a5d;            /* 次级文字：白底对比度 ≈ 8.6:1 */
+  --ink-3: #566374;            /* 辅助文字：白底对比度 ≈ 5.8:1 */
+  --line: #dfe5ee;
+  --line-soft: #eef2f8;
+  --bg: #ffffff;
+  --bg-tint: #f6f8fc;
+  --brand: #2f4bd6;            /* 主色：蓝 */
+  --brand-deep: #1e2f8f;
+  --violet: #7b3fe4;           /* 点缀：紫 */
+  --cyan: #0e8f9e;
+  --grad: linear-gradient(95deg, #2f4bd6 0%, #5b4be0 52%, #7b3fe4 100%);
+  --grad-soft: linear-gradient(135deg, #f2f5ff 0%, #f7f3ff 100%);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --lead: 1.72;                /* 正文行高（≥1.6） */
+  --fs-base: 15px;             /* 正文基准字号（≥13px） */
+  --fs-sm: 13.5px;
+  --fs-xs: 13px;
+  --gap: 18px;
+}
+
+/* ===== 02. 基础重置与排版 ===== */
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-tint);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", sans-serif;
+  font-size: var(--fs-base);
+  line-height: var(--lead);
+  letter-spacing: 0.1px;
+}
+
+p { margin: 0 0 10px; }
+
+ul { margin: 0 0 10px; padding-left: 20px; }
+
+li { margin-bottom: 6px; }
+
+strong { color: var(--ink); font-weight: 700; }
+
+em { font-style: normal; color: var(--brand-deep); font-weight: 600; }
+
+a { color: var(--brand-deep); text-decoration: none; }
+
+/* ===== 03. 顶部固定工具条（打印时隐藏） ===== */
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 18px;
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(22, 32, 46, 0.06);
+}
+
+.toolbar__hint { font-size: var(--fs-xs); color: var(--ink-3); line-height: 1.4; }
+
+.toolbar__hint b { color: var(--brand-deep); }
+
+.toolbar__actions { display: flex; gap: 10px; flex-shrink: 0; }
+
+.btn {
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(47, 75, 214, 0.16); }
+
+.btn--primary { border-color: transparent; background: var(--grad); color: #fff; }
+
+.btn:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+
+/* ===== 04. 页面容器（A4 视觉宽度） ===== */
+.page { max-width: 940px; margin: 0 auto; padding: 74px 22px 46px; }
+
+.sheet { background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 10px 34px rgba(22, 32, 46, 0.07); overflow: hidden; }
+
+/* ===== 05. 头部：姓名 + 一句话定位 + 联系方式 ===== */
+.hero { position: relative; padding: 26px 30px 22px; background: var(--grad-soft); border-bottom: 1px solid var(--line); }
+
+.hero::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--grad);
+}
+
+.hero__eyebrow {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--violet);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.hero__name { margin: 0 0 8px; font-size: 34px; line-height: 1.25; letter-spacing: 2px; color: var(--ink); }
+
+.hero__name span { font-size: 15px; font-weight: 600; letter-spacing: 0; color: var(--ink-3); margin-left: 10px; }
+
+.hero__position { margin: 0 0 12px; font-size: 17px; font-weight: 700; line-height: 1.6; color: var(--brand-deep); }
+
+.hero__position .hl { background: linear-gradient(transparent 62%, rgba(123, 63, 228, 0.22) 62%); padding: 0 2px; }
+
+.hero__meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+}
+
+.chip--key { border-color: rgba(47, 75, 214, 0.32); color: var(--brand-deep); font-weight: 600; }
+
+/* ===== 06. 通用板块结构 ===== */
+.section { padding: 22px 30px 8px; border-top: 1px solid var(--line-soft); }
+
+.section:first-of-type { border-top: 0; }
+
+.section__head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--line-soft);
+}
+
+.section__title {
+  position: relative;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: var(--ink);
+  padding-left: 13px;
+}
+
+.section__title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 5px;
+  bottom: 3px;
+  width: 5px;
+  border-radius: 3px;
+  background: var(--grad);
+}
+
+.section__sub { font-size: var(--fs-xs); color: var(--ink-3); }
+
+.section__note { font-size: var(--fs-xs); color: var(--ink-3); line-height: 1.65; margin: 6px 0 12px; }
+
+/* ===== 07. 定位板块 ===== */
+.position-lead { font-size: var(--fs-base); line-height: var(--lead); color: var(--ink-2); margin: 0 0 12px; }
+
+.position-list { list-style: none; margin: 0 0 14px; padding: 0; }
+
+.position-list li { position: relative; padding-left: 22px; margin-bottom: 9px; line-height: var(--lead); }
+
+.position-list li::before {
+  content: "◆";
+  position: absolute;
+  left: 2px;
+  top: 0;
+  font-size: 12.5px;
+  color: var(--violet);
+}
+
+/* ===== 08. 核心能力卡片 ===== */
+.cap-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+
+.cap { padding: 13px 15px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #fff; line-height: 1.68; }
+
+.cap--flag { border-color: rgba(47, 75, 214, 0.3); background: var(--grad-soft); }
+
+.cap__title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--brand-deep);
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.cap__title .ico { font-size: 15px; }
+
+.cap__rank {
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--grad);
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.cap__body { font-size: var(--fs-sm); color: var(--ink-2); line-height: 1.7; margin: 0; }
+
+/* ===== 09. 关键数字卡 ===== */
+.num-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+
+.num {
+  padding: 14px 15px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  border-top: 3px solid transparent;
+  background-image: linear-gradient(#fff, #fff), var(--grad);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+.num__value {
+  font-family: "SF Mono", "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  color: var(--brand-deep);
+  display: block;
+}
+
+.num__value small { font-size: 13px; font-weight: 700; margin-left: 2px; }
+
+.num__label {
+  display: block;
+  margin-top: 6px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.55;
+}
+
+.num__note { display: block; margin-top: 5px; font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+
+.num__note.tag { color: var(--violet); font-weight: 600; }
+
+/* ===== 10. 项目与作品（问题—做法—结果） ===== */
+.project { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 12px; background: #fff; }
+
+.project--ai { background: linear-gradient(180deg, #f7f9ff 0%, #ffffff 42%); border-color: rgba(47, 75, 214, 0.26); }
+
+.project__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 9px; margin-bottom: 9px; }
+
+.project__name { font-size: 15.5px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+
+.project__name .idx { font-family: "SF Mono", "Menlo", "Consolas", monospace; font-size: 13px; color: var(--violet); margin-right: 6px; }
+
+.tag {
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(47, 75, 214, 0.28);
+  color: var(--brand-deep);
+  background: #eef2ff;
+  letter-spacing: 0.3px;
+}
+
+.tag--violet { border-color: rgba(123, 63, 228, 0.3); color: #5c2bb8; background: #f6f0ff; }
+
+.psr { display: grid; gap: 7px; }
+
+.psr__row { display: grid; grid-template-columns: 62px minmax(0, 1fr); gap: 10px; align-items: start; }
+
+.psr__key {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: #fff;
+  background: var(--brand);
+  border-radius: 5px;
+  text-align: center;
+  padding: 3px 0;
+  line-height: 1.5;
+}
+
+.psr__key--do { background: #5b4be0; }
+
+.psr__key--res { background: var(--violet); }
+
+.psr__val { font-size: var(--fs-sm); color: var(--ink-2); line-height: 1.7; margin: 0; }
+
+.psr__val b { color: var(--ink); }
+
+/* ===== 11. 数字化实践自述 ===== */
+.practice {
+  border: 1px solid rgba(123, 63, 228, 0.24);
+  border-left: 5px solid var(--violet);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, #faf7ff 0%, #fdfdff 60%);
+  padding: 15px 18px;
+  margin-bottom: 16px;
+}
+
+.practice__title { font-size: 15px; font-weight: 700; color: #5c2bb8; margin: 0 0 8px; line-height: 1.5; }
+
+.practice p { font-size: var(--fs-sm); color: var(--ink-2); line-height: 1.78; margin: 0 0 8px; text-indent: 2em; }
+
+.practice p:last-child { margin-bottom: 0; }
+
+/* ===== 12. 工作经历时间线 ===== */
+.job { position: relative; padding: 0 0 4px 20px; margin-bottom: 16px; border-left: 2px solid var(--line-soft); }
+
+.job::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--brand);
+}
+
+.job--down::before { border-color: #b06a00; }
+
+.job__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin-bottom: 5px; }
+
+.job__company { font-size: 15.5px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+
+.job__role {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--brand-deep);
+  padding: 1px 9px;
+  border-radius: 999px;
+  background: #eef2ff;
+}
+
+.job__date {
+  font-family: "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--ink-3);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.job__meta { font-size: var(--fs-xs); color: var(--ink-3); line-height: 1.62; margin: 0 0 8px; }
+
+.job__list { margin: 0 0 9px; padding-left: 19px; }
+
+.job__list li { font-size: var(--fs-sm); color: var(--ink-2); line-height: 1.72; margin-bottom: 5px; }
+
+.logic {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+  line-height: 1.72;
+  background: var(--bg-tint);
+  border-left: 3px solid var(--cyan);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 9px 13px;
+  margin: 0;
+}
+
+.logic b { color: var(--cyan); }
+
+.fact-line {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+  line-height: 1.72;
+  background: #fff7ed;
+  border: 1px dashed #e0a94a;
+  border-radius: var(--radius-sm);
+  padding: 9px 13px;
+  margin: 0 0 9px;
+}
+
+.fact-line b { color: #96540a; }
+
+/* ===== 13. 教育背景 ===== */
+.edu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+
+.edu__card { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; background: #fff; }
+
+.edu__deg { font-size: 14px; font-weight: 700; color: var(--brand-deep); margin-bottom: 4px; line-height: 1.5; }
+
+.edu__school { font-size: var(--fs-sm); color: var(--ink); font-weight: 600; line-height: 1.6; }
+
+.edu__major { font-size: var(--fs-xs); color: var(--ink-3); line-height: 1.6; }
+
+.edu__date { font-family: "SF Mono", "Menlo", "Consolas", monospace; font-size: 13px; color: var(--ink-3); margin-top: 4px; }
+
+/* ===== 14. 求职意向 ===== */
+.intent-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+
+.intent { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; background: #fff; line-height: 1.7; }
+
+.intent--wide { grid-column: 1 / -1; background: var(--grad-soft); border-color: rgba(47, 75, 214, 0.26); }
+
+.intent__key {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--violet);
+  letter-spacing: 0.6px;
+  margin-bottom: 5px;
+}
+
+.intent__val { font-size: var(--fs-sm); color: var(--ink); line-height: 1.7; }
+
+.intent__val b { color: var(--brand-deep); }
+
+/* ===== 15. 页脚 ===== */
+.foot {
+  padding: 14px 30px 22px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 13px;
+  color: var(--ink-3);
+  line-height: 1.7;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* ===== 16. 紧凑版（切换密度） ===== */
+body.compact { --lead: 1.5; --gap: 12px; --fs-base: 14px; --fs-sm: 13px; --fs-xs: 12.5px; }
+
+body.compact .section { padding: 15px 26px 4px; }
+
+body.compact .hero { padding: 18px 26px 15px; }
+
+body.compact .hero__name { font-size: 29px; }
+
+body.compact .project,
+body.compact .cap,
+body.compact .num { padding: 10px 12px; margin-bottom: 8px; }
+
+body.compact .project { margin-bottom: 8px; }
+
+body.compact .job { margin-bottom: 10px; }
+
+body.compact li { margin-bottom: 3px; }
+
+body.compact .foot { padding: 10px 26px 16px; }
+
+/* ===== 17. 响应式（≤768px 可读） ===== */
+@media (max-width: 768px) {
+.page { padding: 66px 10px 26px; }
+
+  .hero,
+  .section,
+.foot { padding-left: 16px; padding-right: 16px; }
+
+.hero__name { font-size: 26px; }
+
+  .cap-grid,
+  .num-grid,
+  .edu,
+.intent-grid { grid-template-columns: minmax(0, 1fr); }
+
+.num__value { font-size: 22px; }
+
+.psr__row { grid-template-columns: 52px minmax(0, 1fr); gap: 8px; }
+
+.job__date { margin-left: 0; }
+
+.toolbar { flex-wrap: wrap; row-gap: 6px; }
+
+.toolbar__hint { display: none; }
+}
+
+@media (max-width: 420px) {
+.hero__meta .chip { font-size: 12.5px; }
+
+.psr__row { grid-template-columns: minmax(0, 1fr); }
+
+.psr__key { text-align: left; padding: 2px 8px; display: inline-block; }
+}
+
+/* ===== 18. 打印样式（A4 / 白底黑字 / 隐藏工具条 / 防断页） ===== */
+@page {
+  size: A4;
+  margin: 11mm 10mm;
+}
+
+@media print {
+  html,
+body { background: #fff !important; color: #000 !important; font-size: 10.6pt; line-height: 1.5; }
+
+.toolbar { display: none !important; }
+
+.page { max-width: none; padding: 0 !important; margin: 0 !important; }
+
+.sheet { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
+
+.hero { background: #fff !important; border-bottom: 1px solid #b9c2d0 !important; padding: 0 0 8px !important; }
+
+.hero::before { display: none !important; }
+
+.hero__name { font-size: 20pt; }
+
+.hero__position { font-size: 11.5pt; }
+
+.hero__position .hl { background: none !important; }
+
+.section { padding: 9px 0 0 !important; border-top: 0 !important; break-inside: auto; }
+
+.section__title { font-size: 12pt; padding-left: 10px; }
+
+.section__head { margin-bottom: 7px; padding-bottom: 4px; border-bottom: 1.4pt solid #2f4bd6; }
+
+  .cap,
+  .num,
+  .project,
+  .edu__card,
+  .intent,
+  .practice,
+  .logic,
+  .fact-line {
+    background: #fff !important;
+    background-image: none !important;
+    border: 1px solid #c7d0dd !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+.num { border-top: 2.4pt solid #2f4bd6 !important; }
+
+.num__value { color: #16205e !important; font-size: 15pt; }
+
+.practice { border-left: 3pt solid #7b3fe4 !important; }
+
+.logic { border-left: 3pt solid #0e8f9e !important; }
+
+  .cap-grid,
+  .num-grid,
+  .edu,
+.intent-grid { gap: 6px !important; }
+
+.job { break-inside: avoid; page-break-inside: avoid; margin-bottom: 8px; }
+
+.job::before { border-color: #2f4bd6 !important; }
+
+  .tag,
+  .chip,
+  .cap__rank,
+  .job__role,
+.psr__key { background: #eef2ff !important; color: #16205e !important; border: 1px solid #b9c2d0 !important; }
+
+.psr__key { color: #16205e !important; }
+
+.section__title::before { background: #2f4bd6 !important; }
+
+a { color: #000 !important; text-decoration: none !important; }
+
+.foot { padding: 8px 0 0 !important; border-top: 1px solid #c7d0dd !important; }
+}
+</style>
+<!-- COMPACT_PRINT_BEGIN -->
+<style>
+/* ===== 紧凑打印补丁（由 tools/compact_resume_print.py 生成，勿手改）===== */
+@media print {
+  @page { size: A4; margin: 10mm 11mm 10mm 11mm; }
+
+  /* --- 字号与行高 --- */
+  html { font-size: 9.2pt !important; }
+  body {
+    font-size: 9.2pt !important;
+    line-height: 1.32 !important;
+    background: #fff !important;
+    margin: 0 !important; padding: 0 !important;
+  }
+  p, li, dd, dt, blockquote { font-size: 9.2pt !important; line-height: 1.32 !important; }
+  td, th { font-size: 9.2pt !important; line-height: 1.32 !important; }
+  h1 { font-size: 15.5pt !important; margin: 0 0 1.5pt !important; line-height: 1.1 !important; }
+  h2 { font-size: 10.4pt !important; margin: 0 0 2.5pt !important; line-height: 1.15 !important; }
+  h3 { font-size: 9.9pt !important; margin: 0 0 1pt !important; line-height: 1.2 !important; }
+  h4, h5 { font-size: 9.5pt !important; margin: 0 0 1pt !important; line-height: 1.2 !important; }
+  .small, .muted, .sub, .hint, .meta, .note, .period, .job-period, .time, .date,
+  .tag, .chip, .badge, .label, .kpi-note, .desc-sm, .cap, .caption, .kicker, .eyebrow,
+  .sec-no, .sec-en, .proj-badge, .num-scope, .num-label, .kpi-label, .meta-k, .meta-v {
+    font-size: 8.0pt !important; line-height: 1.3 !important;
+  }
+
+  /* --- 外壳去留白：打印时不要"文档查看器"式外边距与阴影 --- */
+  .page, main, .sheet, .wrap, .container, .resume, .doc {
+    max-width: none !important; width: auto !important;
+    margin: 0 !important; padding: 0 !important;
+    border: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+  }
+
+  /* --- 板块与卡片间距压缩 --- */
+  section, .sec, .block, .module, .group {
+    padding: 3pt 0 !important; margin: 0 !important;
+    border-top-width: 0.6pt !important;
+  }
+  .card, .kpi, .kpi-card, .project, .job, .job-block, .item, .entry,
+  .edu-item, .intent-item, .stat, .metric, .box, .num, .num-card, .cap-item, .qual {
+    padding: 3pt 5pt !important;
+    margin: 0 0 2.5pt !important;
+    border-radius: 0 !important; box-shadow: none !important;
+  }
+  ul, ol { padding-left: 11pt !important; margin: 0.5pt 0 !important; }
+  li { margin: 0 !important; padding: 0 !important; }
+  hr { margin: 3pt 0 !important; }
+
+  /* --- 网格并排：纵向省高度 --- */
+  .g2, .two-col, .grid-2, .kpi-grid, .num-grid, .stats-grid, .cols-2 {
+    display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 3pt 9pt !important;
+  }
+  .g3, .g4, .grid, .grid-3, .grid-4, .cards, .stats, .projects, .project-grid,
+  .kpi-list, .metrics, .cap-grid, .ability-list {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 3pt 9pt !important;
+  }
+
+  /* --- 隐藏纯装饰与非打印元素 --- */
+  .toolbar, .no-print, .print-hide, .deco, .ornament, .blob, .glow, .grain,
+  .noise, .bg-grid, .scroll-hint, .progress-bar {
+    display: none !important;
+  }
+
+  /* --- 打印裁剪（max）：只保留最有说服力的前若干条，把页数压到 2–3 页 --- */
+  .ability-item:nth-child(n+5), .cap:nth-child(n+5), .cap-item:nth-child(n+5),
+  .strength:nth-child(n+5), .skill:nth-child(n+5),
+  .kpi:nth-child(n+4), .num:nth-child(n+4), .kpi-card:nth-child(n+4),
+  .num-card:nth-child(n+4), .stat:nth-child(n+4), .metric:nth-child(n+4),
+  .project:nth-child(n+4), .work:nth-child(n+4), .portfolio-item:nth-child(n+4) {
+    display: none !important;
+  }
+  .proj-table tr:nth-child(n+4) { display: none !important; }
+  .job li:nth-child(n+3), .job-block li:nth-child(n+3), .job-body li:nth-child(n+3),
+  .entry li:nth-child(n+3), .exp li:nth-child(n+3) {
+    display: none !important;
+  }
+
+  /* --- 分页控制（重要：别改回所有块都 avoid，会白白多出一页）--- */
+  .section, .sec, .block, .module, .group, section,
+  .job, .job-block, .entry, .card {
+    break-inside: auto !important; page-break-inside: auto !important;
+  }
+  /* 只保护矮块不被切断 */
+  .kpi, .kpi-card, .num, .num-card, .cap, .cap-item, .ability-item, .stat,
+  .metric, .edu-item, .intent-item, .project, .item, .psr {
+    break-inside: avoid !important; page-break-inside: avoid !important;
+  }
+  /* 标题不要孤零零留在一页末尾 */
+  h2, h3, h4, .job-head, .job-header, .sec-title, .section-title, .block-title {
+    break-after: avoid !important; page-break-after: avoid !important;
+  }
+}
+</style>
+<style>
+/* ===== 移动端横向溢出修复（由 tools/compact_resume_print.py 生成）===== */
+@media screen and (max-width: 768px) {
+  html, body { overflow-x: hidden; }
+  .page, main.page, main, .sheet, .wrap {
+    width: auto !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  .toolbar { margin-left: 0 !important; margin-right: 0 !important; }
+}
+</style>
+
+<!-- COMPACT_PRINT_END -->
+
+</head>
+<body>
+
+<!-- ===== 顶部固定工具条：打印时隐藏 ===== -->
+<div class="toolbar" id="toolbar" role="toolbar" aria-label="页面工具">
+  <div class="toolbar__hint">
+    <b>邵汉青 · V3 SaaS / 云版</b>　白底深字，可直接双击打开或导出 PDF
+  </div>
+  <div class="toolbar__actions">
+    <button type="button" class="btn btn--primary" id="btn-print" title="调用浏览器打印，可另存为 PDF">🖨 打印 / 导出 PDF</button>
+    <button type="button" class="btn" id="btn-compact" aria-pressed="false" title="切换行距与信息密度">切换紧凑版</button>
+  </div>
+</div>
+
+<div class="page">
+<main class="sheet">
+
+  <!-- ===== 头部：姓名 / 一句话定位 / 联系方式 ===== -->
+  <header class="hero" id="hero">
+    <span class="hero__eyebrow">Industry Sales · Industrial Internet</span>
+    <h1 class="hero__name">邵汉青<span>32 岁 · 已婚 · 本科</span></h1>
+    <p class="hero__position">
+      懂制造业客户的行业销售 · <span class="hl">用 AI 把市场开发做成可复制流程</span>
+    </p>
+    <div class="hero__meta">
+      <span class="chip chip--key">✉️ 1820688914@qq.com</span>
+      <span class="chip">📍 河南郑州（可接受全国驻外、可全家搬迁）</span>
+      <span class="chip">🎓 本科 · 汽车服务工程</span>
+      <span class="chip">🏭 10 年工业品大客户一线</span>
+      <span class="chip">🤖 客户线索自动化 / 数据分析实操</span>
+    </div>
+  </header>
+
+  <!-- ===== 板块 1：定位 ===== -->
+  <section class="section" id="positioning">
+    <div class="section__head">
+      <h2 class="section__title">定位</h2>
+      <span class="section__sub">为什么是我做工业互联网的行业销售</span>
+    </div>
+    <p class="position-lead">
+      我不是从互联网转过来学工业的人，而是一直在工业现场、现在把现场经验工具化的人。
+      过去 10 年我在工程机械与工业设备行业做大客户销售，服务的是制造业与工程类客户；
+      这三年我把自己的销售动作拆成了可被工具承载的流程——<em>客户线索批量采集与分级、客户热力作战图、
+      投标与推介材料自动化、行业信息简报、融资租赁测算模型</em>。
+    </p>
+    <ul class="position-list">
+      <li>
+        <strong>懂客户：</strong>清楚制造业客户的采购决策链是怎么走的——谁提需求、谁算账、谁签字、预算什么时候批、
+        钱从哪个科目出。谈单不是讲产品参数，而是替客户把"这笔钱花得值不值"算清楚。
+      </li>
+      <li>
+        <strong>会用 AI：</strong>把线索采集、客户分级、跑动排线、材料生成、行业信息整理这些重复劳动交给工具，
+        把省下来的时间留给客户现场。工具是我自己搭的、自己用的，不是听说的。
+      </li>
+      <li>
+        <strong>能落地：</strong>三次从零建区域客户池（粤东 40→132、河南 0→180、湖北 113 条），
+        证明方法论可复制；也经历过行业下行周期，知道客户"没钱"的时候生意怎么做。
+      </li>
+      <li>
+        <strong>想做的事：</strong>把客户现场的复杂问题翻译成可交付、可复用的方案，让签单之后的客户真的用起来、续得下去。
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===== 板块 2：核心能力（行业 Know-how + AI / 数字化实践放最前） ===== -->
+  <section class="section" id="capability">
+    <div class="section__head">
+      <h2 class="section__title">核心能力</h2>
+      <span class="section__sub">行业 Know-how 与 AI / 数字化实践优先</span>
+    </div>
+    <div class="cap-grid">
+
+      <article class="cap cap--flag">
+        <div class="cap__title">
+          <span class="ico">🏭</span>制造业客户决策链与预算逻辑
+          <span class="cap__rank">首要</span>
+        </div>
+        <p class="cap__body">
+          10 年一线接触设备与产线采购决策：需求方（设备科 / 动力科 / 机手）、算账方（财务 / 老板）、
+          审批链（分公司 / 集团）各自的关注点不同。我清楚客户的预算怎么批、钱从哪个科目出、
+          什么时点最容易推动成交——这条能力直接对应工业互联网项目的立项与回款周期。
+        </p>
+      </article>
+
+      <article class="cap cap--flag">
+        <div class="cap__title">
+          <span class="ico">🤖</span>AI / 数字化实操
+          <span class="cap__rank">首要</span>
+        </div>
+        <p class="cap__body">
+          客户线索批量采集与分级体系、客户热力分布图、投标报价与推介材料自动化、行业信息定期简报、
+          融资租赁测算模型。全部为解决自己的真实业务问题而搭：<strong>能自己动手把流程自动化，
+          才谈得上帮客户做数字化。</strong>
+        </p>
+      </article>
+
+      <article class="cap">
+        <div class="cap__title"><span class="ico">🚀</span>区域市场 0→1 开拓</div>
+        <p class="cap__body">
+          三次从零建客户池：粤东 40→132、河南 0→180、湖北 113 条。习惯先做市场容量与竞品格局分析，
+          再定客户分层与打法节奏，把"跑市场"变成"按图作业"。
+        </p>
+      </article>
+
+      <article class="cap">
+        <div class="cap__title"><span class="ico">🤝</span>大客户经营与客户分级</div>
+        <p class="cap__body">
+          按经营能力、采购潜力与决策链成熟度给客户分层，做长期合作计划而不是一次性成交；
+          关注签单之后的实际使用与复购，这正是客户成功岗的核心动作。
+        </p>
+      </article>
+
+      <article class="cap">
+        <div class="cap__title"><span class="ico">📑</span>招投标全流程与方案输出</div>
+        <p class="cap__body">
+          独立完成标书 35 份、协助团队完成重点项目投标 19 项；报价函、投标报价文件、产品推介材料
+          全流程实操，并能把制作流程标准化、自动化，单份耗时从小时级压缩到分钟级。
+        </p>
+      </article>
+
+      <article class="cap">
+        <div class="cap__title"><span class="ico">🛡️</span>客户经营风险评估与现金流判断</div>
+        <p class="cap__body">
+          应收账款催收、客户设备及经营能力信息核实 112 条、客户经营风险识别；
+          会用 IRR / 回本周期 / 出租率敏感性做融资租赁方案测算，判断客户"能不能用得起、还得上"。
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===== 板块 3：关键数字 ===== -->
+  <section class="section" id="numbers">
+    <div class="section__head">
+      <h2 class="section__title">关键数字</h2>
+      <span class="section__sub">口径分级如实呈现，不合并、不抬升</span>
+    </div>
+    <div class="num-grid">
+
+      <div class="num">
+        <span class="num__value">113<small>条</small></span>
+        <span class="num__label">拓展收录客户信息（湖北 · 12 个地市）</span>
+        <span class="num__note">其中新增客户 74 条；为线索 / 客户信息口径，非成交口径</span>
+      </div>
+
+      <div class="num">
+        <span class="num__value">1.2<small>亿元</small></span>
+        <span class="num__label">区域在跟进意向信息总额</span>
+        <span class="num__note tag">口径：在跟进，非已签约</span>
+      </div>
+
+      <div class="num">
+        <span class="num__value">1500<small>万元</small></span>
+        <span class="num__label">个人独立签约</span>
+        <span class="num__note">从线索到签约到回款全程负责</span>
+      </div>
+
+      <div class="num">
+        <span class="num__value">180<small>条</small></span>
+        <span class="num__label">客户信息从 0 拓展到 180 条（河南）</span>
+        <span class="num__note">走访工地、陌拜客户，独立开发剩余市场</span>
+      </div>
+
+      <div class="num">
+        <span class="num__value">35<small>份</small></span>
+        <span class="num__label">独立完成标书</span>
+        <span class="num__note">另协助团队完成重点项目投标 19 项</span>
+      </div>
+
+      <div class="num">
+        <span class="num__value">112<small>条</small></span>
+        <span class="num__label">客户设备及经营能力信息核实</span>
+        <span class="num__note">行业下行周期中的风险核实与应收账款催收</span>
+      </div>
+
+    </div>
+    <p class="section__note">
+      注：1.2 亿元为"区域在跟进意向信息总额"（在跟进，非已签约）；另有<strong>参与协同推进的区域意向池约 1 亿元</strong>
+      （本人承担其中部分客户的方案、报价与融资测算）与<strong>协同支持成交 1400 万元</strong>，
+      均为协同口径而非个人独立签约，故不并入上方数字卡。
+    </p>
+  </section>
+
+  <!-- ===== 板块 4：项目与作品（AI 工具作品放最前，问题—做法—结果） ===== -->
+  <section class="section" id="projects">
+    <div class="section__head">
+      <h2 class="section__title">项目与作品</h2>
+      <span class="section__sub">AI / 数字化工具作品优先 · 每项按「问题 — 做法 — 结果」</span>
+    </div>
+
+    <article class="project project--ai">
+      <div class="project__head">
+        <span class="project__name"><span class="idx">01</span>客户线索采集与分级体系</span>
+        <span class="tag">AI / 数据驱动</span>
+      </div>
+      <div class="psr">
+        <div class="psr__row">
+          <span class="psr__key">问题</span>
+          <p class="psr__val">
+            区域客户分散在 12 个地市，过去靠熟人介绍与零散陌拜拿线索：覆盖不全、优先级靠感觉，
+            一个人根本跑不过来，好客户和差客户在同一张表里分不出来。
+          </p>
+        </div>
+        <div class="psr__row">
+          <span class="psr__key psr__key--do">做法</span>
+          <p class="psr__val">
+            用地图 POI 数据批量采集区域潜在客户，做<b>去重、按规模与活跃度分级、标注坐标</b>，
+            把零散线索落成一份可执行、可分配、可追踪的客户池——用数据驱动的方式建立客户池，
+            而不是靠记忆维护关系。
+          </p>
+        </div>
+        <div class="psr__row">
+          <span class="psr__key psr__key--res">结果</span>
+          <p class="psr__val">
+            湖北区域<b>拓展收录客户信息 113 条，其中新增客户 74 条</b>；客户池从"记在脑子里"变成
+            "存在表里、能按等级分配跑动"。（口径：线索 / 客户信息，非成交）
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <article class="project project--ai">
+      <div class="project__head">
+        <span class="project__name"><span class="idx">02</span>客户热力作战图</span>
+        <span class="tag">数据可视化</span>
+      </div>
+      <div class="psr">
+        <div class="psr__row">
+          <span class="psr__key">问题</span>
+          <p class="psr__val">
+            跑动路线和资源投放全凭经验：差旅成本高，重点区域反而跑得少，管理者也看不到区域经营的分布。
+          </p>
+        </div>
+        <div class="psr__row">
+          <span class="psr__key psr__key--do">做法</span>
+          <p class="psr__val">
+            把分级后的客户线索按<b>区域与等级做成热力分布图</b>，用于规划跑动路线与资源投放，
+            让每次出差都能沿着密度最高的方向走，让资源看得见地压在重点客户上。
+          </p>
+        </div>
+        <div class="psr__row">
+          <span class="psr__key psr__key--res">结果</span>
+          <p class="psr__val">
+            支撑湖北区域<b>在跟进意向信息总额 1.2 亿元</b>（口径：在跟进，非已签约）与
+            <b>个人独立签约 1500 万元</b>；参与协同推进的区域意向池约 1 亿元，协同支持成交 1400 万元。
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <article class="project project--ai">
+      <div class="project__head">
+        <span class="project__name"><span class="idx">03</span>投标报价与推介材料自动化</span>
+        <span class="tag">流程自动化</span>
+      </div>
+      <div class="psr">
+        <div class="psr__row">
+          <span class="psr__key">问题</span>
+          <p class="psr__val">
+            报价表、投标报价函、产品推介材料高度重复，单份耗时小时级；投标期一忙，
+            见客户的时间就被材料挤掉了，而且手工复制极易出错。
+          </p>
+        </div>
+        <div class="psr__row">
+          <span class="psr__key psr__key--do">做法</span>
+          <p class="psr__val">
+            把制作流程<b>标准化、自动化</b>：模板化版式 + 数据源驱动生成，只填变量不出错，
+            同一套逻辑复用到不同客户、不同项目的材料上。
+          </p>
+        </div>
+        <div class="psr__row">
+          <span class="psr__key psr__key--res">结果</span>
+          <p class="psr__val">
+            单份材料耗时<b>从小时级压缩到分钟级</b>，支撑复盛期间<b>独立完成标书 35 份、
+            协助团队完成重点项目投标 19 项</b>；报备意向信息 92 条。
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="project__head">
+        <span class="project__name"><span class="idx">04</span>融资租赁测算模型</span>
+        <span class="tag tag--violet">决策支撑工具</span>
+      </div>
+      <div class="psr">
+        <div class="psr__row">
+          <span class="psr__key">问题</span>
+          <p class="psr__val">
+            客户卡在"买还是租"：回本周期算不清、分期和全款口径对不上，采购决策就一直拖到下个预算年度。
+          </p>
+        </div>
+        <div class="psr__row">
+          <span class="psr__key psr__key--do">做法</span>
+          <p class="psr__val">
+            搭建测算模型，计算<b>回本周期、IRR、全款与分期对比、出租率敏感性</b>，
+            把客户关心的现金流问题变成一张能当场讨论的表。
+          </p>
+        </div>
+        <div class="psr__row">
+          <span class="psr__key psr__key--res">结果</span>
+          <p class="psr__val">
+            用于给客户做采购决策支撑，配合推进区域意向池（<b>参与协同推进约 1 亿元</b>），
+            协同支持成交 1400 万元；模型思路同样适用于 SaaS 的 ROI 测算与续约价值证明。
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="project__head">
+        <span class="project__name"><span class="idx">05</span>行业信息定期简报</span>
+        <span class="tag tag--violet">信息输入</span>
+      </div>
+      <div class="psr">
+        <div class="psr__row">
+          <span class="psr__key">问题</span>
+          <p class="psr__val">
+            团队对行业动态与竞品信息缺少集中输入，判断依赖零散消息，区域策略很难讲清依据。
+          </p>
+        </div>
+        <div class="psr__row">
+          <span class="psr__key psr__key--do">做法</span>
+          <p class="psr__val">
+            定期汇总<b>行业动态与竞品信息</b>，形成固定格式简报，用于团队内部决策参考；
+            同一套整理方式持续复用到我负责的每个区域。
+          </p>
+        </div>
+        <div class="psr__row">
+          <span class="psr__key psr__key--res">结果</span>
+          <p class="psr__val">
+            成为区域策略的输入之一；在此基础上完成单省市场开拓策略方案，
+            支撑了对粤东、河南、湖北三个区域市场的判断（粤东客户 40→132、河南客户信息 0→180、湖北 113 条）。
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="project__head">
+        <span class="project__name"><span class="idx">06</span>区域市场开拓方案（单省高空作业平台）</span>
+        <span class="tag tag--violet">方法论沉淀</span>
+      </div>
+      <div class="psr">
+        <div class="psr__row">
+          <span class="psr__key">问题</span>
+          <p class="psr__val">
+            接手新区域没有现成打法，全靠个人经验试错，前三个月容易白跑；人一走，经验也就带走了。
+          </p>
+        </div>
+        <div class="psr__row">
+          <span class="psr__key psr__key--do">做法</span>
+          <p class="psr__val">
+            撰写开拓策略方案，包含<b>市场容量、竞品格局、客户分层、打法节奏</b>四个部分，
+            把区域开拓拆成可执行、可检查、可交接的动作。
+          </p>
+        </div>
+        <div class="psr__row">
+          <span class="psr__key psr__key--res">结果</span>
+          <p class="psr__val">
+            把"跑市场"变成"按图作业"；同一套打法在河南市场把客户信息<b>从 0 拓展到 180 条</b>，
+            在粤东把目标客户<b>从 40 个增长到 132 个</b>、拓展维护客户信息 400 余条。
+          </p>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ===== 板块 5：数字化实践自述 ===== -->
+  <section class="section" id="digital-practice">
+    <div class="section__head">
+      <h2 class="section__title">数字化实践自述</h2>
+      <span class="section__sub">把销售流程做成可复制方法论</span>
+    </div>
+    <div class="practice">
+      <h3 class="practice__title">我不满足于"业绩记在自己脑子里"</h3>
+      <p>
+        做销售的前几年，我的客户资源和踩过的坑都只存在自己脑子里——换个区域、换个人，就等于从零开始，
+        这也是我后来最想解决的问题。
+      </p>
+      <p>
+        于是我把自己每天在做的销售动作拆成可以被工具承载的环节：线索怎么批量来（地图 POI 采集 + 去重分级）、
+        跑动怎么排（客户热力作战图）、材料怎么做快（报价与推介自动化）、判断怎么才有依据
+        （融资租赁测算模型 + 行业简报）。拆开之后我发现，销售里真正靠天赋的部分并不多，
+        大部分是流程问题。
+      </p>
+      <p>
+        这套东西的价值不是「我会用几个 AI 工具」，而是它把一个人的经验变成了团队可复用的流程：
+        新人拿到客户池、分层标准和打法节奏就能上手，管理者能看见客户结构和推进节奏，
+        而不是只听汇报。
+      </p>
+      <p>
+        到工业互联网与制造业数字化这个赛道，我想做的还是同一件事——用工具和流程，
+        把客户现场的复杂问题翻译成可交付、可复用的方案。
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== 板块 6：工作经历（翻译为"服务制造业客户"） ===== -->
+  <section class="section" id="experience">
+    <div class="section__head">
+      <h2 class="section__title">工作经历</h2>
+      <span class="section__sub">5 段 · 倒序 · 以"服务制造业客户"的口径重写</span>
+    </div>
+
+    <article class="job">
+      <div class="job__head">
+        <span class="job__company">太原重工 · 工程起重机分公司（工起营销中心）</span>
+        <span class="job__role">大客户销售 / 业务经理</span>
+        <span class="job__date">2025.12 – 至今</span>
+      </div>
+      <p class="job__meta">
+        服务区域：湖北市场（12 个地市）｜品类：高空作业平台｜职责：区域市场开拓、新客户开发、客户关系管理、
+        招投标与报价、融资租赁方案配合、应收账款跟进
+      </p>
+      <ul class="job__list">
+        <li>
+          服务制造业与工程类客户：<strong>拓展收录客户信息 113 条，其中新增客户 74 条</strong>，
+          覆盖 12 个地市；用数据驱动的方式建立客户池（批量采集 → 去重分级 → 热力排线），
+          而不是靠熟人介绍逐个碰。
+        </li>
+        <li>
+          <strong>个人独立签约 1500 万元</strong>（从线索到签约到回款全程负责）。
+        </li>
+        <li>
+          区域<strong>在跟进意向信息总额 1.2 亿元</strong>（口径：在跟进，非已签约）；
+          <strong>参与协同推进的区域意向池约 1 亿元</strong>（本人承担其中部分客户的方案、报价与融资测算）；
+          <strong>协同支持成交 1400 万元</strong>。
+        </li>
+        <li>
+          方法与工具（已脱敏）：把区域市场开发做成"按图作业"——客户线索批量采集与分级、客户热力分布图、
+          投标报价与推介材料自动化、行业信息定期简报。
+        </li>
+      </ul>
+      <p class="logic">
+        <b>我理解的决策逻辑：</b>高空作业平台的采购方多是租赁商与施工方，他们买的不是一台设备，
+        而是"这台机器在租期内能不能回本"。所以决策链上老板看回本周期与出租率、设备主管看维保与停机损失、
+        财务看首付和分期口径。我把每次沟通的顺序固定成"先算现金流、再谈产品"——
+        这个逻辑放到 SaaS 与工业互联网同样成立：<strong>客户只为可量化的结果买单。</strong>
+      </p>
+    </article>
+
+    <article class="job">
+      <div class="job__head">
+        <span class="job__company">复盛实业（上海）有限公司</span>
+        <span class="job__role">大客户销售</span>
+        <span class="job__date">2025.05 – 2025.12</span>
+      </div>
+      <p class="job__meta">
+        服务区域：河南｜品类：空压机（工业设备）｜职责：河南区域销售、新市场开拓、行业信息收集分析、
+        客户档案建立、招投标信息收集与标书制作
+      </p>
+      <ul class="job__list">
+        <li>
+          以招投标与行业信息为主要工作抓手：<strong>报备意向信息 92 条</strong>；
+          <strong>独立完成标书 35 份</strong>；<strong>协助团队完成重点项目投标 19 项</strong>。
+        </li>
+        <li>
+          客户档案与行业信息收集分析：建立客户档案结构，把行业信息整理成可检索的定期输入。
+        </li>
+      </ul>
+      <p class="logic">
+        <b>我理解的决策逻辑：</b>空压机这类工业设备，客户真正在意的是能耗与停机损失——
+        设备科 / 动力科提需求，财务算的是总拥有成本。这段经历让我养成了"用客户的生产数据讲价值"的习惯，
+        而不是用产品参数讲卖点。<strong>这套讲法搬到工业软件与云服务上，几乎是逐字复用的。</strong>
+      </p>
+      <p class="fact-line">
+        <b>诚实说明：</b>该段以招投标为主，客户资产积累与新品类客户池重合度低。
+        所以我没有把这段的客户数并进"客户池延续"里，而是把它当作招投标全流程能力与工业设备品类认知的补足。
+      </p>
+    </article>
+
+    <article class="job job--down">
+      <div class="job__head">
+        <span class="job__company">中联重科</span>
+        <span class="job__role">大客户销售</span>
+        <span class="job__date">2023.07 – 2024.10</span>
+      </div>
+      <p class="job__meta">
+        服务区域：河南｜品类：旋挖钻机｜职责：区域销售与推广、市场信息收集分析、客户关系与长期合作计划、
+        应收账款催收与客户风险评估
+      </p>
+      <p class="fact-line">
+        <b>不美化的一段：</b>这段期间河南旋挖钻市场大幅缩水、以二手设备销售为主，
+        我的业绩量较少，<strong>总体不足 300 万元</strong>。这是行业下行周期的结果，我不做包装。
+      </p>
+      <ul class="job__list">
+        <li>
+          在签约机会有限的周期里，把主要精力放在两件"不产生签约但必须做"的事上：
+          老客户信息完善、应收账款催收与客户风险评估。
+        </li>
+        <li>
+          完成<strong>客户设备及经营能力信息核实 112 条</strong>——逐户核对设备现状与经营能力，
+          为后续复购和风险处置留下可用的数据底账。
+        </li>
+      </ul>
+      <p class="logic">
+        <b>我理解的决策逻辑：</b>市场下行时客户说"没钱"，通常不是没有需求，而是现金流断了。
+        这段经历教会我先看客户的经营数据——在手工程、回款周期、负债与设备开工率——再谈成交。
+        <strong>放到 SaaS 语境里，这就是客户成功的前置动作：先判断客户能不能用起来、续不续得起，再谈签单。</strong>
+      </p>
+    </article>
+
+    <article class="job">
+      <div class="job__head">
+        <span class="job__company">三一重工</span>
+        <span class="job__role">大客户销售</span>
+        <span class="job__date">2021.04 – 2023.06</span>
+      </div>
+      <p class="job__meta">
+        服务区域：河南｜品类：旋挖钻机｜职责：河南区域销售与推广、市场开拓与新客户发展、
+        辖区市场信息收集分析、客户关系与长期战略合作
+      </p>
+      <ul class="job__list">
+        <li>
+          独立开发河南剩余市场，通过走访工地、陌拜客户，<strong>客户信息从 0 拓展到 180 条</strong>
+          （服务制造业 / 工程类客户的线索池从零建起）。
+        </li>
+        <li>
+          首年促成客户工程合作，<strong>客户工程产值 5000 万元，促成设备销售 1000 万元</strong>。
+        </li>
+        <li>
+          <strong>年均销售额约 1500 万元</strong>（按年度口径统计，非单笔签约口径）。
+        </li>
+      </ul>
+      <p class="logic">
+        <b>我理解的决策逻辑：</b>河南市场是"工期驱动"的市场——客户买设备，是因为手上接了活。
+        所以判断一个客户值不值得跟，我会看三件事：有没有活、活能干多久、钱什么时候回。
+        <strong>后来我给客户分级的标准，就建在这三个问题上</strong>，这也是我把"关系型销售"变成"可判断的流程"的起点。
+      </p>
+    </article>
+
+    <article class="job">
+      <div class="job__head">
+        <span class="job__company">宇通重工</span>
+        <span class="job__role">大客户销售</span>
+        <span class="job__date">2017.10 – 2021.03</span>
+      </div>
+      <p class="job__meta">
+        服务区域：粤东｜品类：旋挖钻机、履带吊｜职责：区域市场分析维护、产品开发调研反馈、销售策略制定、
+        意向信息收集整理分析与跟踪转化、客户关系管理
+      </p>
+      <ul class="job__list">
+        <li>
+          同批 <strong>60 多名</strong>新入职员工中<strong>最早结束试用期并成功转正</strong>。
+        </li>
+        <li>
+          目标客户<strong>从 40 个增长到 132 个</strong>（40→132），拓展维护客户信息<strong>400 余条</strong>；
+          <strong>潜在客户价值约 2000 万元</strong>，<strong>为其他区域提供有效商机价值 1200 万元</strong>。
+        </li>
+        <li>
+          <strong>年业绩 600–1000 万元</strong>。
+        </li>
+      </ul>
+      <p class="logic">
+        <b>我理解的决策逻辑：</b>粤东客户圈子小、口碑传播快，一次交付不到位就会丢一片。
+        我在这里养成的习惯是"先交付确定性，再谈下一单"——把承诺的响应速度、配件供应、
+        服务半径做到可预期。<strong>这也是客户成功岗最核心的底层逻辑：签约只是关系的开始。</strong>
+      </p>
+    </article>
+
+  </section>
+
+  <!-- ===== 板块 7：教育背景 ===== -->
+  <section class="section" id="education">
+    <div class="section__head">
+      <h2 class="section__title">教育背景</h2>
+      <span class="section__sub">全日制 · 汽车与机械方向</span>
+    </div>
+    <div class="edu">
+      <div class="edu__card">
+        <div class="edu__deg">本科</div>
+        <div class="edu__school">黄淮学院</div>
+        <div class="edu__major">汽车服务工程</div>
+        <div class="edu__date">2015.09 – 2017.06</div>
+      </div>
+      <div class="edu__card">
+        <div class="edu__deg">大专</div>
+        <div class="edu__school">鹤壁职业技术学院</div>
+        <div class="edu__major">汽车检测</div>
+        <div class="edu__date">2012.09 – 2015.06</div>
+      </div>
+      <div class="edu__card">
+        <div class="edu__deg">高中</div>
+        <div class="edu__school">柘城一高</div>
+        <div class="edu__major">理科</div>
+        <div class="edu__date">2009 – 2012</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 板块 8：求职意向 ===== -->
+  <section class="section" id="intent">
+    <div class="section__head">
+      <h2 class="section__title">求职意向</h2>
+      <span class="section__sub">工业互联网 · 制造业数字化 · 云与 AI</span>
+    </div>
+    <div class="intent-grid">
+      <div class="intent intent--wide">
+        <span class="intent__key">目标岗位</span>
+        <span class="intent__val">
+          <b>行业销售经理 / 客户成功经理</b>（工业互联网、制造业数字化、云与 AI）
+        </span>
+      </div>
+      <div class="intent">
+        <span class="intent__key">期望城市</span>
+        <span class="intent__val">
+          郑州 / 武汉 / 全国；<b>可接受全国驻外、可全家搬迁</b>
+        </span>
+      </div>
+      <div class="intent">
+        <span class="intent__key">期望年包</span>
+        <span class="intent__val"><b>35–50 万</b>（可结合岗位结构面议）</span>
+      </div>
+      <div class="intent">
+        <span class="intent__key">到岗时间</span>
+        <span class="intent__val">现职在岗，离职周期可协商</span>
+      </div>
+      <div class="intent">
+        <span class="intent__key">证明人</span>
+        <span class="intent__val">可提供（历任直属领导）</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 页脚 ===== -->
+  <footer class="foot">
+    <span>邵汉青 · 行业销售 / 客户成功 · 1820688914@qq.com</span>
+    <span>本简历所有数字均按实际口径分级表述，未做合并或抬升。</span>
+  </footer>
+
+</main>
+</div>
+
+<script>
+/* ===== 工具条交互：打印 & 紧凑版切换（无网络请求、无外部依赖） ===== */
+(function () {
+  "use strict";
+
+  var printBtn = document.getElementById("btn-print");
+  var compactBtn = document.getElementById("btn-compact");
+  var body = document.body;
+
+  if (printBtn) {
+    printBtn.addEventListener("click", function () {
+      window.print();
+    });
+  }
+
+  if (compactBtn) {
+    compactBtn.addEventListener("click", function () {
+      var on = body.classList.toggle("compact");
+      compactBtn.setAttribute("aria-pressed", on ? "true" : "false");
+      compactBtn.textContent = on ? "切换标准版" : "切换紧凑版";
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
