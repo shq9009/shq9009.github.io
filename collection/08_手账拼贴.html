@@ -59,8 +59,10 @@
 
 /* ===== 02 基础重置 ======================================== */
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;overflow-x:hidden;overflow-x:clip;}
 body{
+  overflow-x:hidden;         /* 横向溢出裁切（旧浏览器回退） */
+  overflow-x:clip;           /* 现代浏览器：裁切且不产生滚动容器；拍立得/便利贴旋转外溢在此收掉 */
   font-family:var(--hand);
   font-size:16px;
   line-height:1.75;
