@@ -141,6 +141,75 @@ footer{border-top:1px solid var(--line);background:var(--bg2);margin-top:20px}
   .gallery{grid-template-columns:1fr}
   .preview-frame{height:52vh}
 }
+
+/* ============================================================
+   卡片右下角：每版的风格缩略图（纯 CSS，无图片、无外链）
+   .sk-* 皮肤按 128×104 画，纵向用 px、横向用 %；
+   缩略图内整体 scale(.75) 等比缩到 96×78，观感与站内视觉一致
+   ============================================================ */
+.site-card .palette,.site-card .go,.site-card p{padding-right:104px}
+.thumb{position:absolute; right:12px; bottom:12px; width:96px; height:78px; border-radius:9px;
+  overflow:hidden; border:1px solid var(--line); box-shadow:0 3px 10px rgba(16,18,24,.13);
+  pointer-events:none}
+.thumb-in{display:block; width:128px; height:104px; transform:scale(.75); transform-origin:0 0}
+.sk{position:relative; height:104px; overflow:hidden; border-bottom:1px solid var(--line)}
+.thumb .sk{display:block; width:100%; height:104px; border-bottom:0}
+.sk::before,.sk::after{content:""; position:absolute}
+/* 01 终端 · CRT 绿字 */
+.sk-term{background:#0a0f0a}
+.sk-term::after{left:10%; top:26px; width:52%; height:4px; background:#33ff66;
+  box-shadow:0 14px 0 #1d8f42, 0 28px 0 #33ff66, 0 42px 0 rgba(29,143,66,.75)}
+/* 02 杂志 · 米纸刊头 + 朱印 */
+.sk-zhi{background:#f6f1e7}
+.sk-zhi::after{left:10%; top:26px; width:54%; height:4px; background:#3a3126;
+  box-shadow:0 14px 0 #9a9184, 0 28px 0 #9a9184, 0 42px 0 #9a9184}
+.sk-zhi::before{right:9%; top:22px; width:34px; height:46px; background:#a33}
+/* 03 粗野 · 撞色块 + 硬投影 */
+.sk-bru{background:#e8ff00}
+.sk-bru::after{left:10%; top:26px; width:68px; height:26px; background:#111}
+.sk-bru::before{left:14%; top:38px; width:68px; height:26px; background:#ff2e97}
+/* 04 赛博 · 霓虹双线 */
+.sk-cy{background:linear-gradient(140deg,#12043a,#2b0a52 55%,#0a0320)}
+.sk-cy::after{left:10%; right:10%; top:34px; height:4px; background:#ff2bd6;
+  box-shadow:0 16px 0 #22e3ff, 0 32px 0 #ff2bd6}
+/* 05 像素 · 8-bit 像素格 */
+.sk-px{background:#1a1c2c}
+.sk-px::after{left:10%; top:24px; width:104px; height:56px;
+  background:repeating-conic-gradient(#71efb9 0 25%, #1a1c2c 0 50%) 0 0/14px 14px}
+/* 06 瑞士 · 白底红色规范带 */
+.sk-sw{background:#fff}
+.sk-sw::before{left:0; right:0; top:22px; height:10px; background:#d50000}
+.sk-sw::after{left:0; right:0; top:48px; height:5px; background:#dcdcdc;
+  box-shadow:0 12px 0 #dcdcdc, 0 24px 0 #dcdcdc}
+/* 07 玻璃 · 光斑 + 毛玻璃 */
+.sk-gl{background:linear-gradient(135deg,#a78bfa,#f9a8d4 45%,#67e8f9)}
+.sk-gl::after{left:12%; right:12%; top:22px; height:60px; border-radius:12px;
+  background:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.85)}
+/* 08 手账 · 牛皮纸 + 和纸胶带 */
+.sk-sc{background:#f7f1e3 repeating-linear-gradient(180deg,transparent 0 17px,rgba(122,95,45,.18) 17px 18px)}
+.sk-sc::before{left:16%; top:-8px; width:64px; height:20px; background:rgba(232,200,122,.85); transform:rotate(-5deg)}
+.sk-sc::after{left:10%; top:26px; width:56%; height:4px; background:rgba(58,49,38,.34);
+  box-shadow:0 18px 0 rgba(58,49,38,.24), 0 36px 0 rgba(58,49,38,.17)}
+/* 09 3D · 深空发光环 */
+.sk-3d{background:radial-gradient(circle at 50% 55%,#20407a,#05070f 72%)}
+.sk-3d::after{left:50%; top:50%; width:56px; height:56px; margin:-28px 0 0 -28px; border-radius:50%;
+  border:2px solid rgba(124,108,255,.95); box-shadow:0 0 22px rgba(124,108,255,.75)}
+/* 10 新拟物 · 浮凸内凹 */
+.sk-neu{background:#e0e5ec}
+.sk-neu::after{left:14%; right:14%; top:50%; height:34px; margin-top:-17px; border-radius:99px;
+  background:#e0e5ec; box-shadow:inset 4px 4px 9px #babecc, inset -4px -4px 9px #fff}
+/* 11 SaaS · 云端卡片 */
+.sk-saas{background:linear-gradient(140deg,#123f7a,#2563eb 55%,#7c3aed)}
+.sk-saas::after{left:12%; right:12%; top:26px; height:52px; border-radius:8px; background:rgba(255,255,255,.9)}
+/* 12 租赁 · 深蓝金线白皮书 */
+.sk-fin{background:linear-gradient(150deg,#0b1f3a,#1d3b60)}
+.sk-fin::after{left:12%; right:12%; top:30px; height:5px; background:#c9a227;
+  box-shadow:0 16px 0 rgba(201,162,39,.55), 0 32px 0 rgba(201,162,39,.3)}
+/* 13 蓝图 · 重工黄色网格 */
+.sk-bp{background:#151515}
+.sk-bp::after{left:0; top:0; right:0; bottom:0;
+  background:repeating-linear-gradient(180deg,rgba(255,196,0,.42) 0 1px,transparent 1px 16px),
+             repeating-linear-gradient(90deg,rgba(255,196,0,.42) 0 1px,transparent 1px 16px)}
 </style>
 </head>
 <body>
@@ -211,43 +280,43 @@ footer{border-top:1px solid var(--line);background:var(--bg2);margin-top:20px}
    站点数据：10 个设计风格（与各站点文件一一对应）
    ============================================================ */
 var SITES = [
-  { file:"01_终端命令行.html", no:"01", name:"终端命令行 · 科技极客版", en:"TERMINAL", tag:"科技 / 工业互联网公司",
+  { file:"01_终端命令行.html", no:"01", skin:"term", name:"终端命令行 · 科技极客版", en:"TERMINAL", tag:"科技 / 工业互联网公司",
     desc:"查看建议：发给工业互联网、科技公司的技术与年轻决策人——极客范开场，懂行的第一印象",
     palette:["#33ff66","#050805"] },
-  { file:"02_杂志编辑.html", no:"02", name:"杂志编辑 · 品牌内容版", en:"EDITORIAL", tag:"品牌 / 市场部 / 传媒",
+  { file:"02_杂志编辑.html", no:"02", skin:"zhi", name:"杂志编辑 · 品牌内容版", en:"EDITORIAL", tag:"品牌 / 市场部 / 传媒",
     desc:"查看建议：发给品牌方、市场部与传媒类公司——编辑推荐式叙事，适合看重内容调性的对象",
     palette:["#f6f1e7","#1a1a1a","#a33"] },
-  { file:"03_新粗野主义.html", no:"03", name:"新粗野主义 · 创意冲击版", en:"BRUTALISM", tag:"创意 / 广告 / 潮牌公司",
+  { file:"03_新粗野主义.html", no:"03", skin:"bru", name:"新粗野主义 · 创意冲击版", en:"BRUTALISM", tag:"创意 / 广告 / 潮牌公司",
     desc:"查看建议：发给创意设计、广告与潮牌类公司——视觉冲击强，看一眼就记住",
     palette:["#E8FF00","#FF2E97","#00F0FF","#111111"] },
-  { file:"04_赛博霓虹.html", no:"04", name:"赛博霓虹 · 互联网版", en:"CYBERPUNK", tag:"互联网 / 游戏 / AI 公司",
+  { file:"04_赛博霓虹.html", no:"04", skin:"cy", name:"赛博霓虹 · 互联网版", en:"CYBERPUNK", tag:"互联网 / 游戏 / AI 公司",
     desc:"查看建议：发给互联网、游戏与 AI 公司——科技感拉满，正中口味",
     palette:["#00f0ff","#ff00aa","#ffee00","#05060f"] },
-  { file:"05_像素游戏.html", no:"05", name:"像素游戏 · 破冰彩蛋版", en:"PIXEL QUEST", tag:"游戏 / 年轻互联网团队",
+  { file:"05_像素游戏.html", no:"05", skin:"px", name:"像素游戏 · 破冰彩蛋版", en:"PIXEL QUEST", tag:"游戏 / 年轻互联网团队",
     desc:"查看建议：发给游戏公司与年轻互联网团队——彩蛋式履历，轻松拉近距离",
     palette:["#1a1c2c","#ffcd75","#71efb9","#ff004d"] },
-  { file:"06_瑞士极简.html", no:"06", name:"瑞士极简 · 金融正式版", en:"SWISS", tag:"银行 / 金融 / 央企国企",
+  { file:"06_瑞士极简.html", no:"06", skin:"sw", name:"瑞士极简 · 金融正式版", en:"SWISS", tag:"银行 / 金融 / 央企国企",
     desc:"查看建议：发给银行、融资租赁公司与大型央国企——克制严谨，最显专业可信",
     palette:["#ffffff","#111111","#FF0000"] },
-  { file:"07_玻璃拟态.html", no:"07", name:"玻璃拟态 · 轻盈审美版", en:"GLASSMORPHISM", tag:"消费品牌 / 设计公司",
+  { file:"07_玻璃拟态.html", no:"07", skin:"gl", name:"玻璃拟态 · 轻盈审美版", en:"GLASSMORPHISM", tag:"消费品牌 / 设计公司",
     desc:"查看建议：发给消费品牌与设计感强的公司——轻盈精致，审美在线",
     palette:["#a78bfa","#f9a8d4","#67e8f9","#ffffff"] },
-  { file:"08_手账拼贴.html", no:"08", name:"手账拼贴 · 温度亲和版", en:"SCRAPBOOK", tag:"文创 / 教育 / 生活方式",
+  { file:"08_手账拼贴.html", no:"08", skin:"sc", name:"手账拼贴 · 温度亲和版", en:"SCRAPBOOK", tag:"文创 / 教育 / 生活方式",
     desc:"查看建议：发给文创、教育与生活方式类公司——亲切有温度，聊天式展开",
     palette:["#f7f1e3","#e8c87a","#c0392b"] },
-  { file:"09_3D空间.html", no:"09", name:"3D 空间 · 硬核工程版", en:"CUBE 3D", tag:"智能硬件 / 汽车 / 工业设计",
+  { file:"09_3D空间.html", no:"09", skin:"3d", name:"3D 空间 · 硬核工程版", en:"CUBE 3D", tag:"智能硬件 / 汽车 / 工业设计",
     desc:"查看建议：发给智能硬件、汽车与工业设计公司——空间感知力，工程硬核加分",
     palette:["#0b0e1a","#1a1030","#7c6cff"] },
-  { file:"10_新拟物.html", no:"10", name:"新拟物 · 稳重 To B 版", en:"NEUMORPHISM", tag:"企业软件 / To B 服务",
+  { file:"10_新拟物.html", no:"10", skin:"neu", name:"新拟物 · 稳重 To B 版", en:"NEUMORPHISM", tag:"企业软件 / To B 服务",
     desc:"查看建议：发给企业软件与 To B 服务公司——稳重克制，产品感强",
     palette:["#e0e5ec","#2d3436","#5b7cfa"] },
-  { file:"11_SaaS客户成功.html", no:"11", name:"SaaS 客户成功 · 云端官网版", en:"SAAS · CS", tag:"工业互联网 SaaS",
+  { file:"11_SaaS客户成功.html", no:"11", skin:"saas", name:"SaaS 客户成功 · 云端官网版", en:"SAAS · CS", tag:"工业互联网 SaaS",
     desc:"查看建议：面向工业互联网 SaaS 公司（树根互联 · 腾讯云工业 · 华为云工业等）——云端产品官网风",
     palette:["#ffffff","#2563eb","#7c3aed"] },
-  { file:"12_融资租赁.html", no:"12", name:"融资租赁 · 金融白皮书版", en:"FINANCE LEASING", tag:"融资租赁公司",
+  { file:"12_融资租赁.html", no:"12", skin:"fin", name:"融资租赁 · 金融白皮书版", en:"FINANCE LEASING", tag:"融资租赁公司",
     desc:"查看建议：面向设备融资租赁公司（远东宏信 · 平安租赁 · 厂商金融）——白皮书风，说同行语言",
     palette:["#0b1f3a","#c9a227","#f5f2ea"] },
-  { file:"13_高机头部厂.html", no:"13", name:"高机头部厂 · 重工蓝图版", en:"AWP · OEM SALES", tag:"高机厂商 / 同行",
+  { file:"13_高机头部厂.html", no:"13", skin:"bp", name:"高机头部厂 · 重工蓝图版", en:"AWP · OEM SALES", tag:"高机厂商 / 同行",
     desc:"查看建议：面向高机头部厂商（临工 · 星邦 · 鼎力）——重工蓝图风，行业对口",
     palette:["#1a1a1a","#ffc400","#3a3a3a"] }
 ];
@@ -269,7 +338,10 @@ SITES.forEach(function (s, i) {
     '<div class="en">' + s.en + '</div>' +
     '<p>' + s.desc + '</p>' +
     '<div class="palette">' + dots + '<span>' + s.palette.length + ' 色</span></div>' +
-    '<div class="go">预览此站点</div>';
+    '<div class="go">预览此站点</div>' +
+    '<span class="thumb" aria-hidden="true"><span class="thumb-in">' +
+      '<span class="sk sk-' + (s.skin || "sw") + '"></span>' +
+    '</span></span>';
   card.addEventListener("click", function () { select(i, true); });
   card.addEventListener("keydown", function (e) {
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(i, true); }

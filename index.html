@@ -136,6 +136,96 @@ a:hover{border-bottom-color:var(--blue)}
 .resume-card .d{font-size:14px; color:var(--ink2)}
 .resume-card .m{font-size:12.5px; color:var(--ink3); margin-top:8px}
 
+/* ============ 13 版合集 · 醒目入口 ============ */
+.cb{position:relative; overflow:hidden; border-radius:16px; padding:30px 32px 26px;
+  background:linear-gradient(135deg,#111820 0%,#1a2432 55%,#14202f 100%);
+  box-shadow:0 20px 46px -24px rgba(18,24,31,.6)}
+.cb::before,.cb::after{content:""; position:absolute; border-radius:50%; pointer-events:none}
+.cb::before{right:-100px; top:-120px; width:340px; height:340px;
+  background:radial-gradient(circle,rgba(43,125,224,.40),transparent 68%)}
+.cb::after{left:-80px; bottom:-130px; width:280px; height:280px;
+  background:radial-gradient(circle,rgba(184,134,11,.24),transparent 70%)}
+.cb-head{position:relative; z-index:1}
+.cb-eyebrow{display:inline-block; font-size:12.5px; letter-spacing:.12em; color:#9dc4f0;
+  border:1px solid rgba(157,196,240,.34); border-radius:999px; padding:5px 13px; margin-bottom:14px}
+.cb-head h3{font-size:26px; line-height:1.35; color:#fff; margin-bottom:10px}
+.cb-head h3 em{font-style:normal; color:#7fb4f2}
+.cb-head p{font-size:15px; line-height:1.85; color:rgba(255,255,255,.72); max-width:680px}
+.cb-actions{display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:20px}
+.cb-btn{display:inline-flex; align-items:center; gap:9px; background:var(--blue2); color:#fff;
+  font-size:16px; font-weight:700; border-radius:11px; padding:14px 26px; text-decoration:none;
+  box-shadow:0 12px 26px -12px rgba(43,125,224,.9); transition:.18s}
+.cb-btn i{font-style:normal; transition:transform .18s}
+.cb-btn:hover{background:#3f8ef2; transform:translateY(-1px)}
+.cb-btn:hover i{transform:translateX(4px)}
+.cb-meta{font-size:13px; color:rgba(255,255,255,.55)}
+.cb-strip{position:relative; z-index:1; display:grid; grid-template-columns:repeat(13,minmax(0,1fr));
+  gap:8px; margin-top:24px; padding-top:22px; border-top:1px solid rgba(255,255,255,.13)}
+.cb-tile{display:block; text-align:center; text-decoration:none}
+.cb-tile i{display:block; height:58px; border-radius:9px; overflow:hidden; position:relative;
+  border:1px solid rgba(255,255,255,.17); transition:.18s}
+.cb-tile b{display:block; margin-top:6px; font-size:10px; font-weight:500;
+  color:rgba(255,255,255,.58); white-space:nowrap}
+.cb-tile:hover i{transform:translateY(-4px); border-color:rgba(255,255,255,.55);
+  box-shadow:0 14px 24px -12px rgba(0,0,0,.75)}
+.cb-tile:hover b{color:#fff}
+/* 13 个风格缩影（纯 CSS，无图片） */
+.cb-tile i::after{content:""; position:absolute}
+.v-term{background:#0a0f0a}
+.v-term::after{left:9px; right:9px; top:11px; height:2px; background:#33ff66;
+  box-shadow:0 8px 0 #1d8f42,0 16px 0 #33ff66,0 24px 0 #1d8f42}
+.v-zhi{background:#f6f1e7}
+.v-zhi::after{left:8px; right:8px; top:11px; height:2px; background:#3a3126;
+  box-shadow:0 7px 0 #9a9184,0 14px 0 #9a9184,0 27px 0 #a33}
+.v-bru{background:#ffe600}
+.v-bru::after{left:8px; top:11px; width:28px; height:13px; background:#111; box-shadow:5px 5px 0 #ff2d95}
+.v-cy{background:linear-gradient(160deg,#12043a,#2b0a52 60%,#0a0320)}
+.v-cy::after{left:8px; right:8px; top:14px; height:2px; background:#ff2bd6;
+  box-shadow:0 9px 0 #22e3ff,0 18px 0 #ff2bd6}
+.v-px{background:#0d1b1e}
+.v-px::after{left:8px; top:10px; width:7px; height:7px; background:#7ef7a0;
+  box-shadow:9px 0 0 #7ef7a0,18px 0 0 #2f8f52,0 9px 0 #2f8f52,18px 9px 0 #7ef7a0,
+  9px 18px 0 #7ef7a0,0 27px 0 #2f8f52,18px 27px 0 #2f8f52}
+.v-sw{background:#fff}
+.v-sw::after{left:0; right:0; top:13px; height:4px; background:#d50000;
+  box-shadow:0 13px 0 #dcdcdc,0 20px 0 #dcdcdc}
+.v-gl{background:linear-gradient(140deg,#a9d9ff,#e7d8ff 45%,#ffe2c9)}
+.v-gl::after{left:9px; right:9px; top:11px; height:34px; border-radius:8px;
+  background:rgba(255,255,255,.6); border:1px solid rgba(255,255,255,.9)}
+.v-sc{background:#e6d4a9 repeating-linear-gradient(0deg,transparent 0 11px,rgba(122,95,45,.22) 11px 12px)}
+.v-sc::after{left:12px; top:-5px; width:28px; height:12px; background:rgba(255,255,255,.72);
+  transform:rotate(-6deg)}
+.v-3d{background:radial-gradient(circle at 50% 58%,#20407a,#05070f 72%)}
+.v-3d::after{left:50%; top:50%; width:30px; height:30px; margin:-15px 0 0 -15px; border-radius:50%;
+  border:2px solid rgba(120,190,255,.85); box-shadow:0 0 15px rgba(90,160,255,.7)}
+.v-neu{background:#e8ecf2}
+.v-neu::after{left:10px; right:10px; top:50%; height:16px; margin-top:-8px; border-radius:99px;
+  background:#e8ecf2; box-shadow:inset 2px 2px 5px #c5ccd6, inset -2px -2px 5px #fff}
+.v-saas{background:linear-gradient(150deg,#123f7a,#2b7de0 58%,#79b8f7)}
+.v-saas::after{left:9px; right:9px; bottom:9px; height:18px; border-radius:5px; background:rgba(255,255,255,.9)}
+.v-fin{background:linear-gradient(160deg,#0e2036,#1d3b60)}
+.v-fin::after{left:9px; right:9px; top:13px; height:3px; background:#d9a63c;
+  box-shadow:0 8px 0 rgba(217,166,60,.5),0 16px 0 rgba(217,166,60,.28)}
+.v-bp{background:#0b3d6b}
+.v-bp::after{left:0; top:0; right:0; bottom:0;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.22) 0 1px,transparent 1px 9px),
+             repeating-linear-gradient(90deg,rgba(255,255,255,.22) 0 1px,transparent 1px 9px)}
+@media(max-width:900px){
+  .cb{padding:26px 22px 22px}
+  .cb-head h3{font-size:23px}
+  .cb-strip{grid-template-columns:repeat(7,minmax(0,1fr))}
+}
+@media(max-width:560px){
+  .cb{padding:22px 18px 18px; border-radius:14px}
+  .cb-head h3{font-size:20px}
+  .cb-head p{font-size:14px; line-height:1.8}
+  .cb-actions{gap:10px; margin-top:16px}
+  .cb-btn{width:100%; justify-content:center; padding:13px 18px; font-size:15px}
+  .cb-strip{grid-template-columns:repeat(5,minmax(0,1fr)); gap:7px; margin-top:20px; padding-top:18px}
+  .cb-tile i{height:50px}
+  .cb-tile b{font-size:9.5px}
+}
+
 /* ============ 页脚 ============ */
 footer{background:var(--bg2); border-top:1px solid var(--line); padding:34px 0}
 footer .row{display:flex; gap:20px; flex-wrap:wrap; align-items:center}
@@ -446,16 +536,40 @@ footer .small a{border-bottom-color:transparent}
     <div class="sec-h">
       <h2>13 版个人网站合集<span class="en">13 Designs, Same Content</span></h2>
       <p class="lead">
-        同一份履历与作品，我做了 <b>13 种完全不同的视觉与交互版本</b>（终端命令行 / 杂志排版 / 3D 空间 / 像素游戏 / 瑞士极简 …）。
-        不同企业的审美与信息接收习惯差别很大——按贵司的性质挑一版最对味的看即可。
+        想看哪个风格，直接点下面那一格进对应版本；也可以先进总览逐个预览。
       </p>
     </div>
-    <div class="grid g3">
-      <a class="resume-card" href="collection/index.html">
-        <div class="t">进入合集总览</div>
-        <div class="d">13 个站点，每站单文件、零外部依赖、离线可运行。</div>
-        <div class="m">卡片点开即预览 · ← → 切换 · F 全屏</div>
-      </a>
+    <!-- 13 版合集 · 醒目入口 -->
+    <div class="cb">
+      <div class="cb-head">
+        <span class="cb-eyebrow">13 版设计 · 同一份履历，13 种打开方式</span>
+        <h3>不同企业看重的表达方式不一样 —— <em>挑一版最对味的来看</em></h3>
+        <p>
+          终端命令行、杂志排版、3D 空间、像素游戏、瑞士规格书…… 13 个站点覆盖从极客到正式的完整光谱。
+          每个版本都是<b style="color:#fff">单文件 HTML、零 CDN、零外链</b>，双击即开，点下面任一格可直接进对应那一版。
+        </p>
+        <div class="cb-actions">
+          <a class="cb-btn" href="collection/index.html">进入合集总览 <i>→</i></a>
+          <span class="cb-meta">13 站一览 · 卡片点开即预览 · ← → 切换 · F 全屏</span>
+        </div>
+      </div>
+      <div class="cb-strip">
+        <a class="cb-tile" href="collection/01_终端命令行.html"><i class="v-term"></i><b>终端</b></a>
+        <a class="cb-tile" href="collection/02_杂志编辑.html"><i class="v-zhi"></i><b>杂志</b></a>
+        <a class="cb-tile" href="collection/03_新粗野主义.html"><i class="v-bru"></i><b>粗野</b></a>
+        <a class="cb-tile" href="collection/04_赛博霓虹.html"><i class="v-cy"></i><b>赛博</b></a>
+        <a class="cb-tile" href="collection/05_像素游戏.html"><i class="v-px"></i><b>像素</b></a>
+        <a class="cb-tile" href="collection/06_瑞士极简.html"><i class="v-sw"></i><b>瑞士</b></a>
+        <a class="cb-tile" href="collection/07_玻璃拟态.html"><i class="v-gl"></i><b>玻璃</b></a>
+        <a class="cb-tile" href="collection/08_手账拼贴.html"><i class="v-sc"></i><b>手账</b></a>
+        <a class="cb-tile" href="collection/09_3D空间.html"><i class="v-3d"></i><b>3D</b></a>
+        <a class="cb-tile" href="collection/10_新拟物.html"><i class="v-neu"></i><b>拟物</b></a>
+        <a class="cb-tile" href="collection/11_SaaS客户成功.html"><i class="v-saas"></i><b>SaaS</b></a>
+        <a class="cb-tile" href="collection/12_融资租赁.html"><i class="v-fin"></i><b>租赁</b></a>
+        <a class="cb-tile" href="collection/13_高机头部厂.html"><i class="v-bp"></i><b>蓝图</b></a>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
       <div class="resume-card" style="cursor:default">
         <div class="t">为什么做 13 版</div>
         <div class="d">银行金融看重克制严谨，科技公司偏好极客表达，制造企业在意数据与规范。</div>
